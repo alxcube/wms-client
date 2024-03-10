@@ -1,0 +1,44 @@
+{
+  "name": "@alxcube/wms-client",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/wms-client.umd.cjs",
+  "module": "./dist/wms-client.js",
+  "types": "./dist/wms-client.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/wms-client.js",
+      "require": "./dist/wms-client.umd.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "test": "vitest --run",
+    "lint": "eslint ./src ./spec --ext .ts && npm run prettier",
+    "prettier": "prettier --write 'src/**/*.ts' && prettier --write 'spec/**/*.ts'"
+  },
+  "author": "Alexander Alexandrov <alxcube@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@vitest/browser": "^1.2.2",
+    "axios-mock-adapter": "^1.22.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.0",
+    "vite-plugin-banner": "^0.7.1",
+    "vite-plugin-dts": "^3.7.2",
+    "vitest": "^1.2.2",
+    "webdriverio": "^8.31.1"
+  },
+  "dependencies": {
+    "@alxcube/xml-mapper": "^1.0.0",
+    "@xmldom/xmldom": "^0.8.10",
+    "axios": "^1.6.7",
+    "xpath": "^0.0.34"
+  }
+}
