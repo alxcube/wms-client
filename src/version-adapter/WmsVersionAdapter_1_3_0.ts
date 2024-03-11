@@ -1,20 +1,27 @@
 import { createObjectMapper, map } from "@alxcube/xml-mapper";
-import { DOMParser } from "@xmldom/xmldom";
 import xpath from "xpath";
-import type { ExceptionFormat } from "../../ExceptionFormat";
-import type { UnifiedCapabilitiesResponse } from "../../request/get-capabilities/UnifiedCapabilitiesResponse";
-import type { CapabilitiesResponseParser } from "../CapabilitiesResponseParser";
+import type { ExceptionFormat } from "../ExceptionFormat";
+import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
+import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
+import type { WmsVersionAdapter } from "./WmsVersionAdapter";
 
-export class CapabilitiesResponseParser_1_3_0
-  implements CapabilitiesResponseParser
-{
-  private readonly xmlParser: DOMParser;
-  constructor() {
-    this.xmlParser = new DOMParser();
+export class WmsVersionAdapter_1_3_0 implements WmsVersionAdapter {
+  readonly version = "1.3.0";
+
+  transformCapabilitiesRequestParams(
+    params: CapabilitiesRequestParams
+  ): object {
+    return {
+      service: "WMS",
+      request: "GetCapabilities",
+      version: this.version,
+      updateSequence: params.updateSequence,
+    };
   }
 
-  parse(xml: string): UnifiedCapabilitiesResponse {
-    const doc = this.xmlParser.parseFromString(xml);
+  extractCapabilitiesResponseData(
+    response: Document
+  ): UnifiedCapabilitiesResponse {
     const select = xpath.useNamespaces({
       wms: "http://www.opengis.net/wms",
       xlink: "http://www.w3.org/1999/xlink",
@@ -323,6 +330,6 @@ export class CapabilitiesResponseParser_1_3_0
           }),
       });
 
-    return mapCapabilitiesResponse(doc, select);
+    return mapCapabilitiesResponse(response, select);
   }
 }

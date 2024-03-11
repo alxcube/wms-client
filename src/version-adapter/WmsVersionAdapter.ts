@@ -1,8 +1,10 @@
-import type { CapabilitiesRequestParamsTransformer } from "./CapabilitiesRequestParamsTransformer";
-import type { CapabilitiesResponseParser } from "./CapabilitiesResponseParser";
+import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
+import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
 
 export interface WmsVersionAdapter {
-  version: string;
-  capabilitiesRequestParamsTransformer: CapabilitiesRequestParamsTransformer;
-  capabilitiesResponseParser: CapabilitiesResponseParser;
+  readonly version: string;
+  transformCapabilitiesRequestParams(params: CapabilitiesRequestParams): object;
+  extractCapabilitiesResponseData(
+    response: Document
+  ): UnifiedCapabilitiesResponse;
 }

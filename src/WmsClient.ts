@@ -1,6 +1,9 @@
-import type { CapabilitiesRequestParams } from "./request/get-capabilities/CapabilitiesRequestParams";
-import type { UnifiedCapabilitiesResponse } from "./request/get-capabilities/UnifiedCapabilitiesResponse";
+import type { CapabilitiesRequestParams } from "./CapabilitiesRequestParams";
+import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
 
+export interface WmsClientOptions {
+  query?: { [key: string]: unknown };
+}
 export interface WmsClient {
   getVersion(): string;
 

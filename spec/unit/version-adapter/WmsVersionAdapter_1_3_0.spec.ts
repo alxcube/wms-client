@@ -1,20 +1,43 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { ExceptionFormat } from "../../../../src/ExceptionFormat";
-import type { UnifiedCapabilitiesResponse } from "../../../../src/request/get-capabilities/UnifiedCapabilitiesResponse";
-import { CapabilitiesResponseParser_1_3_0 } from "../../../../src/version-adapter/1.3.0/CapabilitiesResponseParser_1_3_0";
+import { ExceptionFormat } from "../../../src/ExceptionFormat";
+import type { UnifiedCapabilitiesResponse } from "../../../src/UnifiedCapabilitiesResponse";
+import { WmsVersionAdapter_1_3_0 } from "../../../src/version-adapter/WmsVersionAdapter_1_3_0";
 // @ts-expect-error import raw content
-import xml from "../../../fixtures/capabilities_1_3_0.xml?raw"; // eslint-disable-line import/no-unresolved
+import xml from "../../fixtures/capabilities_1_3_0.xml?raw"; // eslint-disable-line import/no-unresolved
+import { DOMParser } from "@xmldom/xmldom";
 
-describe("CapabilitiesResponseParser_1_3_0 class", () => {
-  let parser: CapabilitiesResponseParser_1_3_0;
+describe("WmsVersionAdapter_1_3_0 class", () => {
+  let parser: DOMParser;
+  let adapter: WmsVersionAdapter_1_3_0;
+
+  let doc: Document;
 
   beforeEach(() => {
-    parser = new CapabilitiesResponseParser_1_3_0();
+    parser = new DOMParser();
+    doc = parser.parseFromString(xml);
+    adapter = new WmsVersionAdapter_1_3_0();
   });
 
-  describe("parse() method", () => {
-    it("should parse WMS GetCapabilities response XML and return UnifiedCapabilitiesResponse", () => {
-      const response = parser.parse(xml);
+  it("should have 'version' property with value of '1.3.0'", () => {
+    expect(adapter.version).toBe("1.3.0");
+  });
+
+  describe("transformCapabilitiesRequestParams() method", () => {
+    it("should return known params", () => {
+      expect(
+        adapter.transformCapabilitiesRequestParams({ updateSequence: 1 })
+      ).toEqual({
+        updateSequence: 1,
+        service: "WMS",
+        request: "GetCapabilities",
+        version: "1.3.0",
+      });
+    });
+  });
+
+  describe("extractCapabilitiesResponseData() method", () => {
+    it("should extract WMS GetCapabilities response XML and return UnifiedCapabilitiesResponse", () => {
+      const response = adapter.extractCapabilitiesResponseData(doc);
       const expected: UnifiedCapabilitiesResponse = {
         version: "1.3.0",
         service: {

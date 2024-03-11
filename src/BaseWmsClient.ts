@@ -1,11 +1,13 @@
-import { type AxiosInstance } from "axios";
-import type { CapabilitiesRequestParams } from "./request/get-capabilities/CapabilitiesRequestParams";
-import type { UnifiedCapabilitiesResponse } from "./request/get-capabilities/UnifiedCapabilitiesResponse";
+import { type AxiosInstance, isAxiosError } from "axios";
+import type { CapabilitiesRequestParams } from "./CapabilitiesRequestParams";
+import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
+import { inheritLayersData } from "./utils/inheritLayersData";
 import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
 import type { WmsClient } from "./WmsClient";
 export class BaseWmsClient implements WmsClient {
   constructor(
     private readonly httpClient: AxiosInstance,
+    private readonly xmlParser: DOMParser,
     private readonly versionAdapter: WmsVersionAdapter,
     private readonly wmsUrl: string
   ) {}
@@ -18,15 +20,27 @@ export class BaseWmsClient implements WmsClient {
     params: CapabilitiesRequestParams = {}
   ): Promise<UnifiedCapabilitiesResponse> {
     const requestParams =
-      this.versionAdapter.capabilitiesRequestParamsTransformer.transform(
-        params
-      );
+      this.versionAdapter.transformCapabilitiesRequestParams(params);
 
-    const { data } = await this.httpClient.get(this.wmsUrl, {
-      params: requestParams,
-      responseType: "text",
-    });
+    try {
+      const { data } = await this.httpClient.get(this.wmsUrl, {
+        params: requestParams,
+        responseType: "text",
+      });
 
-    return this.versionAdapter.capabilitiesResponseParser.parse(data);
+      const doc = this.xmlParser.parseFromString(data, "text/xml");
+
+      const capabilities =
+        this.versionAdapter.extractCapabilitiesResponseData(doc);
+
+      inheritLayersData(capabilities.capability.layers);
+
+      return capabilities;
+    } catch (e) {
+      if (isAxiosError(e)) {
+        // todo
+      }
+      throw e;
+    }
   }
 }
