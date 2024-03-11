@@ -1,5 +1,1 @@
-export enum ExceptionFormat {
-  "XML" = "XML",
-  "InImage" = "INIMAGE",
-  "Blank" = "BLANK",
-}
+export type ExceptionFormat = "XML" | "INIMAGE" | "BLANK";
