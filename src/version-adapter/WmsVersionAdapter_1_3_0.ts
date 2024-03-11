@@ -144,6 +144,21 @@ export class WmsVersionAdapter_1_3_0 implements WmsVersionAdapter {
                       .mandatory()
                       .asString(),
                   }),
+                getFeatureInfo: map()
+                  .toNode("wms:GetFeatureInfo")
+                  .asObject({
+                    responseFormats: map()
+                      .toNodesArray("wms:Format")
+                      .mandatory()
+                      .asArray()
+                      .ofStrings(),
+                    httpGetUrl: map()
+                      .toNode(
+                        "wms:DCPType/wms:HTTP/wms:Get/wms:OnlineResource/@xlink:href"
+                      )
+                      .mandatory()
+                      .asString(),
+                  }),
               }),
             exceptionFormats: map()
               .toNodesArray("wms:Exception/wms:Format")

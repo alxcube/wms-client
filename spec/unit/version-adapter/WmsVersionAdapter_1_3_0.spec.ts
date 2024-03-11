@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { ExceptionFormat } from "../../../src/ExceptionFormat";
 import type { UnifiedCapabilitiesResponse } from "../../../src/UnifiedCapabilitiesResponse";
 import { WmsVersionAdapter_1_3_0 } from "../../../src/version-adapter/WmsVersionAdapter_1_3_0";
 // @ts-expect-error import raw content
@@ -83,12 +82,12 @@ describe("WmsVersionAdapter_1_3_0 class", () => {
               responseFormats: ["image/gif", "image/png", "image/jpeg"],
               httpGetUrl: "http://hostname/path?",
             },
+            getFeatureInfo: {
+              responseFormats: ["text/xml", "text/plain", "text/html"],
+              httpGetUrl: "http://hostname/path?",
+            },
           },
-          exceptionFormats: [
-            ExceptionFormat.XML,
-            ExceptionFormat.InImage,
-            ExceptionFormat.Blank,
-          ],
+          exceptionFormats: ["XML", "INIMAGE", "BLANK"],
           layers: [
             {
               title: "Acme Corp. Map Server",
