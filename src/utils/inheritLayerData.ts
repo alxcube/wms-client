@@ -3,9 +3,9 @@ import type { Layer } from "../wms-data-types/Layer";
 export function inheritLayerData(layer: Layer, parentLayer: Layer): Layer {
   if (parentLayer.styles) {
     if (layer.styles) {
-      layer.styles = [...parentLayer.styles, ...layer.styles];
+      layer.styles = [...structuredClone(parentLayer.styles), ...layer.styles];
     } else {
-      layer.styles = [...parentLayer.styles];
+      layer.styles = structuredClone(parentLayer.styles);
     }
   }
 
@@ -23,25 +23,25 @@ export function inheritLayerData(layer: Layer, parentLayer: Layer): Layer {
   }
 
   if (parentLayer.boundingBoxes && !layer.boundingBoxes) {
-    layer.boundingBoxes = [...parentLayer.boundingBoxes];
+    layer.boundingBoxes = structuredClone(parentLayer.boundingBoxes);
   }
 
   if (parentLayer.dimensions && !layer.dimensions) {
-    layer.dimensions = [...parentLayer.dimensions];
+    layer.dimensions = structuredClone(parentLayer.dimensions);
   }
 
   if (parentLayer.attribution && !layer.attribution) {
-    layer.attribution = { ...parentLayer.attribution };
+    layer.attribution = structuredClone(parentLayer.attribution);
   }
 
   if (parentLayer.authorityUrls) {
     if (layer.authorityUrls) {
       layer.authorityUrls = [
-        ...parentLayer.authorityUrls,
+        ...structuredClone(parentLayer.authorityUrls),
         ...layer.authorityUrls,
       ];
     } else {
-      layer.authorityUrls = [...parentLayer.authorityUrls];
+      layer.authorityUrls = structuredClone(parentLayer.authorityUrls);
     }
   }
 
