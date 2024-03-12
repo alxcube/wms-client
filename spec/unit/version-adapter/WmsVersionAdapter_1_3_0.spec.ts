@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { UnifiedCapabilitiesResponse } from "../../../src/UnifiedCapabilitiesResponse";
 import { WmsVersionAdapter_1_3_0 } from "../../../src/version-adapter/WmsVersionAdapter_1_3_0";
-// @ts-expect-error import raw content
 import xml from "../../fixtures/capabilities_1_3_0.xml?raw"; // eslint-disable-line import/no-unresolved
+import errorXml from "../../fixtures/exceptions_1_3_0.xml?raw"; // eslint-disable-line import/no-unresolved
 import { DOMParser } from "@xmldom/xmldom";
 
 describe("WmsVersionAdapter_1_3_0 class", () => {
@@ -10,10 +10,12 @@ describe("WmsVersionAdapter_1_3_0 class", () => {
   let adapter: WmsVersionAdapter_1_3_0;
 
   let doc: Document;
+  let errorDoc: Document;
 
   beforeEach(() => {
     parser = new DOMParser();
     doc = parser.parseFromString(xml);
+    errorDoc = parser.parseFromString(errorXml);
     adapter = new WmsVersionAdapter_1_3_0();
   });
 
@@ -320,6 +322,36 @@ describe("WmsVersionAdapter_1_3_0 class", () => {
         },
       };
       expect(response).toEqual(expected);
+    });
+  });
+
+  describe("extractErrors() method", () => {
+    it("should extract WmsError objects array from error xml response", () => {
+      const errors = adapter.extractErrors(errorDoc);
+      expect(errors.length).toBe(4);
+      expect(errors[0].message).toMatch("Plain text message about an error.");
+      expect(errors[1].message).toMatch(
+        "Another error message, this one with a service exception code supplied."
+      );
+      expect(errors[1].code).toBe("InvalidUpdateSequence");
+      expect(errors[2].message).toMatch(
+        "Error in module <foo.c>, line 42\n" +
+          "\n" +
+          "A message that includes angle brackets in text\n" +
+          "must be enclosed in a Character Data Section\n" +
+          "as in this example.  All XML-like markup is\n" +
+          "ignored except for this sequence of three\n" +
+          "closing characters:"
+      );
+      expect(errors[3].message).toMatch(
+        "<Module>foo.c</Module>\n" +
+          "<Error>An error occurred</Error>\n" +
+          "<Explanation>Similarly, actual XML\n" +
+          "can be enclosed in a CDATA section.\n" +
+          "A generic parser will ignore that XML,\n" +
+          "but application-specific software may choose\n" +
+          "to process it.</Explanation>"
+      );
     });
   });
 });

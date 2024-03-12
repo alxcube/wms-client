@@ -1,5 +1,6 @@
 import { createObjectMapper, map } from "@alxcube/xml-mapper";
 import xpath from "xpath";
+import { WmsException } from "../error/WmsException";
 import type { ExceptionFormat } from "../ExceptionFormat";
 import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
 import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
@@ -346,5 +347,26 @@ export class WmsVersionAdapter_1_3_0 implements WmsVersionAdapter {
       });
 
     return mapCapabilitiesResponse(response, select);
+  }
+
+  extractErrors(doc: Document): WmsException[] {
+    const mapErrors = map()
+      .toNodesArray("//ogc:ServiceException")
+      .mandatory()
+      .asArray()
+      .ofObjects({
+        message: map().toNode(".").mandatory().asString(),
+        code: map().toNode("@code").asString().withDefault(""),
+        locator: map().toNode("@locator").asString(),
+      })
+      .createNodeDataExtractor();
+
+    const select = xpath.useNamespaces({ ogc: "http://www.opengis.net/ogc" });
+
+    const errors = mapErrors(doc, select);
+
+    return errors.map((err) => {
+      return new WmsException(err.message, err.code, err.locator);
+    });
   }
 }
