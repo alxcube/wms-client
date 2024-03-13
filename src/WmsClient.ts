@@ -1,3 +1,4 @@
+import type { AxiosInstance } from "axios";
 import type { CapabilitiesRequestParams } from "./CapabilitiesRequestParams";
 import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
 
@@ -12,4 +13,6 @@ export interface WmsClient {
   ): Promise<UnifiedCapabilitiesResponse>;
 
   getCustomQueryParams(): { [key: string]: unknown };
+
+  getHttpClient(): AxiosInstance;
 }

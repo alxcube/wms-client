@@ -1,11 +1,13 @@
-import axios from "axios";
+import axios, { type AxiosInstance } from "axios";
 import { BaseWmsClient } from "./BaseWmsClient";
 import { versionAdapterFactoriesPool } from "./version-adapter/versionAdapterFactoriesPool";
 
 import { DOMParser } from "@xmldom/xmldom";
 import type { WmsClientOptions } from "./WmsClient";
 
-export interface CreateClientOptions extends WmsClientOptions {}
+export interface CreateClientOptions extends WmsClientOptions {
+  httpClient?: AxiosInstance;
+}
 export function createClient(
   wmsUrl: string,
   wmsVersion: string,
@@ -17,7 +19,7 @@ export function createClient(
   }
   const versionAdapter = versionAdapterFactory();
 
-  const httpClient = axios.create();
+  const { httpClient = axios.create() } = options;
 
   const xmlParser = new DOMParser();
 

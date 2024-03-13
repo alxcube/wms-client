@@ -52,6 +52,10 @@ export class BaseWmsClient implements WmsClient {
     return { ...query };
   }
 
+  getHttpClient(): AxiosInstance {
+    return this.httpClient;
+  }
+
   private parseXml(xml: string): Document {
     return this.xmlParser.parseFromString(xml, "text/xml");
   }
@@ -71,7 +75,7 @@ export class BaseWmsClient implements WmsClient {
   private handleErrorResponse(error: Error | unknown): never {
     if (isAxiosError(error)) {
       if (error.response) {
-        const responseStr = String(error.response);
+        const responseStr = String(error.response.data);
         if (responseStr.length) {
           // Try to get error xml
           let errorDoc: Document;
