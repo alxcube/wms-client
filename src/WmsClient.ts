@@ -10,4 +10,6 @@ export interface WmsClient {
   getCapabilities(
     params?: CapabilitiesRequestParams
   ): Promise<UnifiedCapabilitiesResponse>;
+
+  getCustomQueryParams(): { [key: string]: unknown };
 }

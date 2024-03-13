@@ -35,4 +35,12 @@ describe("BaseWmsClient class", () => {
       expect(response.service).toBeDefined();
     });
   });
+
+  describe("getCustomQueryParams() method", () => {
+    it("should return params, passed via 'query' option", () => {
+      const query = { customString: "", customNumber: 1 };
+      const client = createClient("", "1.3.0", { query });
+      expect(client.getCustomQueryParams()).toEqual(query);
+    });
+  });
 });
