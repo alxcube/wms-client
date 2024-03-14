@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import { BaseWmsClient } from "./BaseWmsClient";
+import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryParamsSerializer";
 import { versionAdapterFactoriesPool } from "./version-adapter/versionAdapterFactoriesPool";
 
 import { DOMParser } from "@xmldom/xmldom";
@@ -18,13 +19,13 @@ export function createClient(
     throw new RangeError(`No adapter for version "${wmsVersion} was found"`);
   }
   const versionAdapter = versionAdapterFactory();
-
   const { httpClient = axios.create() } = options;
-
   const xmlParser = new DOMParser();
+  const queryParamsSerializer = new BaseQueryParamsSerializer();
 
   return new BaseWmsClient(
     httpClient,
+    queryParamsSerializer,
     xmlParser,
     versionAdapter,
     wmsUrl,

@@ -3,6 +3,7 @@ import xpath from "xpath";
 import { WmsException } from "../error/WmsException";
 import type { ExceptionFormat } from "../ExceptionFormat";
 import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
+import type { MapRequestParams } from "../MapRequestParams";
 import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
 import type { WmsVersionAdapter } from "./WmsVersionAdapter";
 
@@ -347,6 +348,41 @@ export class WmsVersionAdapter_1_3_0 implements WmsVersionAdapter {
       });
 
     return mapCapabilitiesResponse(response, select);
+  }
+
+  transformMapRequestParams(params: MapRequestParams): object {
+    const requestParams: { [key: string]: unknown } = {};
+
+    Object.keys(params).forEach((key: keyof MapRequestParams) => {
+      switch (key) {
+        case "layers":
+          requestParams.layers = params[key]
+            .map(({ layer }) => layer)
+            .join(",");
+          requestParams.styles = params[key]
+            .map(({ style }) => style || "")
+            .join(",");
+          break;
+        case "bounds":
+          requestParams.bbox =
+            params.crs.toLowerCase() === "epsg:4326"
+              ? `${params[key].minY},${params[key].minX},${params[key].maxY},${params[key].maxX}`
+              : `${params[key].minX},${params[key].minY},${params[key].maxX},${params[key].maxY}`;
+          break;
+        case "transparent":
+          requestParams.transparent = params[key] ? "TRUE" : "FALSE";
+          break;
+        default:
+          requestParams[key] = params[key];
+          break;
+      }
+    });
+
+    requestParams.version = this.version;
+    requestParams.service = "WMS";
+    requestParams.request = "GetMap";
+
+    return requestParams;
   }
 
   extractErrors(doc: Document): WmsException[] {

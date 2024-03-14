@@ -1,7 +1,9 @@
-import { type AxiosInstance, isAxiosError } from "axios";
+import { type AxiosInstance, type AxiosResponse, isAxiosError } from "axios";
 import xpath from "xpath";
 import type { CapabilitiesRequestParams } from "./CapabilitiesRequestParams";
 import { WmsExceptionReport } from "./error/WmsExceptionReport";
+import type { MapRequestParams } from "./MapRequestParams";
+import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
 import { inheritLayersData } from "./utils/inheritLayersData";
 import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
@@ -9,6 +11,7 @@ import type { WmsClient, WmsClientOptions } from "./WmsClient";
 export class BaseWmsClient implements WmsClient {
   constructor(
     private readonly httpClient: AxiosInstance,
+    private readonly queryParamsSerializer: QueryParamsSerializer,
     private readonly xmlParser: DOMParser,
     private readonly versionAdapter: WmsVersionAdapter,
     private readonly wmsUrl: string,
@@ -47,6 +50,34 @@ export class BaseWmsClient implements WmsClient {
     }
   }
 
+  async getMap(params: MapRequestParams): Promise<ArrayBuffer> {
+    const url = this.getMapUrl(params);
+    try {
+      const response = await this.httpClient.get<ArrayBuffer>(url, {
+        responseType: "arraybuffer",
+      });
+      return response.data;
+    } catch (e) {
+      this.handleErrorResponse(e);
+    }
+  }
+
+  getMapUrl(params: MapRequestParams): string {
+    const requestParams = {
+      ...this.getCustomQueryParams(),
+      ...this.versionAdapter.transformMapRequestParams(params),
+    };
+    const query = this.queryParamsSerializer.serialize(requestParams);
+
+    if (this.wmsUrl.indexOf("?") !== -1) {
+      return this.wmsUrl.endsWith("?")
+        ? `${this.wmsUrl}${query}`
+        : `${this.wmsUrl}&${query}`;
+    }
+
+    return `${this.wmsUrl}?${query}`;
+  }
+
   getCustomQueryParams(): { [p: string]: unknown } {
     const { query = {} } = this.options;
     return { ...query };
@@ -75,7 +106,7 @@ export class BaseWmsClient implements WmsClient {
   private handleErrorResponse(error: Error | unknown): never {
     if (isAxiosError(error)) {
       if (error.response) {
-        const responseStr = String(error.response.data);
+        const responseStr = this.getResponseString(error.response);
         if (responseStr.length) {
           // Try to get error xml
           let errorDoc: Document;
@@ -90,5 +121,16 @@ export class BaseWmsClient implements WmsClient {
     }
 
     throw error;
+  }
+
+  private getResponseString(response: AxiosResponse): string {
+    if (typeof response.data === "string") {
+      return response.data;
+    }
+    if (response.data instanceof ArrayBuffer) {
+      const decoder = new TextDecoder();
+      return decoder.decode(response.data);
+    }
+    throw new TypeError(`Unexpected response type`);
   }
 }
