@@ -259,4 +259,49 @@ describe("BaseServiceContainer class", () => {
       expect(container.resolve("DummyService")).not.toBe(instance1);
     });
   });
+
+  describe("unregister() method", () => {
+    beforeEach(() => {
+      container.registerService("DummyService", new DummyService());
+      container.registerFactory("DummyService", () => new DummyService(), {
+        name: "dynamic",
+      });
+      container.registerFactory("DummyDependent", (resolver) => {
+        return new DummyDependent(
+          resolver.resolve("DummyService"),
+          resolver.resolve("DummyService", "dynamic")
+        );
+      });
+    });
+
+    it("should unregister all services, when name is not passed", () => {
+      expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+      expect(container.resolve("DummyService", "dynamic")).toBeInstanceOf(
+        DummyService
+      );
+      container.unregister("DummyService");
+      expect(() => container.resolve("DummyService")).toThrow(RangeError);
+      expect(() => container.resolve("DummyService", "dynamic")).toThrow(
+        RangeError
+      );
+    });
+
+    it("should unregister only named service, when name is given", () => {
+      expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+      expect(container.resolve("DummyService", "dynamic")).toBeInstanceOf(
+        DummyService
+      );
+
+      container.unregister("DummyService", "default");
+      expect(() => container.resolve("DummyService")).toThrow(RangeError);
+      expect(container.resolve("DummyService", "dynamic")).toBeInstanceOf(
+        DummyService
+      );
+
+      container.unregister("DummyService", "dynamic");
+      expect(() => container.resolve("DummyService", "dynamic")).toThrow(
+        RangeError
+      );
+    });
+  });
 });

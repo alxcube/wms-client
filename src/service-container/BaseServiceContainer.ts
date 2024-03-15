@@ -46,6 +46,23 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     this.registerServiceOrFactory(key, factory, true, options);
   }
 
+  unregister(key: keyof TServicesMap, name?: string) {
+    if (name === undefined) {
+      this.registry.delete(key);
+      return;
+    }
+    const registrations = this.registry.get(key);
+    if (registrations) {
+      const registration = registrations.find((r) => r.name === name);
+      if (registration) {
+        registrations.splice(registrations.indexOf(registration), 1);
+      }
+      if (!registrations.length) {
+        this.registry.delete(key);
+      }
+    }
+  }
+
   private registerServiceOrFactory<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     serviceOrFactory:

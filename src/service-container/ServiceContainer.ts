@@ -37,4 +37,6 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     factory: ServiceFactory<TServicesMap, TServicesMap[ServiceKey]>,
     options?: ServiceFactoryRegistrationOptions
   ): void;
+
+  unregister(key: keyof TServicesMap, name?: string): void;
 }
