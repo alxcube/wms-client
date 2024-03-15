@@ -8,7 +8,7 @@ import type {
 export interface ServiceRegistration<SMap extends ServicesMap, ServiceType> {
   instance?: ServiceType;
   factory?: ServiceFactory<SMap, ServiceType>;
-  name?: string;
+  name: string;
   lifecycle: ServiceLifecycle;
 }
 
@@ -17,7 +17,7 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
 {
   private readonly resolved: Map<
     keyof TServicesMap,
-    { name?: string; service: unknown }[]
+    { name: string; service: unknown }[]
   >;
 
   constructor(
@@ -31,7 +31,7 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
 
   resolve<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
-    name?: string
+    name = "default"
   ): TServicesMap[ServiceKey] {
     const alreadyResolved = this.getFromResolved(key, name);
     if (alreadyResolved) {
@@ -72,16 +72,13 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
 
   private getFromResolved<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
-    name?: string
+    name: string
   ): TServicesMap[ServiceKey] | undefined {
     const resolved = this.resolved.get(key) as
-      | { name?: string; service: TServicesMap[ServiceKey] }[]
+      | { name: string; service: TServicesMap[ServiceKey] }[]
       | undefined;
     if (!resolved) {
       return;
-    }
-    if (!name) {
-      return resolved[0].service;
     }
     const named = resolved.find((record) => record.name === name);
     return (named && named.service) || undefined;
@@ -90,7 +87,7 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
   private saveInResolved<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     service: TServicesMap[ServiceKey],
-    name: string | undefined
+    name: string
   ): void {
     const existingResolved = this.resolved.get(key);
     if (!existingResolved) {
@@ -110,7 +107,7 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
 
   private getServiceRegistration<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
-    name: string | undefined
+    name: string
   ): ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]> {
     const registrations = this.registrations.get(key) as
       | ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]>[]

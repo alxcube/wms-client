@@ -36,21 +36,22 @@ describe("BaseServiceResolver class", () => {
     registry = new Map();
     registry.set("TextDecoder", [
       {
+        name: "default",
         instance: textDecoderInstance,
         lifecycle: "singleton",
       },
     ]);
     registry.set("TransientTextDecoder", [
-      { factory: textDecoderFactory, lifecycle: "transient" },
+      { name: "default", factory: textDecoderFactory, lifecycle: "transient" },
     ]);
     registry.set("SingletonTextDecoder", [
-      { factory: textDecoderFactory, lifecycle: "singleton" },
+      { name: "default", factory: textDecoderFactory, lifecycle: "singleton" },
     ]);
     registry.set("RequestTextDecoder", [
-      { factory: textDecoderFactory, lifecycle: "request" },
+      { name: "default", factory: textDecoderFactory, lifecycle: "request" },
     ]);
     registry.set("NamedTextDecoder", [
-      { factory: textDecoderFactory, lifecycle: "transient" },
+      { name: "default", factory: textDecoderFactory, lifecycle: "transient" },
       {
         factory: textDecoderFactory,
         lifecycle: "singleton",
@@ -67,6 +68,7 @@ describe("BaseServiceResolver class", () => {
     ]);
     registry.set("DummyTextDecoderContainer", [
       {
+        name: "default",
         factory: (res) =>
           new DummyTextDecoderContainer(res.resolve("TextDecoder")),
         lifecycle: "transient",

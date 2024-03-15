@@ -13,20 +13,20 @@ import type {
 export class BaseServiceContainer<TServicesMap extends ServicesMap>
   implements ServiceContainer<TServicesMap>
 {
-  private readonly registrations: Map<
+  private readonly registry: Map<
     keyof TServicesMap,
     ServiceRegistration<TServicesMap, unknown>[]
   >;
 
   constructor() {
-    this.registrations = new Map();
+    this.registry = new Map();
   }
 
   resolve<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name?: string
   ): TServicesMap[ServiceKey] {
-    const scope = new BaseServiceResolver(this.registrations);
+    const scope = new BaseServiceResolver(this.registry);
     return scope.resolve(key, name);
   }
 
@@ -54,18 +54,20 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     isFactory: boolean,
     options: ServiceFactoryRegistrationOptions = {}
   ) {
-    const existingRegistrations = this.registrations.get(key) as
+    const existingRegistrations = this.registry.get(key) as
       | ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]>[]
       | undefined;
     if (!existingRegistrations) {
-      this.registrations.set(key, [
+      this.registry.set(key, [
         this.createRegistration(serviceOrFactory, isFactory, options),
       ]);
       return;
     }
 
+    const { name = "default" } = options;
+
     const existingRegistration = existingRegistrations.find(
-      (r) => r.name === options.name
+      (r) => r.name === name
     );
 
     if (!existingRegistration) {
@@ -76,9 +78,8 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     }
 
     if (!options.replace) {
-      const named = options.name ? `, named "${options.name}",` : "";
       throw new TypeError(
-        `Service "${String(key)}"${named} already registered. Set 'replace' option to true, if you want to replace registration.`
+        `Service "${String(key)}", named "${name}", already registered. Set 'replace' option to true, if you want to replace registration.`
       );
     }
 
@@ -96,7 +97,7 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     options: ServiceFactoryRegistrationOptions
   ): ServiceRegistration<TServicesMap, ServiceType> {
     return {
-      name: options.name,
+      name: options.name || "default",
       lifecycle: options.lifecycle || "transient",
       instance: !isFactory ? (serviceOrFactory as ServiceType) : undefined,
       factory: isFactory
