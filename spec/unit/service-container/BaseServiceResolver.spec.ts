@@ -6,24 +6,25 @@ import {
 import type { ServicesMap } from "../../../src/service-container/ServiceContainer";
 
 describe("BaseServiceResolver class", () => {
-  class DummyTextDecoderContainer {
-    constructor(private readonly textDecoder: TextDecoder) {}
+  class DummyService {}
+  class DummyServiceContainer {
+    constructor(private readonly DummyService: DummyService) {}
 
-    getDecoder(): TextDecoder {
-      return this.textDecoder;
+    getDecoder(): DummyService {
+      return this.DummyService;
     }
   }
   interface TestServicesMap extends ServicesMap {
-    TextDecoder: TextDecoder;
-    TransientTextDecoder: TextDecoder;
-    SingletonTextDecoder: TextDecoder;
-    RequestTextDecoder: TextDecoder;
-    NamedTextDecoder: TextDecoder;
-    AlwaysNamedTextDecoder: TextDecoder;
-    DummyTextDecoderContainer: DummyTextDecoderContainer;
+    DummyService: DummyService;
+    TransientDummyService: DummyService;
+    SingletonDummyService: DummyService;
+    RequestDummyService: DummyService;
+    NamedDummyService: DummyService;
+    AlwaysNamedDummyService: DummyService;
+    DummyServiceContainer: DummyServiceContainer;
   }
 
-  let textDecoderInstance: TextDecoder;
+  let DummyServiceInstance: DummyService;
   let registry: Map<
     keyof TestServicesMap,
     ServiceRegistration<TestServicesMap, unknown>[]
@@ -31,46 +32,46 @@ describe("BaseServiceResolver class", () => {
   let resolver: BaseServiceResolver<TestServicesMap>;
 
   beforeEach(() => {
-    textDecoderInstance = new TextDecoder();
-    const textDecoderFactory = () => new TextDecoder();
+    DummyServiceInstance = new DummyService();
+    const DummyServiceFactory = () => new DummyService();
     registry = new Map();
-    registry.set("TextDecoder", [
+    registry.set("DummyService", [
       {
         name: "default",
-        instance: textDecoderInstance,
+        instance: DummyServiceInstance,
         lifecycle: "singleton",
       },
     ]);
-    registry.set("TransientTextDecoder", [
-      { name: "default", factory: textDecoderFactory, lifecycle: "transient" },
+    registry.set("TransientDummyService", [
+      { name: "default", factory: DummyServiceFactory, lifecycle: "transient" },
     ]);
-    registry.set("SingletonTextDecoder", [
-      { name: "default", factory: textDecoderFactory, lifecycle: "singleton" },
+    registry.set("SingletonDummyService", [
+      { name: "default", factory: DummyServiceFactory, lifecycle: "singleton" },
     ]);
-    registry.set("RequestTextDecoder", [
-      { name: "default", factory: textDecoderFactory, lifecycle: "request" },
+    registry.set("RequestDummyService", [
+      { name: "default", factory: DummyServiceFactory, lifecycle: "request" },
     ]);
-    registry.set("NamedTextDecoder", [
-      { name: "default", factory: textDecoderFactory, lifecycle: "transient" },
+    registry.set("NamedDummyService", [
+      { name: "default", factory: DummyServiceFactory, lifecycle: "transient" },
       {
-        factory: textDecoderFactory,
+        factory: DummyServiceFactory,
         lifecycle: "singleton",
         name: "Singleton",
       },
       {
-        factory: textDecoderFactory,
+        factory: DummyServiceFactory,
         lifecycle: "request",
         name: "Request",
       },
     ]);
-    registry.set("AlwaysNamedTextDecoder", [
-      { name: "name", factory: textDecoderFactory, lifecycle: "singleton" },
+    registry.set("AlwaysNamedDummyService", [
+      { name: "name", factory: DummyServiceFactory, lifecycle: "singleton" },
     ]);
-    registry.set("DummyTextDecoderContainer", [
+    registry.set("DummyServiceContainer", [
       {
         name: "default",
         factory: (res) =>
-          new DummyTextDecoderContainer(res.resolve("TextDecoder")),
+          new DummyServiceContainer(res.resolve("DummyService")),
         lifecycle: "transient",
       },
     ]);
@@ -80,61 +81,61 @@ describe("BaseServiceResolver class", () => {
 
   describe("resolve() method", () => {
     it("should return registered service instance", () => {
-      expect(resolver.resolve("TextDecoder")).toBe(textDecoderInstance);
+      expect(resolver.resolve("DummyService")).toBe(DummyServiceInstance);
     });
 
     it("should return registered service, created dynamically", () => {
-      expect(resolver.resolve("TransientTextDecoder")).toBeInstanceOf(
-        TextDecoder
+      expect(resolver.resolve("TransientDummyService")).toBeInstanceOf(
+        DummyService
       );
     });
 
     it("should always create new instance when service lifecycle is 'transient'", () => {
-      const decoder1 = resolver.resolve("TransientTextDecoder");
-      const decoder2 = resolver.resolve("TransientTextDecoder");
-      expect(decoder1).toBeInstanceOf(TextDecoder);
-      expect(decoder2).toBeInstanceOf(TextDecoder);
+      const decoder1 = resolver.resolve("TransientDummyService");
+      const decoder2 = resolver.resolve("TransientDummyService");
+      expect(decoder1).toBeInstanceOf(DummyService);
+      expect(decoder2).toBeInstanceOf(DummyService);
       expect(decoder2).not.toBe(decoder1);
     });
 
     it("should always return same instance when service lifecycle is 'singleton'", () => {
-      const decoder1 = resolver.resolve("SingletonTextDecoder");
-      const decoder2 = resolver.resolve("SingletonTextDecoder");
-      expect(decoder1).toBeInstanceOf(TextDecoder);
+      const decoder1 = resolver.resolve("SingletonDummyService");
+      const decoder2 = resolver.resolve("SingletonDummyService");
+      expect(decoder1).toBeInstanceOf(DummyService);
       expect(decoder1).toBe(decoder2);
     });
 
     it("should always return same instance when service lifecycle is 'request'", () => {
-      const decoder1 = resolver.resolve("RequestTextDecoder");
-      const decoder2 = resolver.resolve("RequestTextDecoder");
-      expect(decoder1).toBeInstanceOf(TextDecoder);
+      const decoder1 = resolver.resolve("RequestDummyService");
+      const decoder2 = resolver.resolve("RequestDummyService");
+      expect(decoder1).toBeInstanceOf(DummyService);
       expect(decoder1).toBe(decoder2);
     });
 
     it("should return different services for named registrations", () => {
-      const transientDecoder = resolver.resolve("NamedTextDecoder"); // without name
+      const transientDecoder = resolver.resolve("NamedDummyService"); // without name
       const singletonDecoder = resolver.resolve(
-        "NamedTextDecoder",
+        "NamedDummyService",
         "Singleton"
       );
-      const requestDecoder = resolver.resolve("NamedTextDecoder", "Request");
+      const requestDecoder = resolver.resolve("NamedDummyService", "Request");
 
-      expect(transientDecoder).toBeInstanceOf(TextDecoder);
-      expect(singletonDecoder).toBeInstanceOf(TextDecoder);
-      expect(requestDecoder).toBeInstanceOf(TextDecoder);
+      expect(transientDecoder).toBeInstanceOf(DummyService);
+      expect(singletonDecoder).toBeInstanceOf(DummyService);
+      expect(requestDecoder).toBeInstanceOf(DummyService);
       expect(transientDecoder).not.toBe(singletonDecoder);
       expect(transientDecoder).not.toBe(requestDecoder);
       expect(requestDecoder).not.toBe(singletonDecoder);
     });
 
     it("should return same instance, when service is requested with same name, and lifecycle is 'singleton'", () => {
-      const decoder = resolver.resolve("NamedTextDecoder", "Singleton");
-      expect(resolver.resolve("NamedTextDecoder", "Singleton")).toBe(decoder);
+      const decoder = resolver.resolve("NamedDummyService", "Singleton");
+      expect(resolver.resolve("NamedDummyService", "Singleton")).toBe(decoder);
     });
 
     it("should return same instance, when service is requested with same name, and lifecycle is 'request'", () => {
-      const decoder = resolver.resolve("NamedTextDecoder", "Request");
-      expect(resolver.resolve("NamedTextDecoder", "Request")).toBe(decoder);
+      const decoder = resolver.resolve("NamedDummyService", "Request");
+      expect(resolver.resolve("NamedDummyService", "Request")).toBe(decoder);
     });
 
     it("should throw RangeError, when requested service is not registered", () => {
@@ -142,21 +143,21 @@ describe("BaseServiceResolver class", () => {
     });
 
     it("should throw RangeError, when requested named service is not registered", () => {
-      expect(() => resolver.resolve("NamedTextDecoder", "UnknownName")).toThrow(
-        RangeError
-      );
+      expect(() =>
+        resolver.resolve("NamedDummyService", "UnknownName")
+      ).toThrow(RangeError);
     });
 
     it("should throw RangeError, when requesting service without name, but registered service is named", () => {
-      expect(() => resolver.resolve("AlwaysNamedTextDecoder")).toThrow(
+      expect(() => resolver.resolve("AlwaysNamedDummyService")).toThrow(
         RangeError
       );
     });
 
     it("should resolve services with dependencies", () => {
-      const container = resolver.resolve("DummyTextDecoderContainer");
-      expect(container).toBeInstanceOf(DummyTextDecoderContainer);
-      expect(container.getDecoder()).toBeInstanceOf(TextDecoder);
+      const container = resolver.resolve("DummyServiceContainer");
+      expect(container).toBeInstanceOf(DummyServiceContainer);
+      expect(container.getDecoder()).toBeInstanceOf(DummyService);
     });
   });
 });
