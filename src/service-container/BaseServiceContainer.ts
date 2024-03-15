@@ -63,6 +63,14 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     }
   }
 
+  has(key: keyof TServicesMap, name?: string): boolean {
+    const registrations = this.registry.get(key);
+    if (name === undefined) {
+      return !!registrations?.length;
+    }
+    return !!registrations && !!registrations.find((r) => r.name === name);
+  }
+
   private registerServiceOrFactory<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     serviceOrFactory:

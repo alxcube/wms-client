@@ -7,6 +7,7 @@ export interface ServiceResolver<TServicesMap extends ServicesMap> {
     key: ServiceKey,
     name?: string
   ): TServicesMap[ServiceKey];
+  has(key: keyof TServicesMap, name?: string): boolean;
 }
 
 export interface ServiceFactory<TServicesMap extends ServicesMap, ServiceType> {

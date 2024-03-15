@@ -24,7 +24,7 @@ describe("BaseServiceResolver class", () => {
     DummyServiceContainer: DummyServiceContainer;
   }
 
-  let DummyServiceInstance: DummyService;
+  let dummyServiceInstance: DummyService;
   let registry: Map<
     keyof TestServicesMap,
     ServiceRegistration<TestServicesMap, unknown>[]
@@ -32,13 +32,13 @@ describe("BaseServiceResolver class", () => {
   let resolver: BaseServiceResolver<TestServicesMap>;
 
   beforeEach(() => {
-    DummyServiceInstance = new DummyService();
+    dummyServiceInstance = new DummyService();
     const DummyServiceFactory = () => new DummyService();
     registry = new Map();
     registry.set("DummyService", [
       {
         name: "default",
-        instance: DummyServiceInstance,
+        instance: dummyServiceInstance,
         lifecycle: "singleton",
       },
     ]);
@@ -81,7 +81,7 @@ describe("BaseServiceResolver class", () => {
 
   describe("resolve() method", () => {
     it("should return registered service instance", () => {
-      expect(resolver.resolve("DummyService")).toBe(DummyServiceInstance);
+      expect(resolver.resolve("DummyService")).toBe(dummyServiceInstance);
     });
 
     it("should return registered service, created dynamically", () => {
@@ -158,6 +158,30 @@ describe("BaseServiceResolver class", () => {
       const container = resolver.resolve("DummyServiceContainer");
       expect(container).toBeInstanceOf(DummyServiceContainer);
       expect(container.getDecoder()).toBeInstanceOf(DummyService);
+    });
+  });
+
+  describe("has() method", () => {
+    it("should return true, when registry has registered service instance", () => {
+      expect(resolver.has("DummyService")).toBe(true);
+    });
+
+    it("should return true, when registry has registered service factory", () => {
+      expect(resolver.has("TransientDummyService")).toBe(true);
+    });
+
+    it("should return true, when registry has registered named service", () => {
+      expect(resolver.has("NamedDummyService", "Singleton")).toBe(true);
+    });
+
+    it("should return false, when registry has not requested service", () => {
+      expect(resolver.has("NotRegistered")).toBe(false);
+    });
+
+    it("should return false, when registry has not service with given name", () => {
+      expect(resolver.has("NamedDummyService", "NotRegisteredName")).toBe(
+        false
+      );
     });
   });
 });

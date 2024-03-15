@@ -304,4 +304,60 @@ describe("BaseServiceContainer class", () => {
       );
     });
   });
+
+  describe("has() method", () => {
+    it("should return true, when container has registered service instance, and false otherwise", () => {
+      expect(container.has("DummyService")).toBe(false);
+      expect(container.has("DummyService", "default")).toBe(false);
+      expect(container.has("DummyService", "named")).toBe(false);
+
+      container.registerService("DummyService", new DummyService(), {
+        name: "named",
+      });
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(container.has("DummyService", "default")).toBe(false);
+      expect(container.has("DummyService", "named")).toBe(true);
+
+      container.registerService("DummyService", new DummyService());
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(container.has("DummyService", "default")).toBe(true);
+      expect(container.has("DummyService", "named")).toBe(true);
+
+      container.unregister("DummyService", "named");
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(container.has("DummyService", "default")).toBe(true);
+      expect(container.has("DummyService", "named")).toBe(false);
+    });
+
+    it("should return true, when container has registered service factory, and false otherwise", () => {
+      const factory = () => new DummyService();
+
+      expect(container.has("DummyService")).toBe(false);
+      expect(container.has("DummyService", "default")).toBe(false);
+      expect(container.has("DummyService", "named")).toBe(false);
+
+      container.registerFactory("DummyService", factory, {
+        name: "named",
+      });
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(container.has("DummyService", "default")).toBe(false);
+      expect(container.has("DummyService", "named")).toBe(true);
+
+      container.registerFactory("DummyService", factory);
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(container.has("DummyService", "default")).toBe(true);
+      expect(container.has("DummyService", "named")).toBe(true);
+
+      container.unregister("DummyService", "named");
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(container.has("DummyService", "default")).toBe(true);
+      expect(container.has("DummyService", "named")).toBe(false);
+    });
+  });
 });

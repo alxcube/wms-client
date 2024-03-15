@@ -21,7 +21,7 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
   >;
 
   constructor(
-    private readonly registrations: Map<
+    private readonly registry: Map<
       keyof TServicesMap,
       ServiceRegistration<TServicesMap, unknown>[]
     >
@@ -70,6 +70,14 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
     return instance;
   }
 
+  has(key: keyof TServicesMap, name?: string): boolean {
+    const registrations = this.registry.get(key);
+    if (name === undefined) {
+      return !!registrations?.length;
+    }
+    return !!registrations && !!registrations.find((r) => r.name === name);
+  }
+
   private getFromResolved<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name: string
@@ -109,7 +117,7 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
     key: ServiceKey,
     name: string
   ): ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]> {
-    const registrations = this.registrations.get(key) as
+    const registrations = this.registry.get(key) as
       | ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]>[]
       | undefined;
     if (!registrations) {
