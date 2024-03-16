@@ -43,4 +43,6 @@ export interface ServiceResolver<TServicesMap extends ServicesMap> {
   ): ResolvedServicesTuple<TServicesMap, ServiceKeys>;
 
   has(key: keyof TServicesMap, name?: string): boolean;
+
+  getServiceNames(key: keyof TServicesMap): string[];
 }

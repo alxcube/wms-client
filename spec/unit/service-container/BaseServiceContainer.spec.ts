@@ -691,4 +691,36 @@ describe("BaseServiceContainer class", () => {
       expect(childContainer.resolve("DummyService")).toBe(childDummyService);
     });
   });
+
+  describe("getServiceNames() method", () => {
+    beforeEach(() => {
+      container.registerFactory("DummyService", () => new DummyService());
+      container.registerFactory("DummyService", () => new DummyService(), {
+        name: "alternative",
+      });
+      childContainer.registerFactory("DummyService", () => new DummyService());
+      childContainer.registerFactory("DummyService", () => new DummyService(), {
+        name: "child",
+      });
+    });
+
+    it("should return names of service registrations by given service key", () => {
+      expect(container.getServiceNames("DummyService")).toEqual([
+        "default",
+        "alternative",
+      ]);
+    });
+
+    it("should return names of service registrations from current and parrent container", () => {
+      expect(childContainer.getServiceNames("DummyService")).toEqual([
+        "default",
+        "alternative",
+        "child",
+      ]);
+    });
+
+    it("should return empty array when there is no registrations of given service", () => {
+      expect(container.getServiceNames("NotRegistered")).toEqual([]);
+    });
+  });
 });

@@ -100,6 +100,14 @@ export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
     );
   }
 
+  getServiceNames(key: keyof TServicesMap): string[] {
+    const registrations = this.registry.get(key);
+    if (!registrations) {
+      return [];
+    }
+    return registrations.map(({ name }) => name);
+  }
+
   private doResolve<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name = "default"

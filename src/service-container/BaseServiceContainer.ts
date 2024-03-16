@@ -137,6 +137,15 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     }
   }
 
+  getServiceNames(key: keyof TServicesMap): string[] {
+    const mergedRegistry = this.getMergedRegistry();
+    const registrations = mergedRegistry.get(key);
+    if (!registrations) {
+      return [];
+    }
+    return registrations.map(({ name }) => name);
+  }
+
   private unregisterOwn(key: keyof TServicesMap, name?: string) {
     if (name === undefined) {
       this.registry.delete(key);

@@ -423,4 +423,19 @@ describe("BaseServiceResolutionContext class", () => {
       expect(service2).toBe(service1);
     });
   });
+
+  describe("getServiceNames() method", () => {
+    it("should return names of service registrations by given service key", () => {
+      expect(resolver.getServiceNames("DummyService")).toEqual(["default"]);
+      expect(resolver.getServiceNames("NamedDummyService")).toEqual([
+        "default",
+        "Singleton",
+        "Request",
+      ]);
+    });
+
+    it("should return empty array when there is no registrations of given service", () => {
+      expect(resolver.getServiceNames("NotRegistered")).toEqual([]);
+    });
+  });
 });
