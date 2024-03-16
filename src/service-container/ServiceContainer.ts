@@ -37,4 +37,8 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
   hasOwn(key: keyof TServicesMap, name?: string): boolean;
 
   getParent(): ServiceContainer<TServicesMap> | undefined;
+
+  backup(cascade?: boolean): void;
+
+  restore(cascade?: boolean): void;
 }

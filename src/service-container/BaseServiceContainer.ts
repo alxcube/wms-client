@@ -17,13 +17,19 @@ import type {
 export class BaseServiceContainer<TServicesMap extends ServicesMap>
   implements ServiceContainer<TServicesMap>
 {
-  private readonly registry: Map<
+  private registry: Map<
     keyof TServicesMap,
     ServiceRegistration<TServicesMap, unknown>[]
   >;
 
+  private readonly snapshots: Map<
+    keyof TServicesMap,
+    ServiceRegistration<TServicesMap, unknown>[]
+  >[];
+
   constructor(private readonly parent?: BaseServiceContainer<TServicesMap>) {
     this.registry = new Map();
+    this.snapshots = [];
   }
 
   resolve<ServiceKey extends keyof TServicesMap>(
@@ -99,6 +105,36 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
 
   getParent(): ServiceContainer<TServicesMap> | undefined {
     return this.parent;
+  }
+
+  backup(cascade = false) {
+    const newRegistry: Map<
+      keyof TServicesMap,
+      ServiceRegistration<TServicesMap, unknown>[]
+    > = new Map();
+    for (const [key, registrations] of this.registry) {
+      newRegistry.set(
+        key,
+        registrations.map((registration) => ({ ...registration }))
+      );
+    }
+    this.snapshots.push(this.registry);
+    this.registry = newRegistry;
+
+    if (this.parent && cascade) {
+      this.parent.backup(true);
+    }
+  }
+
+  restore(cascade = false) {
+    const snapshot = this.snapshots.pop();
+    if (snapshot) {
+      this.registry.clear();
+      this.registry = snapshot;
+    }
+    if (this.parent && cascade) {
+      this.parent.restore(true);
+    }
   }
 
   private unregisterOwn(key: keyof TServicesMap, name?: string) {

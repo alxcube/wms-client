@@ -614,4 +614,81 @@ describe("BaseServiceContainer class", () => {
       expect(container.getParent()).toBeUndefined();
     });
   });
+
+  describe("backup() and restore() methods", () => {
+    let dummyServiceInstance: DummyService;
+    beforeEach(() => {
+      dummyServiceInstance = new DummyService();
+      container.registerService("DummyService", dummyServiceInstance);
+      container.registerFactory("DummyDependent", (context) => {
+        return new DummyDependent(
+          context.resolve("DummyService"),
+          context.resolve("DummyService")
+        );
+      });
+    });
+
+    it("should backup and restore service registrations", () => {
+      const dummyServiceOverride = new DummyService();
+
+      expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
+
+      container.backup();
+      container.registerService("DummyService", dummyServiceOverride, {
+        replace: true,
+      });
+      expect(container.resolve("DummyService")).toBe(dummyServiceOverride);
+
+      container.restore();
+      expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
+    });
+
+    it("should backup and restore only own registrations, unless 'cascade' argument is set to true", () => {
+      const dummyServiceOverride = new DummyService();
+      const childDummyService = new DummyService();
+      childContainer.registerService("DummyService", childDummyService);
+
+      expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
+      expect(childContainer.resolve("DummyService")).toBe(childDummyService);
+
+      childContainer.backup();
+      container.registerService("DummyService", dummyServiceOverride, {
+        replace: true,
+      });
+      childContainer.registerService("DummyService", dummyServiceOverride, {
+        replace: true,
+      });
+
+      expect(container.resolve("DummyService")).toBe(dummyServiceOverride);
+      expect(childContainer.resolve("DummyService")).toBe(dummyServiceOverride);
+
+      childContainer.restore();
+      expect(container.resolve("DummyService")).toBe(dummyServiceOverride);
+      expect(childContainer.resolve("DummyService")).toBe(childDummyService);
+    });
+
+    it("should backup and restore registrations in parent container too, when 'cascade' argument is set to true", () => {
+      const dummyServiceOverride = new DummyService();
+      const childDummyService = new DummyService();
+      childContainer.registerService("DummyService", childDummyService);
+
+      expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
+      expect(childContainer.resolve("DummyService")).toBe(childDummyService);
+
+      childContainer.backup(true);
+      container.registerService("DummyService", dummyServiceOverride, {
+        replace: true,
+      });
+      childContainer.registerService("DummyService", dummyServiceOverride, {
+        replace: true,
+      });
+
+      expect(container.resolve("DummyService")).toBe(dummyServiceOverride);
+      expect(childContainer.resolve("DummyService")).toBe(dummyServiceOverride);
+
+      childContainer.restore(true);
+      expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
+      expect(childContainer.resolve("DummyService")).toBe(childDummyService);
+    });
+  });
 });
