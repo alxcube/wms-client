@@ -1,9 +1,9 @@
+import type { ServiceFactory, ServiceLifecycle } from "./ServiceContainer";
 import type {
-  ServiceFactory,
-  ServiceLifecycle,
-  ServiceResolver,
-  ServicesMap,
-} from "./ServiceContainer";
+  ServiceResolutionContext,
+  ServiceResolutionStackEntry,
+} from "./ServiceResolutionContext";
+import type { ServicesMap } from "./ServiceResolver";
 
 export interface ServiceRegistration<SMap extends ServicesMap, ServiceType> {
   instance?: ServiceType;
@@ -12,13 +12,15 @@ export interface ServiceRegistration<SMap extends ServicesMap, ServiceType> {
   lifecycle: ServiceLifecycle;
 }
 
-export class BaseServiceResolver<TServicesMap extends ServicesMap>
-  implements ServiceResolver<TServicesMap>
+export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
+  implements ServiceResolutionContext<TServicesMap>
 {
   private readonly resolved: Map<
     keyof TServicesMap,
     { name: string; service: unknown }[]
   >;
+
+  private readonly resolutionStack: ServiceResolutionStackEntry<TServicesMap>[];
 
   constructor(
     private readonly registry: Map<
@@ -27,9 +29,54 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
     >
   ) {
     this.resolved = new Map();
+    this.resolutionStack = [];
   }
 
   resolve<ServiceKey extends keyof TServicesMap>(
+    key: ServiceKey,
+    name = "default"
+  ): TServicesMap[ServiceKey] {
+    this.resolutionStack.push({ service: key, name });
+    try {
+      return this.doResolve(key, name);
+    } finally {
+      this.resolutionStack.pop();
+    }
+  }
+
+  has(key: keyof TServicesMap, name?: string): boolean {
+    const registrations = this.registry.get(key);
+    if (name === undefined) {
+      return !!registrations?.length;
+    }
+    return !!registrations && !!registrations.find((r) => r.name === name);
+  }
+
+  getStack(): ServiceResolutionStackEntry<TServicesMap>[] {
+    return [...this.resolutionStack];
+  }
+
+  isResolvingFor(key: keyof TServicesMap, name?: string): boolean {
+    return !!this.resolutionStack.find((entry) => {
+      return (
+        entry.service === key && (name === undefined || entry.name === name)
+      );
+    });
+  }
+
+  isDirectlyResolvingFor(key: keyof TServicesMap, name?: string): boolean {
+    if (this.resolutionStack.length < 2) {
+      // Call made from resolution root.
+      return false;
+    }
+    const resolvingFor = this.resolutionStack[this.resolutionStack.length - 2];
+    return (
+      resolvingFor.service === key &&
+      (name === undefined || resolvingFor.name === name)
+    );
+  }
+
+  private doResolve<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name = "default"
   ): TServicesMap[ServiceKey] {
@@ -68,14 +115,6 @@ export class BaseServiceResolver<TServicesMap extends ServicesMap>
     }
 
     return instance;
-  }
-
-  has(key: keyof TServicesMap, name?: string): boolean {
-    const registrations = this.registry.get(key);
-    if (name === undefined) {
-      return !!registrations?.length;
-    }
-    return !!registrations && !!registrations.find((r) => r.name === name);
   }
 
   private getFromResolved<ServiceKey extends keyof TServicesMap>(

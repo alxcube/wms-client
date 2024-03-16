@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
-  BaseServiceResolver,
+  BaseServiceResolutionContext,
   type ServiceRegistration,
-} from "../../../src/service-container/BaseServiceResolver";
-import type { ServicesMap } from "../../../src/service-container/ServiceContainer";
+} from "../../../src/service-container/BaseServiceResolutionContext";
 
-describe("BaseServiceResolver class", () => {
+import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
+
+describe("BaseServiceResolutionContext class", () => {
   class DummyService {}
   class DummyServiceContainer {
     constructor(private readonly DummyService: DummyService) {}
@@ -29,7 +30,7 @@ describe("BaseServiceResolver class", () => {
     keyof TestServicesMap,
     ServiceRegistration<TestServicesMap, unknown>[]
   >;
-  let resolver: BaseServiceResolver<TestServicesMap>;
+  let resolver: BaseServiceResolutionContext<TestServicesMap>;
 
   beforeEach(() => {
     dummyServiceInstance = new DummyService();
@@ -76,7 +77,7 @@ describe("BaseServiceResolver class", () => {
       },
     ]);
 
-    resolver = new BaseServiceResolver<TestServicesMap>(registry);
+    resolver = new BaseServiceResolutionContext<TestServicesMap>(registry);
   });
 
   describe("resolve() method", () => {
@@ -182,6 +183,166 @@ describe("BaseServiceResolver class", () => {
       expect(resolver.has("NamedDummyService", "NotRegisteredName")).toBe(
         false
       );
+    });
+  });
+
+  describe("getStack() method", () => {
+    it("should return empty array, unless is resolving service", () => {
+      expect(resolver.getStack()).toEqual([]);
+    });
+
+    it("should return array with single record of service being resolved, when resolving root service", () => {
+      registry.set("DummyService", [
+        {
+          name: "default",
+          factory: (context) => {
+            expect(context.getStack()).toEqual([
+              { service: "DummyService", name: "default" },
+            ]);
+            return new DummyService();
+          },
+          lifecycle: "transient",
+        },
+      ]);
+
+      resolver.resolve("DummyService");
+
+      expect.hasAssertions();
+    });
+
+    it("should return array with all services being resolved, when resolving nested service", () => {
+      registry.set("DummyService", [
+        {
+          name: "default",
+          factory: (context) => {
+            expect(context.getStack()).toEqual([
+              { service: "DummyServiceContainer", name: "named" },
+              { service: "DummyService", name: "default" },
+            ]);
+            return new DummyService();
+          },
+          lifecycle: "transient",
+        },
+      ]);
+      registry.set("DummyServiceContainer", [
+        {
+          name: "named",
+          factory: (context) => {
+            expect(context.getStack()).toEqual([
+              { service: "DummyServiceContainer", name: "named" },
+            ]);
+            return new DummyServiceContainer(context.resolve("DummyService"));
+          },
+          lifecycle: "transient",
+        },
+      ]);
+
+      resolver.resolve("DummyServiceContainer", "named");
+
+      expect(resolver.getStack()).toEqual([]);
+    });
+  });
+
+  describe("isResolvingFor() method", () => {
+    it("should return false, when nothing is being resolved", () => {
+      expect(resolver.isResolvingFor("DummyService")).toBe(false);
+      expect(resolver.isResolvingFor("NamedDummyService", "Singleton")).toBe(
+        false
+      );
+    });
+
+    it("should return true, when given service is somewhere in resolution stack", () => {
+      registry.set("SingletonDummyService", [
+        {
+          name: "default",
+          lifecycle: "singleton",
+          factory: (context) => {
+            expect(context.isResolvingFor("DummyService")).toBe(true);
+            expect(context.isResolvingFor("DummyService", "default")).toBe(
+              true
+            );
+            expect(context.isResolvingFor("DummyService", "notDefault")).toBe(
+              false
+            );
+            expect(context.isResolvingFor("DummyServiceContainer")).toBe(true);
+            expect(
+              context.isResolvingFor("DummyServiceContainer", "default")
+            ).toBe(true);
+            expect(
+              context.isResolvingFor("DummyServiceContainer", "notDefault")
+            ).toBe(false);
+            return new DummyService();
+          },
+        },
+      ]);
+      registry.set("DummyService", [
+        {
+          name: "default",
+          lifecycle: "transient",
+          factory: (context) => {
+            context.resolve("SingletonDummyService"); // just call to execute expectations on deeper level of resolution
+            return new DummyService();
+          },
+        },
+      ]);
+
+      resolver.resolve("DummyServiceContainer");
+
+      expect.hasAssertions();
+    });
+  });
+
+  describe("isDirectlyResolvingFor() method", () => {
+    it("should return false, when nothing is being resolved", () => {
+      expect(resolver.isDirectlyResolvingFor("DummyService")).toBe(false);
+      expect(
+        resolver.isDirectlyResolvingFor("NamedDummyService", "Singleton")
+      ).toBe(false);
+    });
+
+    it("should return true, when requested service is previous in resolution stack and false otherwise", () => {
+      registry.set("SingletonDummyService", [
+        {
+          name: "default",
+          lifecycle: "singleton",
+          factory: (context) => {
+            expect(context.isDirectlyResolvingFor("DummyService")).toBe(true);
+            expect(
+              context.isDirectlyResolvingFor("DummyService", "default")
+            ).toBe(true);
+            expect(
+              context.isDirectlyResolvingFor("DummyService", "notDefault")
+            ).toBe(false);
+            expect(
+              context.isDirectlyResolvingFor("DummyServiceContainer")
+            ).toBe(false);
+            expect(
+              context.isDirectlyResolvingFor("DummyServiceContainer", "default")
+            ).toBe(false);
+            expect(
+              context.isDirectlyResolvingFor(
+                "DummyServiceContainer",
+                "notDefault"
+              )
+            ).toBe(false);
+            return new DummyService();
+          },
+        },
+      ]);
+      registry.set("DummyService", [
+        {
+          name: "default",
+          lifecycle: "transient",
+          factory: (context) => {
+            context.resolve("SingletonDummyService"); // just call to execute expectations on deeper level of resolution
+            return new DummyService();
+          },
+        },
+      ]);
+
+      resolver.resolve("DummyServiceContainer");
+
+      expect.hasAssertions();
     });
   });
 });

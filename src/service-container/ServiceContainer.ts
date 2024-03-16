@@ -1,17 +1,8 @@
-export interface ServicesMap {
-  [key: string]: unknown;
-}
-
-export interface ServiceResolver<TServicesMap extends ServicesMap> {
-  resolve<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    name?: string
-  ): TServicesMap[ServiceKey];
-  has(key: keyof TServicesMap, name?: string): boolean;
-}
+import type { ServiceResolutionContext } from "./ServiceResolutionContext";
+import type { ServiceResolver, ServicesMap } from "./ServiceResolver";
 
 export interface ServiceFactory<TServicesMap extends ServicesMap, ServiceType> {
-  (resolver: ServiceResolver<TServicesMap>): ServiceType;
+  (context: ServiceResolutionContext<TServicesMap>): ServiceType;
 }
 
 export type ServiceLifecycle = "transient" | "singleton" | "request";

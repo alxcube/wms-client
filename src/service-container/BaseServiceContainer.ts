@@ -1,14 +1,14 @@
 import {
-  BaseServiceResolver,
+  BaseServiceResolutionContext,
   type ServiceRegistration,
-} from "./BaseServiceResolver";
+} from "./BaseServiceResolutionContext";
 import type {
   ServiceContainer,
   ServiceFactory,
   ServiceFactoryRegistrationOptions,
   ServiceRegistrationOptions,
-  ServicesMap,
 } from "./ServiceContainer";
+import type { ServicesMap } from "./ServiceResolver";
 
 export class BaseServiceContainer<TServicesMap extends ServicesMap>
   implements ServiceContainer<TServicesMap>
@@ -26,7 +26,7 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     key: ServiceKey,
     name?: string
   ): TServicesMap[ServiceKey] {
-    const scope = new BaseServiceResolver(this.registry);
+    const scope = new BaseServiceResolutionContext(this.registry);
     return scope.resolve(key, name);
   }
 

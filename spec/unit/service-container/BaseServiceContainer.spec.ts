@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { BaseServiceContainer } from "../../../src/service-container/BaseServiceContainer";
-import type { ServicesMap } from "../../../src/service-container/ServiceContainer";
+
+import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
 
 describe("BaseServiceContainer class", () => {
   class DummyService {}
