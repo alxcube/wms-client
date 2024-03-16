@@ -30,5 +30,9 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     options?: ServiceFactoryRegistrationOptions
   ): void;
 
-  unregister(key: keyof TServicesMap, name?: string): void;
+  unregister(key: keyof TServicesMap, name?: string, cascade?: boolean): void;
+
+  createChild(): ServiceContainer<TServicesMap>;
+
+  hasOwn(key: keyof TServicesMap, name?: string): boolean;
 }

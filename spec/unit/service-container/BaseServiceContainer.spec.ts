@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { BaseServiceContainer } from "../../../src/service-container/BaseServiceContainer";
+import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
 
 import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
 
@@ -18,9 +19,11 @@ describe("BaseServiceContainer class", () => {
   }
 
   let container: BaseServiceContainer<TestServicesMap>;
+  let childContainer: BaseServiceContainer<TestServicesMap>;
 
   beforeEach(() => {
     container = new BaseServiceContainer();
+    childContainer = container.createChild();
   });
 
   describe("registerService() method", () => {
@@ -261,6 +264,174 @@ describe("BaseServiceContainer class", () => {
     });
   });
 
+  describe("resolve() method", () => {
+    let dummyServiceInstance: DummyService;
+    beforeEach(() => {
+      dummyServiceInstance = new DummyService();
+      container.registerService("DummyService", dummyServiceInstance);
+      container.registerFactory("DummyService", () => new DummyService(), {
+        name: "dynamic",
+      });
+      container.registerFactory("DummyDependent", (context) => {
+        return new DummyDependent(
+          context.resolve("DummyService"),
+          context.resolve("DummyService", "dynamic")
+        );
+      });
+    });
+
+    it("should resolve service instance", () => {
+      expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
+    });
+
+    it("should resolve service, created by factory", () => {
+      expect(container.resolve("DummyService", "dynamic")).toBeInstanceOf(
+        DummyService
+      );
+    });
+
+    it("should resolve service with dependencies", () => {
+      const dependent = container.resolve("DummyDependent");
+      expect(dependent).toBeInstanceOf(DummyDependent);
+      expect(dependent.dummyService1).toBe(dummyServiceInstance);
+      expect(dependent.dummyService2).toBeInstanceOf(DummyService);
+    });
+
+    it("should throw RangeError, when requested service is not registered", () => {
+      expect(() => container.resolve("NotRegistered")).toThrow(RangeError);
+    });
+
+    it("should throw RangeError, when requested named service is not registered", () => {
+      expect(() =>
+        container.resolve("DummyService", "not-registered-name")
+      ).toThrow(RangeError);
+    });
+
+    it("should throw ServiceResolutionError, when error occurs in service factory", () => {
+      container.registerFactory(
+        "DummyService",
+        () => {
+          throw "test error";
+        },
+        { replace: true }
+      );
+
+      expect(() => container.resolve("DummyService")).toThrow(
+        ServiceResolutionError
+      );
+    });
+
+    it("should resolve service from parent container in child container", () => {
+      expect(childContainer.resolve("DummyService")).toBe(dummyServiceInstance);
+    });
+
+    it("should resolve own service, when it is registered, ignoring service in parent container", () => {
+      const childDummyInstance = new DummyService();
+      childContainer.registerService("DummyService", childDummyInstance);
+      expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
+      expect(childContainer.resolve("DummyService")).toBe(childDummyInstance);
+      // this is resolved from parent container
+      expect(childContainer.resolve("DummyService", "dynamic")).toBeInstanceOf(
+        DummyService
+      );
+    });
+
+    it("should resolve own services, when no such services is registered in parent container", () => {
+      container.unregister("DummyDependent");
+      childContainer.registerFactory("DummyDependent", (context) => {
+        return new DummyDependent(
+          context.resolve("DummyService"),
+          context.resolve("DummyService")
+        );
+      });
+      expect(childContainer.resolve("DummyDependent")).toBeInstanceOf(
+        DummyDependent
+      );
+      expect(() => container.resolve("DummyDependent")).toThrow(RangeError);
+    });
+  });
+
+  describe("resolveAll() method", () => {
+    let dummyServiceInstance: DummyService;
+    beforeEach(() => {
+      dummyServiceInstance = new DummyService();
+      container.registerService("DummyService", dummyServiceInstance);
+      container.registerFactory("DummyService", () => new DummyService(), {
+        name: "dynamic",
+      });
+    });
+
+    it("should resolve all registered services under given key", () => {
+      expect(container.resolveAll("DummyService")).toEqual([
+        dummyServiceInstance,
+        expect.any(DummyService),
+      ]);
+    });
+
+    it("should return empty array, when no services registered under given key", () => {
+      expect(container.resolveAll("NotRegistered")).toEqual([]);
+    });
+
+    it("should resolve services from parent container, when child container has no registered services by given key", () => {
+      expect(childContainer.resolveAll("DummyService")).toEqual([
+        dummyServiceInstance,
+        expect.any(DummyService),
+      ]);
+    });
+
+    it("should resolve services from current container instead of parent, when current container has own registrations of such services", () => {
+      const childDummyService = new DummyService();
+      childContainer.registerService("DummyService", childDummyService);
+      expect(container.resolveAll("DummyService")).toEqual([
+        dummyServiceInstance,
+        expect.any(DummyService),
+      ]);
+      expect(childContainer.resolveAll("DummyService")).toEqual([
+        childDummyService,
+        expect.any(DummyService),
+      ]);
+    });
+
+    it("should resolve services from parent container and from current container", () => {
+      const dummyService = new DummyService();
+      childContainer.registerService("DummyService", dummyService, {
+        name: "child",
+      });
+      expect(childContainer.resolveAll("DummyService")).toEqual([
+        dummyServiceInstance,
+        expect.any(DummyService),
+        dummyService,
+      ]);
+    });
+  });
+
+  describe("resolveTuple() method", () => {
+    beforeEach(() => {
+      container.registerFactory("DummyService", () => new DummyService(), {
+        lifecycle: "request",
+      });
+    });
+
+    it("should resolve tuple of services in single request context", () => {
+      const service1 = container.resolve("DummyService");
+      const service2 = container.resolve("DummyService");
+      const [service3, service4] = container.resolveTuple([
+        "DummyService",
+        "DummyService",
+      ] as const);
+      expect(service1).not.toBe(service2);
+      expect(service3).toBe(service4);
+    });
+
+    it("should resolve tuple of services in single request context from parent container", () => {
+      const [service1, service2] = childContainer.resolveTuple([
+        "DummyService",
+        "DummyService",
+      ] as const);
+      expect(service2).toBe(service1);
+    });
+  });
+
   describe("unregister() method", () => {
     beforeEach(() => {
       container.registerService("DummyService", new DummyService());
@@ -303,6 +474,25 @@ describe("BaseServiceContainer class", () => {
       expect(() => container.resolve("DummyService", "dynamic")).toThrow(
         RangeError
       );
+    });
+
+    it("should unregister services in parent container, when 'cascade' argument is set to true", () => {
+      expect(childContainer.resolve("DummyService")).toBeInstanceOf(
+        DummyService
+      );
+      expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+
+      childContainer.unregister("DummyService");
+
+      expect(childContainer.resolve("DummyService")).toBeInstanceOf(
+        DummyService
+      );
+      expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+
+      childContainer.unregister("DummyService", undefined, true);
+
+      expect(() => childContainer.resolve("DummyService")).toThrow(RangeError);
+      expect(() => container.resolve("DummyService")).toThrow(RangeError);
     });
   });
 
@@ -359,6 +549,59 @@ describe("BaseServiceContainer class", () => {
       expect(container.has("DummyService")).toBe(true);
       expect(container.has("DummyService", "default")).toBe(true);
       expect(container.has("DummyService", "named")).toBe(false);
+    });
+
+    it("should return true, if child container has not registered service, but parent container has", () => {
+      expect(childContainer.has("DummyService")).toBe(false);
+      expect(childContainer.has("DummyService", "default")).toBe(false);
+      expect(childContainer.has("DummyService", "named")).toBe(false);
+
+      container.registerService("DummyService", new DummyService(), {
+        name: "named",
+      });
+
+      expect(childContainer.has("DummyService")).toBe(true);
+      expect(childContainer.has("DummyService", "default")).toBe(false);
+      expect(childContainer.has("DummyService", "named")).toBe(true);
+
+      container.registerService("DummyService", new DummyService());
+
+      expect(childContainer.has("DummyService")).toBe(true);
+      expect(childContainer.has("DummyService", "default")).toBe(true);
+      expect(childContainer.has("DummyService", "named")).toBe(true);
+
+      container.unregister("DummyService", "named");
+
+      expect(childContainer.has("DummyService")).toBe(true);
+      expect(childContainer.has("DummyService", "default")).toBe(true);
+      expect(childContainer.has("DummyService", "named")).toBe(false);
+    });
+  });
+
+  describe("hasOwn() method", () => {
+    it("should return true, when container has registered service in it's own storage and false otherwise", () => {
+      container.registerFactory("DummyService", () => new DummyService());
+      childContainer.registerFactory("DummyService", () => new DummyService());
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(childContainer.has("DummyService")).toBe(true);
+      expect(container.hasOwn("DummyService")).toBe(true);
+      expect(childContainer.hasOwn("DummyService")).toBe(true);
+
+      childContainer.unregister("DummyService");
+
+      expect(container.has("DummyService")).toBe(true);
+      expect(childContainer.has("DummyService")).toBe(true);
+      expect(container.hasOwn("DummyService")).toBe(true);
+      expect(childContainer.hasOwn("DummyService")).toBe(false);
+    });
+  });
+
+  describe("createChild() method", () => {
+    it("should return new instance of BaseServiceContainer", () => {
+      const child = container.createChild();
+      expect(child).toBeInstanceOf(BaseServiceContainer);
+      expect(child).not.toBe(container);
     });
   });
 });

@@ -22,7 +22,7 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     ServiceRegistration<TServicesMap, unknown>[]
   >;
 
-  constructor() {
+  constructor(private readonly parent?: BaseServiceContainer<TServicesMap>) {
     this.registry = new Map();
   }
 
@@ -30,22 +30,26 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     key: ServiceKey,
     name?: string
   ): TServicesMap[ServiceKey] {
-    const scope = new BaseServiceResolutionContext(this.registry);
-    return scope.resolve(key, name);
+    return new BaseServiceResolutionContext(this.getMergedRegistry()).resolve(
+      key,
+      name
+    );
   }
 
   resolveAll<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey
   ): TServicesMap[ServiceKey][] {
-    const scope = new BaseServiceResolutionContext(this.registry);
-    return scope.resolveAll(key);
+    return new BaseServiceResolutionContext(
+      this.getMergedRegistry()
+    ).resolveAll(key);
   }
 
   resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
     services: ServiceKeys
   ): ResolvedServicesTuple<TServicesMap, ServiceKeys> {
-    const scope = new BaseServiceResolutionContext(this.registry);
-    return scope.resolveTuple(services);
+    return new BaseServiceResolutionContext(
+      this.getMergedRegistry()
+    ).resolveTuple(services);
   }
 
   registerService<ServiceKey extends keyof TServicesMap>(
@@ -64,7 +68,36 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     this.registerServiceOrFactory(key, factory, true, options);
   }
 
-  unregister(key: keyof TServicesMap, name?: string) {
+  unregister(key: keyof TServicesMap, name?: string, cascade = false) {
+    this.unregisterOwn(key, name);
+    if (cascade && this.parent) {
+      this.parent.unregister(key, name, true);
+    }
+  }
+
+  has(key: keyof TServicesMap, name?: string): boolean {
+    if (this.hasOwn(key, name)) {
+      return true;
+    }
+    if (this.parent) {
+      return this.parent.has(key, name);
+    }
+    return false;
+  }
+
+  hasOwn(key: keyof TServicesMap, name?: string): boolean {
+    const registrations = this.registry.get(key);
+    if (name === undefined) {
+      return !!registrations?.length;
+    }
+    return !!registrations && !!registrations.find((r) => r.name === name);
+  }
+
+  createChild(): BaseServiceContainer<TServicesMap> {
+    return new BaseServiceContainer(this);
+  }
+
+  private unregisterOwn(key: keyof TServicesMap, name?: string) {
     if (name === undefined) {
       this.registry.delete(key);
       return;
@@ -81,12 +114,56 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     }
   }
 
-  has(key: keyof TServicesMap, name?: string): boolean {
-    const registrations = this.registry.get(key);
-    if (name === undefined) {
-      return !!registrations?.length;
+  protected getMergedRegistry(): Map<
+    keyof TServicesMap,
+    ServiceRegistration<TServicesMap, unknown>[]
+  > {
+    if (!this.parent) {
+      return this.registry;
     }
-    return !!registrations && !!registrations.find((r) => r.name === name);
+    const parentRegistry = this.parent.getMergedRegistry();
+    const result: Map<
+      keyof TServicesMap,
+      ServiceRegistration<TServicesMap, unknown>[]
+    > = new Map();
+
+    const serviceKeys = new Set([
+      ...parentRegistry.keys(),
+      ...this.registry.keys(),
+    ]);
+
+    for (const serviceKey of serviceKeys) {
+      const parentRegistrations = parentRegistry.get(serviceKey);
+      const ownRegistrations = this.registry.get(serviceKey);
+      if (!parentRegistrations && ownRegistrations) {
+        result.set(serviceKey, ownRegistrations);
+        continue;
+      }
+      if (!ownRegistrations && parentRegistrations) {
+        result.set(serviceKey, parentRegistrations);
+        continue;
+      }
+      if (parentRegistrations && ownRegistrations) {
+        const mergedRegistrations = [...parentRegistrations];
+        for (const registration of ownRegistrations) {
+          const parentRegistration = mergedRegistrations.find(
+            (r) => r.name === registration.name
+          );
+          if (parentRegistration) {
+            mergedRegistrations.splice(
+              mergedRegistrations.indexOf(parentRegistration),
+              1,
+              registration
+            );
+          } else {
+            mergedRegistrations.push(registration);
+          }
+        }
+        result.set(serviceKey, mergedRegistrations);
+      }
+    }
+
+    return result;
   }
 
   private registerServiceOrFactory<ServiceKey extends keyof TServicesMap>(
