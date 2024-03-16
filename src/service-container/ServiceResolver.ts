@@ -8,5 +8,9 @@ export interface ServiceResolver<TServicesMap extends ServicesMap> {
     name?: string
   ): TServicesMap[ServiceKey];
 
+  resolveAll<ServiceKey extends keyof TServicesMap>(
+    key: ServiceKey
+  ): TServicesMap[ServiceKey][];
+
   has(key: keyof TServicesMap, name?: string): boolean;
 }

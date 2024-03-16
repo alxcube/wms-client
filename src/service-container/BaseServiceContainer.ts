@@ -30,6 +30,13 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     return scope.resolve(key, name);
   }
 
+  resolveAll<ServiceKey extends keyof TServicesMap>(
+    key: ServiceKey
+  ): TServicesMap[ServiceKey][] {
+    const scope = new BaseServiceResolutionContext(this.registry);
+    return scope.resolveAll(key);
+  }
+
   registerService<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     service: TServicesMap[ServiceKey],

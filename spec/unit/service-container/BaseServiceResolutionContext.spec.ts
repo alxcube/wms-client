@@ -3,6 +3,7 @@ import {
   BaseServiceResolutionContext,
   type ServiceRegistration,
 } from "../../../src/service-container/BaseServiceResolutionContext";
+import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
 
 import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
 
@@ -159,6 +160,22 @@ describe("BaseServiceResolutionContext class", () => {
       const container = resolver.resolve("DummyServiceContainer");
       expect(container).toBeInstanceOf(DummyServiceContainer);
       expect(container.getDecoder()).toBeInstanceOf(DummyService);
+    });
+
+    it("should throw ServiceResolutionError, when error occur in service factory", () => {
+      registry.set("SingletonDummyService", [
+        {
+          lifecycle: "singleton",
+          name: "default",
+          factory: () => {
+            throw new Error("test error");
+          },
+        },
+      ]);
+
+      expect(() => resolver.resolve("SingletonDummyService")).toThrow(
+        ServiceResolutionError
+      );
     });
   });
 
@@ -343,6 +360,36 @@ describe("BaseServiceResolutionContext class", () => {
       resolver.resolve("DummyServiceContainer");
 
       expect.hasAssertions();
+    });
+  });
+
+  describe("resolveAll() method", () => {
+    it("should return array of single element, when there is only one service registered", () => {
+      expect(resolver.resolveAll("DummyService")).toEqual([
+        dummyServiceInstance,
+      ]);
+    });
+
+    it("should return array of all services, registered under given key by different names", () => {
+      expect(resolver.resolveAll("NamedDummyService")).toEqual([
+        expect.any(DummyService),
+        expect.any(DummyService),
+        expect.any(DummyService),
+      ]);
+    });
+
+    it("should return empty array, when requested service is not registered", () => {
+      expect(resolver.resolveAll("NotRegistered")).toEqual([]);
+    });
+
+    it("should throw ServiceResolutionError, when error occur in service factory", () => {
+      const registrations = registry.get("NamedDummyService");
+      registrations![2].factory = () => {
+        throw new Error("Test error");
+      };
+      expect(() => resolver.resolveAll("NamedDummyService")).toThrow(
+        ServiceResolutionError
+      );
     });
   });
 });

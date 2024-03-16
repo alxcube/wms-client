@@ -3,6 +3,7 @@ import type {
   ServiceResolutionContext,
   ServiceResolutionStackEntry,
 } from "./ServiceResolutionContext";
+import { ServiceResolutionError } from "./ServiceResolutionError";
 import type { ServicesMap } from "./ServiceResolver";
 
 export interface ServiceRegistration<SMap extends ServicesMap, ServiceType> {
@@ -42,6 +43,16 @@ export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
     } finally {
       this.resolutionStack.pop();
     }
+  }
+
+  resolveAll<ServiceKey extends keyof TServicesMap>(
+    key: ServiceKey
+  ): TServicesMap[ServiceKey][] {
+    const registrations = this.registry.get(key);
+    if (!registrations) {
+      return [];
+    }
+    return registrations.map(({ name }) => this.resolve(key, name));
   }
 
   has(key: keyof TServicesMap, name?: string): boolean {
@@ -101,8 +112,12 @@ export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
     try {
       instance = registration.factory(this);
     } catch (e) {
-      throw new Error(
-        `An error occurred in "${String(key)}" service factory: ${e}`
+      if (e instanceof ServiceResolutionError) {
+        throw e;
+      }
+      throw this.createServiceResolutionError(
+        `An error occurred in "${String(key)}" service factory, named "${name}"`,
+        e
       );
     }
 
@@ -115,6 +130,30 @@ export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
     }
 
     return instance;
+  }
+
+  private createServiceResolutionError(
+    message: string,
+    cause?: Error | unknown
+  ): ServiceResolutionError<TServicesMap> {
+    const resolutionStack = this.resolutionStack.slice();
+    const resolutionStackMessage = resolutionStack
+      .slice()
+      .reverse()
+      .map(
+        (entry) =>
+          `Resolving service ${String(entry.service)}, named "${entry.name}"`
+      )
+      .join("\n");
+    const errorMessage =
+      message +
+      (cause ? `\n${cause}` : "") +
+      `\nResolution stack:\n${resolutionStackMessage}`;
+    return new ServiceResolutionError<TServicesMap>(
+      errorMessage,
+      resolutionStack,
+      cause
+    );
   }
 
   private getFromResolved<ServiceKey extends keyof TServicesMap>(
