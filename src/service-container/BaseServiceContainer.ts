@@ -97,6 +97,10 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     return new BaseServiceContainer(this);
   }
 
+  getParent(): ServiceContainer<TServicesMap> | undefined {
+    return this.parent;
+  }
+
   private unregisterOwn(key: keyof TServicesMap, name?: string) {
     if (name === undefined) {
       this.registry.delete(key);

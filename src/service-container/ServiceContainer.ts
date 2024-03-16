@@ -35,4 +35,6 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
   createChild(): ServiceContainer<TServicesMap>;
 
   hasOwn(key: keyof TServicesMap, name?: string): boolean;
+
+  getParent(): ServiceContainer<TServicesMap> | undefined;
 }

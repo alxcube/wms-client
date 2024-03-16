@@ -604,4 +604,14 @@ describe("BaseServiceContainer class", () => {
       expect(child).not.toBe(container);
     });
   });
+
+  describe("getParent() method", () => {
+    it("should return parent container", () => {
+      expect(childContainer.getParent()).toBe(container);
+    });
+
+    it("should return undefined, when container has no parent", () => {
+      expect(container.getParent()).toBeUndefined();
+    });
+  });
 });
