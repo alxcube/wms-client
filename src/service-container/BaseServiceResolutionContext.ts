@@ -1,10 +1,12 @@
 import type { ServiceFactory, ServiceLifecycle } from "./ServiceContainer";
-import type {
-  ServiceResolutionContext,
-  ServiceResolutionStackEntry,
-} from "./ServiceResolutionContext";
+import type { ServiceResolutionContext } from "./ServiceResolutionContext";
 import { ServiceResolutionError } from "./ServiceResolutionError";
-import type { ServicesMap } from "./ServiceResolver";
+import type {
+  NamedServiceRecord,
+  ResolvedServicesTuple,
+  ServiceKeysTuple,
+  ServicesMap,
+} from "./ServiceResolver";
 
 export interface ServiceRegistration<SMap extends ServicesMap, ServiceType> {
   instance?: ServiceType;
@@ -21,7 +23,7 @@ export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
     { name: string; service: unknown }[]
   >;
 
-  private readonly resolutionStack: ServiceResolutionStackEntry<TServicesMap>[];
+  private readonly resolutionStack: NamedServiceRecord<TServicesMap>[];
 
   constructor(
     private readonly registry: Map<
@@ -55,6 +57,17 @@ export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
     return registrations.map(({ name }) => this.resolve(key, name));
   }
 
+  resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
+    services: ServiceKeys
+  ): ResolvedServicesTuple<TServicesMap, ServiceKeys> {
+    return services.map((key) => {
+      if (typeof key === "object") {
+        return this.resolve(key.service, key.name);
+      }
+      return this.resolve(key);
+    }) as ResolvedServicesTuple<TServicesMap, ServiceKeys>;
+  }
+
   has(key: keyof TServicesMap, name?: string): boolean {
     const registrations = this.registry.get(key);
     if (name === undefined) {
@@ -63,7 +76,7 @@ export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
     return !!registrations && !!registrations.find((r) => r.name === name);
   }
 
-  getStack(): ServiceResolutionStackEntry<TServicesMap>[] {
+  getStack(): NamedServiceRecord<TServicesMap>[] {
     return [...this.resolutionStack];
   }
 

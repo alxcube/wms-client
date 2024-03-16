@@ -8,7 +8,11 @@ import type {
   ServiceFactoryRegistrationOptions,
   ServiceRegistrationOptions,
 } from "./ServiceContainer";
-import type { ServicesMap } from "./ServiceResolver";
+import type {
+  ResolvedServicesTuple,
+  ServiceKeysTuple,
+  ServicesMap,
+} from "./ServiceResolver";
 
 export class BaseServiceContainer<TServicesMap extends ServicesMap>
   implements ServiceContainer<TServicesMap>
@@ -35,6 +39,13 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
   ): TServicesMap[ServiceKey][] {
     const scope = new BaseServiceResolutionContext(this.registry);
     return scope.resolveAll(key);
+  }
+
+  resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
+    services: ServiceKeys
+  ): ResolvedServicesTuple<TServicesMap, ServiceKeys> {
+    const scope = new BaseServiceResolutionContext(this.registry);
+    return scope.resolveTuple(services);
   }
 
   registerService<ServiceKey extends keyof TServicesMap>(

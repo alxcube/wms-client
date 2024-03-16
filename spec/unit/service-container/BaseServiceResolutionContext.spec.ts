@@ -392,4 +392,35 @@ describe("BaseServiceResolutionContext class", () => {
       );
     });
   });
+
+  describe("resolveTuple() method", () => {
+    it("should resolve tuple of services by service keys", () => {
+      const [service1, service2] = resolver.resolveTuple([
+        "DummyService",
+        "SingletonDummyService",
+      ] as const);
+      expect(service1).toBeInstanceOf(DummyService);
+      expect(service2).toBeInstanceOf(DummyService);
+    });
+
+    it("should resolve tuple of services by NamedServiceRecord", () => {
+      const [service1, service2] = resolver.resolveTuple([
+        { service: "DummyService", name: "default" },
+        { service: "DummyServiceContainer", name: "default" },
+      ] as const);
+      expect(service1).toBeInstanceOf(DummyService);
+      expect(service2).toBeInstanceOf(DummyServiceContainer);
+    });
+
+    it("should resolve tuple of services in same request context", () => {
+      const [service1, service2] = resolver.resolveTuple([
+        { service: "NamedDummyService", name: "Request" },
+        { service: "NamedDummyService", name: "Request" },
+      ] as const);
+
+      expect(service1).toBeInstanceOf(DummyService);
+      expect(service2).toBeInstanceOf(DummyService);
+      expect(service2).toBe(service1);
+    });
+  });
 });
