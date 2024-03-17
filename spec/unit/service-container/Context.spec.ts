@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
-  BaseServiceResolutionContext,
+  Context,
   type ServiceRegistration,
-} from "../../../src/service-container/BaseServiceResolutionContext";
+} from "../../../src/service-container/Context";
 import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
 
 import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
 
-describe("BaseServiceResolutionContext class", () => {
+describe("Context class", () => {
   class DummyService {}
   class DummyServiceContainer {
     constructor(private readonly DummyService: DummyService) {}
@@ -31,7 +31,7 @@ describe("BaseServiceResolutionContext class", () => {
     keyof TestServicesMap,
     ServiceRegistration<TestServicesMap, unknown>[]
   >;
-  let resolver: BaseServiceResolutionContext<TestServicesMap>;
+  let resolver: Context<TestServicesMap>;
 
   beforeEach(() => {
     dummyServiceInstance = new DummyService();
@@ -78,7 +78,7 @@ describe("BaseServiceResolutionContext class", () => {
       },
     ]);
 
-    resolver = new BaseServiceResolutionContext<TestServicesMap>(registry);
+    resolver = new Context<TestServicesMap>(registry);
   });
 
   describe("resolve() method", () => {

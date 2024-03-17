@@ -15,7 +15,7 @@ export interface ServiceRegistration<SMap extends ServicesMap, ServiceType> {
   lifecycle: ServiceLifecycle;
 }
 
-export class BaseServiceResolutionContext<TServicesMap extends ServicesMap>
+export class Context<TServicesMap extends ServicesMap>
   implements ServiceResolutionContext<TServicesMap>
 {
   private readonly resolved: Map<

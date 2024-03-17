@@ -1,7 +1,4 @@
-import {
-  BaseServiceResolutionContext,
-  type ServiceRegistration,
-} from "./BaseServiceResolutionContext";
+import { Context, type ServiceRegistration } from "./Context";
 import type {
   ServiceContainer,
   ServiceFactory,
@@ -14,7 +11,7 @@ import type {
   ServicesMap,
 } from "./ServiceResolver";
 
-export class BaseServiceContainer<TServicesMap extends ServicesMap>
+export class Container<TServicesMap extends ServicesMap>
   implements ServiceContainer<TServicesMap>
 {
   private registry: Map<
@@ -27,7 +24,7 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     ServiceRegistration<TServicesMap, unknown>[]
   >[];
 
-  constructor(private readonly parent?: BaseServiceContainer<TServicesMap>) {
+  constructor(private readonly parent?: Container<TServicesMap>) {
     this.registry = new Map();
     this.snapshots = [];
   }
@@ -36,26 +33,19 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     key: ServiceKey,
     name?: string
   ): TServicesMap[ServiceKey] {
-    return new BaseServiceResolutionContext(this.getMergedRegistry()).resolve(
-      key,
-      name
-    );
+    return new Context(this.getMergedRegistry()).resolve(key, name);
   }
 
   resolveAll<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey
   ): TServicesMap[ServiceKey][] {
-    return new BaseServiceResolutionContext(
-      this.getMergedRegistry()
-    ).resolveAll(key);
+    return new Context(this.getMergedRegistry()).resolveAll(key);
   }
 
   resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
     services: ServiceKeys
   ): ResolvedServicesTuple<TServicesMap, ServiceKeys> {
-    return new BaseServiceResolutionContext(
-      this.getMergedRegistry()
-    ).resolveTuple(services);
+    return new Context(this.getMergedRegistry()).resolveTuple(services);
   }
 
   registerConstant<ServiceKey extends keyof TServicesMap>(
@@ -99,8 +89,8 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     return !!registrations && !!registrations.find((r) => r.name === name);
   }
 
-  createChild(): BaseServiceContainer<TServicesMap> {
-    return new BaseServiceContainer(this);
+  createChild(): Container<TServicesMap> {
+    return new Container(this);
   }
 
   getParent(): ServiceContainer<TServicesMap> | undefined {

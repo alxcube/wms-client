@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { BaseServiceContainer } from "../../../src/service-container/BaseServiceContainer";
+import { Container } from "../../../src/service-container/Container";
 import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
 
 import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
 
-describe("BaseServiceContainer class", () => {
+describe("Container class", () => {
   class DummyService {}
 
   class DummyDependent {
@@ -18,11 +18,11 @@ describe("BaseServiceContainer class", () => {
     DummyDependent: DummyDependent;
   }
 
-  let container: BaseServiceContainer<TestServicesMap>;
-  let childContainer: BaseServiceContainer<TestServicesMap>;
+  let container: Container<TestServicesMap>;
+  let childContainer: Container<TestServicesMap>;
 
   beforeEach(() => {
-    container = new BaseServiceContainer();
+    container = new Container();
     childContainer = container.createChild();
   });
 
@@ -598,9 +598,9 @@ describe("BaseServiceContainer class", () => {
   });
 
   describe("createChild() method", () => {
-    it("should return new instance of BaseServiceContainer", () => {
+    it("should return new instance of Container", () => {
       const child = container.createChild();
-      expect(child).toBeInstanceOf(BaseServiceContainer);
+      expect(child).toBeInstanceOf(Container);
       expect(child).not.toBe(container);
     });
   });
