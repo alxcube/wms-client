@@ -8,23 +8,60 @@ import type {
   ServicesMap,
 } from "./ServiceResolver";
 
+/**
+ * Service registration record
+ *
+ * @internal
+ */
 export interface ServiceRegistration<SMap extends ServicesMap, ServiceType> {
-  instance?: ServiceType;
-  factory?: ServiceFactory<SMap, ServiceType>;
+  /**
+   * Service name.
+   */
   name: string;
+
+  /**
+   * Service instance, registered either using service container `registerConstant()` method, or created by service
+   * factory with "singleton" lifecycle.
+   */
+  instance?: ServiceType;
+
+  /**
+   * Service factory function.
+   */
+  factory?: ServiceFactory<SMap, ServiceType>;
+
+  /**
+   * Service lifecycle (only when service registered using factory).
+   */
   lifecycle: ServiceLifecycle;
 }
 
+/**
+ * Service resolution context class.
+ */
 export class Context<TServicesMap extends ServicesMap>
   implements ServiceResolutionContext<TServicesMap>
 {
+  /**
+   * Storage of resolved service instances, registered with "request" lifecycle.
+   * @private
+   */
   private readonly resolved: Map<
     keyof TServicesMap,
     { name: string; service: unknown }[]
   >;
 
+  /**
+   * Services resolution stack.
+   * @private
+   */
   private readonly resolutionStack: NamedServiceRecord<TServicesMap>[];
 
+  /**
+   * Context constructor.
+   *
+   * @param registry
+   */
   constructor(
     private readonly registry: Map<
       keyof TServicesMap,
@@ -35,6 +72,9 @@ export class Context<TServicesMap extends ServicesMap>
     this.resolutionStack = [];
   }
 
+  /**
+   * @inheritDoc
+   */
   resolve<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name = "default"
@@ -47,6 +87,9 @@ export class Context<TServicesMap extends ServicesMap>
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   resolveAll<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey
   ): TServicesMap[ServiceKey][] {
@@ -57,6 +100,9 @@ export class Context<TServicesMap extends ServicesMap>
     return registrations.map(({ name }) => this.resolve(key, name));
   }
 
+  /**
+   * @inheritDoc
+   */
   resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
     services: ServiceKeys
   ): ResolvedServicesTuple<TServicesMap, ServiceKeys> {
@@ -68,6 +114,9 @@ export class Context<TServicesMap extends ServicesMap>
     }) as ResolvedServicesTuple<TServicesMap, ServiceKeys>;
   }
 
+  /**
+   * @inheritDoc
+   */
   has(key: keyof TServicesMap, name?: string): boolean {
     const registrations = this.registry.get(key);
     if (name === undefined) {
@@ -76,10 +125,16 @@ export class Context<TServicesMap extends ServicesMap>
     return !!registrations && !!registrations.find((r) => r.name === name);
   }
 
+  /**
+   * @inheritDoc
+   */
   getStack(): NamedServiceRecord<TServicesMap>[] {
     return [...this.resolutionStack];
   }
 
+  /**
+   * @inheritDoc
+   */
   isResolvingFor(key: keyof TServicesMap, name?: string): boolean {
     return !!this.resolutionStack.find((entry) => {
       return (
@@ -88,6 +143,9 @@ export class Context<TServicesMap extends ServicesMap>
     });
   }
 
+  /**
+   * @inheritDoc
+   */
   isDirectlyResolvingFor(key: keyof TServicesMap, name?: string): boolean {
     if (this.resolutionStack.length < 2) {
       // Call made from resolution root.
@@ -100,6 +158,9 @@ export class Context<TServicesMap extends ServicesMap>
     );
   }
 
+  /**
+   * @inheritDoc
+   */
   getServiceNames(key: keyof TServicesMap): string[] {
     const registrations = this.registry.get(key);
     if (!registrations) {
@@ -108,44 +169,62 @@ export class Context<TServicesMap extends ServicesMap>
     return registrations.map(({ name }) => name);
   }
 
+  /**
+   * Performs service resolution.
+   *
+   * @param key
+   * @param name
+   * @private
+   */
   private doResolve<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name = "default"
   ): TServicesMap[ServiceKey] {
-    const alreadyResolved = this.getFromResolved(key, name);
+    const alreadyResolved = this.findInResolved(key, name);
     if (alreadyResolved) {
       return alreadyResolved;
     }
 
+    return this.resolveRegistered(key, name);
+  }
+
+  /**
+   * Resolves service, using container registration record.
+   *
+   * @param key
+   * @param name
+   * @private
+   */
+  private resolveRegistered<ServiceKey extends keyof TServicesMap>(
+    key: ServiceKey,
+    name: string
+  ): TServicesMap[ServiceKey] {
     const registration = this.getServiceRegistration(key, name);
 
     if (registration.instance) {
+      // Return instance, that was registered as constant or resolved earlier with "singleton" lifecycle.
       return registration.instance;
     }
 
     if (!registration.factory) {
+      // Make sure we have service factory
       throw new TypeError(
         `Service "${String(key)}" has neither instance, nor factory.`
       );
     }
 
-    let instance: TServicesMap[ServiceKey];
-    try {
-      instance = registration.factory(this);
-    } catch (e) {
-      if (e instanceof ServiceResolutionError) {
-        throw e;
-      }
-      throw this.createServiceResolutionError(
-        `An error occurred in "${String(key)}" service factory, named "${name}"`,
-        e
-      );
-    }
+    const instance = this.resolveWithErrorHandling(
+      key,
+      name,
+      registration.factory
+    );
 
     if (["singleton", "request"].includes(registration.lifecycle)) {
+      // Store resolved instance in resolution context cache for further resolutions.
       this.saveInResolved(key, instance, name);
 
       if (registration.lifecycle === "singleton") {
+        // Store resolved value in container registration.
         registration.instance = instance;
       }
     }
@@ -153,31 +232,41 @@ export class Context<TServicesMap extends ServicesMap>
     return instance;
   }
 
-  private createServiceResolutionError(
-    message: string,
-    cause?: Error | unknown
-  ): ServiceResolutionError<TServicesMap> {
-    const resolutionStack = this.resolutionStack.slice();
-    const resolutionStackMessage = resolutionStack
-      .slice()
-      .reverse()
-      .map(
-        (entry) =>
-          `Resolving service ${String(entry.service)}, named "${entry.name}"`
-      )
-      .join("\n");
-    const errorMessage =
-      message +
-      (cause ? `\n${cause}` : "") +
-      `\nResolution stack:\n${resolutionStackMessage}`;
-    return new ServiceResolutionError<TServicesMap>(
-      errorMessage,
-      resolutionStack,
-      cause
-    );
+  /**
+   * Executes service factory with errors handling and returns resolved value.
+   *
+   * @param key
+   * @param name
+   * @param factory
+   * @private
+   */
+  private resolveWithErrorHandling<ServiceKey extends keyof TServicesMap>(
+    key: ServiceKey,
+    name: string,
+    factory: ServiceFactory<TServicesMap, TServicesMap[ServiceKey]>
+  ): TServicesMap[ServiceKey] {
+    try {
+      return factory(this);
+    } catch (e) {
+      if (e instanceof ServiceResolutionError) {
+        throw e;
+      }
+      throw new ServiceResolutionError(
+        `An error occurred in "${String(key)}" service factory, named "${name}"`,
+        this.getStack(),
+        e
+      );
+    }
   }
 
-  private getFromResolved<ServiceKey extends keyof TServicesMap>(
+  /**
+   * Searches for previously resolved service instance in context resolved services storage..
+   *
+   * @param key
+   * @param name
+   * @private
+   */
+  private findInResolved<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name: string
   ): TServicesMap[ServiceKey] | undefined {
@@ -191,6 +280,14 @@ export class Context<TServicesMap extends ServicesMap>
     return (named && named.service) || undefined;
   }
 
+  /**
+   * Stores resolved service with "singleton" or "request" lifecycle in context resolved services storage.
+   *
+   * @param key
+   * @param service
+   * @param name
+   * @private
+   */
   private saveInResolved<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     service: TServicesMap[ServiceKey],
@@ -212,6 +309,13 @@ export class Context<TServicesMap extends ServicesMap>
     existingResolved.push({ service, name });
   }
 
+  /**
+   * Searches for service registration using service key and name. Throws `RangeError` if registration is not found.
+   *
+   * @param key
+   * @param name
+   * @private
+   */
   private getServiceRegistration<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     name: string
