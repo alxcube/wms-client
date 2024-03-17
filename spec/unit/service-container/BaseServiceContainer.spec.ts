@@ -26,16 +26,16 @@ describe("BaseServiceContainer class", () => {
     childContainer = container.createChild();
   });
 
-  describe("registerService() method", () => {
+  describe("registerConstant() method", () => {
     it("should register service instance", () => {
       const instance = new DummyService();
-      container.registerService("DummyService", instance);
+      container.registerConstant("DummyService", instance);
       expect(container.resolve("DummyService")).toBe(instance);
     });
 
     it("should register named service instance", () => {
       const instance = new DummyService();
-      container.registerService("DummyService", instance, { name: "Named" });
+      container.registerConstant("DummyService", instance, { name: "Named" });
       expect(container.resolve("DummyService", "Named")).toBe(instance);
     });
 
@@ -44,11 +44,11 @@ describe("BaseServiceContainer class", () => {
       const instance2 = new DummyService();
       const instance3 = new DummyService();
 
-      container.registerService("DummyService", instance1); // will be named 'default'
-      container.registerService("DummyService", instance2, {
+      container.registerConstant("DummyService", instance1); // will be named 'default'
+      container.registerConstant("DummyService", instance2, {
         name: "instance2",
       });
-      container.registerService("DummyService", instance3, {
+      container.registerConstant("DummyService", instance3, {
         name: "instance3",
       });
 
@@ -60,27 +60,27 @@ describe("BaseServiceContainer class", () => {
 
     it("should throw TypeError when trying to register service that already registered as default", () => {
       const instance = new DummyService();
-      container.registerService("DummyService", instance);
-      expect(() => container.registerService("DummyService", instance)).toThrow(
-        TypeError
-      );
+      container.registerConstant("DummyService", instance);
+      expect(() =>
+        container.registerConstant("DummyService", instance)
+      ).toThrow(TypeError);
     });
 
     it("should throw TypeError when trying to register named service under name, that is already taken", () => {
       const instance = new DummyService();
       const name = "TestServiceName";
-      container.registerService("DummyService", instance, { name });
+      container.registerConstant("DummyService", instance, { name });
       expect(() =>
-        container.registerService("DummyService", instance, { name })
+        container.registerConstant("DummyService", instance, { name })
       ).toThrow(TypeError);
     });
 
     it("should replace existing default service, when 'replace' option is set to true", () => {
       const instance1 = new DummyService();
       const instance2 = new DummyService();
-      container.registerService("DummyService", instance1);
+      container.registerConstant("DummyService", instance1);
       expect(container.resolve("DummyService")).toBe(instance1);
-      container.registerService("DummyService", instance2, { replace: true });
+      container.registerConstant("DummyService", instance2, { replace: true });
       expect(container.resolve("DummyService")).toBe(instance2);
     });
 
@@ -88,9 +88,9 @@ describe("BaseServiceContainer class", () => {
       const instance1 = new DummyService();
       const instance2 = new DummyService();
       const name = "named";
-      container.registerService("DummyService", instance1, { name });
+      container.registerConstant("DummyService", instance1, { name });
       expect(container.resolve("DummyService", name)).toBe(instance1);
-      container.registerService("DummyService", instance2, {
+      container.registerConstant("DummyService", instance2, {
         name,
         replace: true,
       });
@@ -100,14 +100,14 @@ describe("BaseServiceContainer class", () => {
     it("should throw TypeError, when trying to register service instance after service factory was registered, using 'registerFactory()' method", () => {
       container.registerFactory("DummyService", () => new DummyService());
       expect(() =>
-        container.registerService("DummyService", new DummyService())
+        container.registerConstant("DummyService", new DummyService())
       ).toThrow(TypeError);
     });
 
     it("should replace service factory registration, made earlier using 'registerFactory()' method", () => {
       const instance = new DummyService();
       container.registerFactory("DummyService", () => new DummyService());
-      container.registerService("DummyService", instance, { replace: true });
+      container.registerConstant("DummyService", instance, { replace: true });
       expect(container.resolve("DummyService")).toBe(instance);
     });
   });
@@ -247,15 +247,15 @@ describe("BaseServiceContainer class", () => {
       expect(container.resolve("DummyService")).not.toBe(instance2);
     });
 
-    it("should throw TypeError, when trying to register factory after service instance was registered, using 'registerService()' method", () => {
-      container.registerService("DummyService", instance1);
+    it("should throw TypeError, when trying to register factory after service instance was registered, using 'registerConstant()' method", () => {
+      container.registerConstant("DummyService", instance1);
       expect(() => container.registerFactory("DummyService", factory1)).toThrow(
         TypeError
       );
     });
 
-    it("should replace service instance registration, made using 'registerService()' method", () => {
-      container.registerService("DummyService", instance1);
+    it("should replace service instance registration, made using 'registerConstant()' method", () => {
+      container.registerConstant("DummyService", instance1);
       expect(container.resolve("DummyService")).toBe(instance1);
       container.registerFactory("DummyService", () => new DummyService(), {
         replace: true,
@@ -268,7 +268,7 @@ describe("BaseServiceContainer class", () => {
     let dummyServiceInstance: DummyService;
     beforeEach(() => {
       dummyServiceInstance = new DummyService();
-      container.registerService("DummyService", dummyServiceInstance);
+      container.registerConstant("DummyService", dummyServiceInstance);
       container.registerFactory("DummyService", () => new DummyService(), {
         name: "dynamic",
       });
@@ -327,7 +327,7 @@ describe("BaseServiceContainer class", () => {
 
     it("should resolve own service, when it is registered, ignoring service in parent container", () => {
       const childDummyInstance = new DummyService();
-      childContainer.registerService("DummyService", childDummyInstance);
+      childContainer.registerConstant("DummyService", childDummyInstance);
       expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
       expect(childContainer.resolve("DummyService")).toBe(childDummyInstance);
       // this is resolved from parent container
@@ -355,7 +355,7 @@ describe("BaseServiceContainer class", () => {
     let dummyServiceInstance: DummyService;
     beforeEach(() => {
       dummyServiceInstance = new DummyService();
-      container.registerService("DummyService", dummyServiceInstance);
+      container.registerConstant("DummyService", dummyServiceInstance);
       container.registerFactory("DummyService", () => new DummyService(), {
         name: "dynamic",
       });
@@ -381,7 +381,7 @@ describe("BaseServiceContainer class", () => {
 
     it("should resolve services from current container instead of parent, when current container has own registrations of such services", () => {
       const childDummyService = new DummyService();
-      childContainer.registerService("DummyService", childDummyService);
+      childContainer.registerConstant("DummyService", childDummyService);
       expect(container.resolveAll("DummyService")).toEqual([
         dummyServiceInstance,
         expect.any(DummyService),
@@ -394,7 +394,7 @@ describe("BaseServiceContainer class", () => {
 
     it("should resolve services from parent container and from current container", () => {
       const dummyService = new DummyService();
-      childContainer.registerService("DummyService", dummyService, {
+      childContainer.registerConstant("DummyService", dummyService, {
         name: "child",
       });
       expect(childContainer.resolveAll("DummyService")).toEqual([
@@ -434,7 +434,7 @@ describe("BaseServiceContainer class", () => {
 
   describe("unregister() method", () => {
     beforeEach(() => {
-      container.registerService("DummyService", new DummyService());
+      container.registerConstant("DummyService", new DummyService());
       container.registerFactory("DummyService", () => new DummyService(), {
         name: "dynamic",
       });
@@ -502,7 +502,7 @@ describe("BaseServiceContainer class", () => {
       expect(container.has("DummyService", "default")).toBe(false);
       expect(container.has("DummyService", "named")).toBe(false);
 
-      container.registerService("DummyService", new DummyService(), {
+      container.registerConstant("DummyService", new DummyService(), {
         name: "named",
       });
 
@@ -510,7 +510,7 @@ describe("BaseServiceContainer class", () => {
       expect(container.has("DummyService", "default")).toBe(false);
       expect(container.has("DummyService", "named")).toBe(true);
 
-      container.registerService("DummyService", new DummyService());
+      container.registerConstant("DummyService", new DummyService());
 
       expect(container.has("DummyService")).toBe(true);
       expect(container.has("DummyService", "default")).toBe(true);
@@ -556,7 +556,7 @@ describe("BaseServiceContainer class", () => {
       expect(childContainer.has("DummyService", "default")).toBe(false);
       expect(childContainer.has("DummyService", "named")).toBe(false);
 
-      container.registerService("DummyService", new DummyService(), {
+      container.registerConstant("DummyService", new DummyService(), {
         name: "named",
       });
 
@@ -564,7 +564,7 @@ describe("BaseServiceContainer class", () => {
       expect(childContainer.has("DummyService", "default")).toBe(false);
       expect(childContainer.has("DummyService", "named")).toBe(true);
 
-      container.registerService("DummyService", new DummyService());
+      container.registerConstant("DummyService", new DummyService());
 
       expect(childContainer.has("DummyService")).toBe(true);
       expect(childContainer.has("DummyService", "default")).toBe(true);
@@ -619,7 +619,7 @@ describe("BaseServiceContainer class", () => {
     let dummyServiceInstance: DummyService;
     beforeEach(() => {
       dummyServiceInstance = new DummyService();
-      container.registerService("DummyService", dummyServiceInstance);
+      container.registerConstant("DummyService", dummyServiceInstance);
       container.registerFactory("DummyDependent", (context) => {
         return new DummyDependent(
           context.resolve("DummyService"),
@@ -634,7 +634,7 @@ describe("BaseServiceContainer class", () => {
       expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
 
       container.backup();
-      container.registerService("DummyService", dummyServiceOverride, {
+      container.registerConstant("DummyService", dummyServiceOverride, {
         replace: true,
       });
       expect(container.resolve("DummyService")).toBe(dummyServiceOverride);
@@ -646,16 +646,16 @@ describe("BaseServiceContainer class", () => {
     it("should backup and restore only own registrations, unless 'cascade' argument is set to true", () => {
       const dummyServiceOverride = new DummyService();
       const childDummyService = new DummyService();
-      childContainer.registerService("DummyService", childDummyService);
+      childContainer.registerConstant("DummyService", childDummyService);
 
       expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
       expect(childContainer.resolve("DummyService")).toBe(childDummyService);
 
       childContainer.backup();
-      container.registerService("DummyService", dummyServiceOverride, {
+      container.registerConstant("DummyService", dummyServiceOverride, {
         replace: true,
       });
-      childContainer.registerService("DummyService", dummyServiceOverride, {
+      childContainer.registerConstant("DummyService", dummyServiceOverride, {
         replace: true,
       });
 
@@ -670,16 +670,16 @@ describe("BaseServiceContainer class", () => {
     it("should backup and restore registrations in parent container too, when 'cascade' argument is set to true", () => {
       const dummyServiceOverride = new DummyService();
       const childDummyService = new DummyService();
-      childContainer.registerService("DummyService", childDummyService);
+      childContainer.registerConstant("DummyService", childDummyService);
 
       expect(container.resolve("DummyService")).toBe(dummyServiceInstance);
       expect(childContainer.resolve("DummyService")).toBe(childDummyService);
 
       childContainer.backup(true);
-      container.registerService("DummyService", dummyServiceOverride, {
+      container.registerConstant("DummyService", dummyServiceOverride, {
         replace: true,
       });
-      childContainer.registerService("DummyService", dummyServiceOverride, {
+      childContainer.registerConstant("DummyService", dummyServiceOverride, {
         replace: true,
       });
 

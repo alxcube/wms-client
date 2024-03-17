@@ -58,7 +58,7 @@ export class BaseServiceContainer<TServicesMap extends ServicesMap>
     ).resolveTuple(services);
   }
 
-  registerService<ServiceKey extends keyof TServicesMap>(
+  registerConstant<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     service: TServicesMap[ServiceKey],
     options?: ServiceRegistrationOptions

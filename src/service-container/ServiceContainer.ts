@@ -18,7 +18,7 @@ export interface ServiceFactoryRegistrationOptions
 }
 export interface ServiceContainer<TServicesMap extends ServicesMap>
   extends ServiceResolver<TServicesMap> {
-  registerService<ServiceKey extends keyof TServicesMap>(
+  registerConstant<ServiceKey extends keyof TServicesMap>(
     key: ServiceKey,
     service: TServicesMap[ServiceKey],
     options?: ServiceRegistrationOptions
