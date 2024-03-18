@@ -33,4 +33,13 @@ export interface ServiceResolutionContext<TServicesMap extends ServicesMap>
    * @param name
    */
   isDirectlyResolvingFor(key: keyof TServicesMap, name?: string): boolean;
+
+  /**
+   * Delays given callback. The callback will be executed after current dependencies stack is resolved.
+   * Used to resolve circular dependencies.
+   * IMPORTANT: circular dependencies both must have "request" or "singleton" lifecycle.
+   *
+   * @param callback
+   */
+  delay(callback: () => void): void;
 }

@@ -58,6 +58,13 @@ export class Context<TServicesMap extends ServicesMap>
   private readonly resolutionStack: NamedServiceRecord<TServicesMap>[];
 
   /**
+   * Delayed callbacks, executed after all dependencies stack resolution of current service resolution.
+   *
+   * @private
+   */
+  private readonly delayedCallbacksQueue: (() => void)[];
+
+  /**
    * Context constructor.
    *
    * @param registry
@@ -70,6 +77,7 @@ export class Context<TServicesMap extends ServicesMap>
   ) {
     this.resolved = new Map();
     this.resolutionStack = [];
+    this.delayedCallbacksQueue = [];
   }
 
   /**
@@ -80,9 +88,12 @@ export class Context<TServicesMap extends ServicesMap>
     name = "default"
   ): TServicesMap[ServiceKey] {
     this.resolutionStack.push({ service: key, name });
+    let service: TServicesMap[ServiceKey];
     try {
       this.checkForCircularDependency();
-      return this.doResolve(key, name);
+      service = this.doResolve(key, name);
+      this.executeDelayed();
+      return service;
     } finally {
       this.resolutionStack.pop();
     }
@@ -168,6 +179,13 @@ export class Context<TServicesMap extends ServicesMap>
       return [];
     }
     return registrations.map(({ name }) => name);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  delay(callback: () => void) {
+    this.delayedCallbacksQueue.push(callback);
   }
 
   /**
@@ -377,5 +395,18 @@ export class Context<TServicesMap extends ServicesMap>
       `Circular dependency detected: ${circularPath}`,
       this.getStack()
     );
+  }
+
+  /**
+   * Executes delayed callbacks queue.
+   *
+   * @private
+   */
+  private executeDelayed(): void {
+    let callback = this.delayedCallbacksQueue.shift();
+    while (callback) {
+      callback();
+      callback = this.delayedCallbacksQueue.shift();
+    }
   }
 }

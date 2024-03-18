@@ -16,6 +16,28 @@ describe("Context class", () => {
       return this.DummyService;
     }
   }
+
+  class CircularA {
+    constructor(
+      public circularB?: CircularB,
+      public circularC?: CircularC
+    ) {}
+  }
+
+  class CircularB {
+    constructor(
+      public circularA?: CircularA,
+      public circularC?: CircularC
+    ) {}
+  }
+
+  class CircularC {
+    constructor(
+      public circularA?: CircularA,
+      public circularB?: CircularB
+    ) {}
+  }
+
   interface TestServicesMap extends ServicesMap {
     DummyService: DummyService;
     TransientDummyService: DummyService;
@@ -24,6 +46,9 @@ describe("Context class", () => {
     NamedDummyService: DummyService;
     AlwaysNamedDummyService: DummyService;
     DummyServiceContainer: DummyServiceContainer;
+    CircularA: CircularA;
+    CircularB: CircularB;
+    CircularC: CircularC;
   }
 
   let dummyServiceInstance: DummyService;
@@ -193,6 +218,76 @@ describe("Context class", () => {
       expect(() => resolver.resolve("DummyServiceContainer")).toThrow(
         ServiceResolutionError
       );
+    });
+
+    describe("circular dependencies resolution using delay() method", () => {
+      beforeEach(() => {
+        registry.set("CircularA", [
+          {
+            name: "default",
+            lifecycle: "request",
+            factory: (context) => {
+              const circularA = new CircularA();
+              context.delay(() => {
+                circularA.circularB = context.resolve("CircularB");
+                circularA.circularC = context.resolve("CircularC");
+              });
+              return circularA;
+            },
+          },
+        ]);
+
+        registry.set("CircularB", [
+          {
+            name: "default",
+            lifecycle: "request",
+            factory: (context) => {
+              const circularB = new CircularB();
+              context.delay(() => {
+                circularB.circularA = context.resolve("CircularA");
+                circularB.circularC = context.resolve("CircularC");
+              });
+              return circularB;
+            },
+          },
+        ]);
+
+        registry.set("CircularC", [
+          {
+            name: "default",
+            lifecycle: "request",
+            factory: (context) => {
+              const circularC = new CircularC();
+              context.delay(() => {
+                circularC.circularA = context.resolve("CircularA");
+                circularC.circularB = context.resolve("CircularB");
+              });
+              return circularC;
+            },
+          },
+        ]);
+      });
+
+      it("should resolve circular dependencies, using delayed injection of dependency", () => {
+        const circularA = resolver.resolve("CircularA");
+        expect(circularA).toBeInstanceOf(CircularA);
+        expect(circularA.circularB).toBeInstanceOf(CircularB);
+        expect(circularA.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in different order", () => {
+        const circularB = resolver.resolve("CircularB");
+        expect(circularB).toBeInstanceOf(CircularB);
+        expect(circularB.circularA).toBeInstanceOf(CircularA);
+        expect(circularB.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in another different order", () => {
+        const circularC = resolver.resolve("CircularC");
+        expect(circularC).toBeInstanceOf(CircularC);
+        expect(circularC.circularA).toBeInstanceOf(CircularA);
+        expect(circularC.circularB).toBeInstanceOf(CircularB);
+      });
     });
   });
 
