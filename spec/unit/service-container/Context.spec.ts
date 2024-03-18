@@ -12,7 +12,7 @@ describe("Context class", () => {
   class DummyServiceContainer {
     constructor(private readonly DummyService: DummyService) {}
 
-    getDecoder(): DummyService {
+    getService(): DummyService {
       return this.DummyService;
     }
   }
@@ -93,51 +93,51 @@ describe("Context class", () => {
     });
 
     it("should always create new instance when service lifecycle is 'transient'", () => {
-      const decoder1 = resolver.resolve("TransientDummyService");
-      const decoder2 = resolver.resolve("TransientDummyService");
-      expect(decoder1).toBeInstanceOf(DummyService);
-      expect(decoder2).toBeInstanceOf(DummyService);
-      expect(decoder2).not.toBe(decoder1);
+      const service1 = resolver.resolve("TransientDummyService");
+      const service2 = resolver.resolve("TransientDummyService");
+      expect(service1).toBeInstanceOf(DummyService);
+      expect(service2).toBeInstanceOf(DummyService);
+      expect(service2).not.toBe(service1);
     });
 
     it("should always return same instance when service lifecycle is 'singleton'", () => {
-      const decoder1 = resolver.resolve("SingletonDummyService");
-      const decoder2 = resolver.resolve("SingletonDummyService");
-      expect(decoder1).toBeInstanceOf(DummyService);
-      expect(decoder1).toBe(decoder2);
+      const service1 = resolver.resolve("SingletonDummyService");
+      const service2 = resolver.resolve("SingletonDummyService");
+      expect(service1).toBeInstanceOf(DummyService);
+      expect(service1).toBe(service2);
     });
 
     it("should always return same instance when service lifecycle is 'request'", () => {
-      const decoder1 = resolver.resolve("RequestDummyService");
-      const decoder2 = resolver.resolve("RequestDummyService");
-      expect(decoder1).toBeInstanceOf(DummyService);
-      expect(decoder1).toBe(decoder2);
+      const service1 = resolver.resolve("RequestDummyService");
+      const service2 = resolver.resolve("RequestDummyService");
+      expect(service1).toBeInstanceOf(DummyService);
+      expect(service1).toBe(service2);
     });
 
     it("should return different services for named registrations", () => {
-      const transientDecoder = resolver.resolve("NamedDummyService"); // without name
-      const singletonDecoder = resolver.resolve(
+      const transientService = resolver.resolve("NamedDummyService"); // without name
+      const singletonService = resolver.resolve(
         "NamedDummyService",
         "Singleton"
       );
-      const requestDecoder = resolver.resolve("NamedDummyService", "Request");
+      const requestService = resolver.resolve("NamedDummyService", "Request");
 
-      expect(transientDecoder).toBeInstanceOf(DummyService);
-      expect(singletonDecoder).toBeInstanceOf(DummyService);
-      expect(requestDecoder).toBeInstanceOf(DummyService);
-      expect(transientDecoder).not.toBe(singletonDecoder);
-      expect(transientDecoder).not.toBe(requestDecoder);
-      expect(requestDecoder).not.toBe(singletonDecoder);
+      expect(transientService).toBeInstanceOf(DummyService);
+      expect(singletonService).toBeInstanceOf(DummyService);
+      expect(requestService).toBeInstanceOf(DummyService);
+      expect(transientService).not.toBe(singletonService);
+      expect(transientService).not.toBe(requestService);
+      expect(requestService).not.toBe(singletonService);
     });
 
     it("should return same instance, when service is requested with same name, and lifecycle is 'singleton'", () => {
-      const decoder = resolver.resolve("NamedDummyService", "Singleton");
-      expect(resolver.resolve("NamedDummyService", "Singleton")).toBe(decoder);
+      const service = resolver.resolve("NamedDummyService", "Singleton");
+      expect(resolver.resolve("NamedDummyService", "Singleton")).toBe(service);
     });
 
     it("should return same instance, when service is requested with same name, and lifecycle is 'request'", () => {
-      const decoder = resolver.resolve("NamedDummyService", "Request");
-      expect(resolver.resolve("NamedDummyService", "Request")).toBe(decoder);
+      const service = resolver.resolve("NamedDummyService", "Request");
+      expect(resolver.resolve("NamedDummyService", "Request")).toBe(service);
     });
 
     it("should throw RangeError, when requested service is not registered", () => {
@@ -159,7 +159,7 @@ describe("Context class", () => {
     it("should resolve services with dependencies", () => {
       const container = resolver.resolve("DummyServiceContainer");
       expect(container).toBeInstanceOf(DummyServiceContainer);
-      expect(container.getDecoder()).toBeInstanceOf(DummyService);
+      expect(container.getService()).toBeInstanceOf(DummyService);
     });
 
     it("should throw ServiceResolutionError, when error occur in service factory", () => {
@@ -174,6 +174,23 @@ describe("Context class", () => {
       ]);
 
       expect(() => resolver.resolve("SingletonDummyService")).toThrow(
+        ServiceResolutionError
+      );
+    });
+
+    it("should throw ServiceResolutionError, when circular dependency detected", () => {
+      registry.set("DummyService", [
+        {
+          name: "default",
+          lifecycle: "transient",
+          factory: (context) => {
+            context.resolve("DummyServiceContainer"); // fake circular dependency
+            return new DummyService();
+          },
+        },
+      ]);
+
+      expect(() => resolver.resolve("DummyServiceContainer")).toThrow(
         ServiceResolutionError
       );
     });

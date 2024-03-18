@@ -81,6 +81,7 @@ export class Context<TServicesMap extends ServicesMap>
   ): TServicesMap[ServiceKey] {
     this.resolutionStack.push({ service: key, name });
     try {
+      this.checkForCircularDependency();
       return this.doResolve(key, name);
     } finally {
       this.resolutionStack.pop();
@@ -333,5 +334,48 @@ export class Context<TServicesMap extends ServicesMap>
       );
     }
     return registration;
+  }
+
+  /**
+   * Checks for circular dependencies and throws ServiceResolutionError, if circular dependency was found.
+   *
+   * @private
+   */
+  private checkForCircularDependency() {
+    const resolutionStackPath = this.resolutionStack.map(
+      (entry) => `${entry.service as string}[${entry.name}]`
+    );
+    const current = resolutionStackPath.pop();
+    if (!current) {
+      // This shouldn't happen
+      return;
+    }
+    const firstAppeared = resolutionStackPath.indexOf(current);
+    if (firstAppeared < 0) {
+      // If no previous requests for current service was made -- no circular dependency
+      return;
+    }
+
+    // Get resolutions stack from first request of current service to the previous resolution.
+    const substack = resolutionStackPath.slice(firstAppeared);
+    if (substack.length % 2) {
+      // If sub-stack length is odd, no circular dependency
+      return;
+    }
+
+    // Divide sub-stack into two equal arrays and compare - if they're equal - circular dependency detected.
+    const first = substack.splice(substack.length / 2, substack.length / 2);
+    for (let i = 0; i < first.length; i++) {
+      if (first[i] !== substack[i]) {
+        return;
+      }
+    }
+
+    // Circular dependency detected.
+    const circularPath = first.join(" < ") + ` < (CIRCULAR) ${current}`;
+    throw new ServiceResolutionError(
+      `Circular dependency detected: ${circularPath}`,
+      this.getStack()
+    );
   }
 }
