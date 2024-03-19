@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { circular } from "../../../src/service-container/circular";
 import { Container } from "../../../src/service-container/Container";
 import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
 
@@ -13,9 +14,33 @@ describe("Container class", () => {
       readonly dummyService2: DummyService
     ) {}
   }
+
+  class CircularA {
+    constructor(
+      public circularB?: CircularB,
+      public circularC?: CircularC
+    ) {}
+  }
+
+  class CircularB {
+    constructor(
+      public circularA?: CircularA,
+      public circularC?: CircularC
+    ) {}
+  }
+
+  class CircularC {
+    constructor(
+      public circularA?: CircularA,
+      public circularB?: CircularB
+    ) {}
+  }
   interface TestServicesMap extends ServicesMap {
     DummyService: DummyService;
     DummyDependent: DummyDependent;
+    CircularA: CircularA;
+    CircularB: CircularB;
+    CircularC: CircularC;
   }
 
   let container: Container<TestServicesMap>;
@@ -348,6 +373,128 @@ describe("Container class", () => {
         DummyDependent
       );
       expect(() => container.resolve("DummyDependent")).toThrow(RangeError);
+    });
+
+    describe("circular dependencies resolution, using delay() method", () => {
+      beforeEach(() => {
+        container.registerFactory(
+          "CircularA",
+          (context) => {
+            const circularA = new CircularA();
+            context.delay(() => {
+              circularA.circularB = context.resolve("CircularB");
+              circularA.circularC = context.resolve("CircularC");
+            });
+            return circularA;
+          },
+          { lifecycle: "singleton" }
+        );
+
+        container.registerFactory(
+          "CircularB",
+          (context) => {
+            const circularB = new CircularB();
+            context.delay(() => {
+              circularB.circularA = context.resolve("CircularA");
+              circularB.circularC = context.resolve("CircularC");
+            });
+            return circularB;
+          },
+          { lifecycle: "singleton" }
+        );
+
+        container.registerFactory(
+          "CircularC",
+          (context) => {
+            const circularC = new CircularC();
+            context.delay(() => {
+              circularC.circularB = context.resolve("CircularB");
+              circularC.circularA = context.resolve("CircularA");
+            });
+            return circularC;
+          },
+          { lifecycle: "singleton" }
+        );
+      });
+
+      it("should resolve circular dependencies, using delayed injection of dependency", () => {
+        const circularA = container.resolve("CircularA");
+        expect(circularA).toBeInstanceOf(CircularA);
+        expect(circularA.circularB).toBeInstanceOf(CircularB);
+        expect(circularA.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in different order", () => {
+        const circularB = container.resolve("CircularB");
+        expect(circularB).toBeInstanceOf(CircularB);
+        expect(circularB.circularA).toBeInstanceOf(CircularA);
+        expect(circularB.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in another different order", () => {
+        const circularC = container.resolve("CircularC");
+        expect(circularC).toBeInstanceOf(CircularC);
+        expect(circularC.circularA).toBeInstanceOf(CircularA);
+        expect(circularC.circularB).toBeInstanceOf(CircularB);
+      });
+    });
+
+    describe("circular dependencies resolution, using circular() helper", () => {
+      beforeEach(() => {
+        container.registerFactory(
+          "CircularA",
+          circular((context) => {
+            return new CircularA(
+              context.resolve("CircularB"),
+              context.resolve("CircularC")
+            );
+          }),
+          { lifecycle: "singleton" }
+        );
+
+        container.registerFactory(
+          "CircularB",
+          circular((context) => {
+            return new CircularB(
+              context.resolve("CircularA"),
+              context.resolve("CircularC")
+            );
+          }),
+          { lifecycle: "singleton" }
+        );
+
+        container.registerFactory(
+          "CircularC",
+          circular((context) => {
+            return new CircularC(
+              context.resolve("CircularA"),
+              context.resolve("CircularB")
+            );
+          }),
+          { lifecycle: "singleton" }
+        );
+      });
+
+      it("should resolve circular dependencies, using delayed injection of dependency", () => {
+        const circularA = container.resolve("CircularA");
+        expect(circularA).toBeInstanceOf(CircularA);
+        expect(circularA.circularB).toBeInstanceOf(CircularB);
+        expect(circularA.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in different order", () => {
+        const circularB = container.resolve("CircularB");
+        expect(circularB).toBeInstanceOf(CircularB);
+        expect(circularB.circularA).toBeInstanceOf(CircularA);
+        expect(circularB.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in another different order", () => {
+        const circularC = container.resolve("CircularC");
+        expect(circularC).toBeInstanceOf(CircularC);
+        expect(circularC.circularA).toBeInstanceOf(CircularA);
+        expect(circularC.circularB).toBeInstanceOf(CircularB);
+      });
     });
   });
 

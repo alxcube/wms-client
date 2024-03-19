@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { circular } from "../../../src/service-container/circular";
 import {
   Context,
   type ServiceRegistration,
@@ -264,6 +265,70 @@ describe("Context class", () => {
               });
               return circularC;
             },
+          },
+        ]);
+      });
+
+      it("should resolve circular dependencies, using delayed injection of dependency", () => {
+        const circularA = resolver.resolve("CircularA");
+        expect(circularA).toBeInstanceOf(CircularA);
+        expect(circularA.circularB).toBeInstanceOf(CircularB);
+        expect(circularA.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in different order", () => {
+        const circularB = resolver.resolve("CircularB");
+        expect(circularB).toBeInstanceOf(CircularB);
+        expect(circularB.circularA).toBeInstanceOf(CircularA);
+        expect(circularB.circularC).toBeInstanceOf(CircularC);
+      });
+
+      it("should resolve circular dependencies in another different order", () => {
+        const circularC = resolver.resolve("CircularC");
+        expect(circularC).toBeInstanceOf(CircularC);
+        expect(circularC.circularA).toBeInstanceOf(CircularA);
+        expect(circularC.circularB).toBeInstanceOf(CircularB);
+      });
+    });
+
+    describe("circular dependencies resolution using circular() helper function", () => {
+      beforeEach(() => {
+        registry.set("CircularA", [
+          {
+            name: "default",
+            lifecycle: "request",
+            factory: circular((context) => {
+              return new CircularA(
+                context.resolve("CircularB"),
+                context.resolve("CircularC")
+              );
+            }),
+          },
+        ]);
+
+        registry.set("CircularB", [
+          {
+            name: "default",
+            lifecycle: "request",
+            factory: circular((context) => {
+              return new CircularB(
+                context.resolve("CircularA"),
+                context.resolve("CircularC")
+              );
+            }),
+          },
+        ]);
+
+        registry.set("CircularC", [
+          {
+            name: "default",
+            lifecycle: "request",
+            factory: circular((context) => {
+              return new CircularC(
+                context.resolve("CircularA"),
+                context.resolve("CircularB")
+              );
+            }),
           },
         ]);
       });
