@@ -3,7 +3,7 @@ import {
   map,
   type SingleNodeDataExtractorFn,
 } from "@alxcube/xml-mapper";
-import xpath, { type XPathSelect } from "xpath";
+import xpath from "xpath";
 import type { ExceptionFormat } from "../../ExceptionFormat";
 import type { UnifiedCapabilitiesResponse } from "../../UnifiedCapabilitiesResponse";
 import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdapter";
@@ -11,15 +11,28 @@ import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdap
 export class CapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor
 {
-  private readonly dataExtractor: SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse>;
-  private readonly xpathSelect: XPathSelect;
+  private dataExtractor:
+    | SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse>
+    | undefined;
 
-  constructor() {
-    this.xpathSelect = xpath.useNamespaces({
-      wms: "http://www.opengis.net/wms",
-      xlink: "http://www.w3.org/1999/xlink",
-    });
+  extract(response: Document): UnifiedCapabilitiesResponse {
+    return this.getDataExtractor()(
+      response,
+      xpath.useNamespaces({
+        wms: "http://www.opengis.net/wms",
+        xlink: "http://www.w3.org/1999/xlink",
+      })
+    );
+  }
 
+  private getDataExtractor(): SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse> {
+    if (!this.dataExtractor) {
+      this.dataExtractor = this.buildDataExtractor();
+    }
+    return this.dataExtractor;
+  }
+
+  private buildDataExtractor(): SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse> {
     const linkUrlXpath = "wms:OnlineResource/@xlink:href";
     const linkDataExtractor = map().toNode(linkUrlXpath).asString();
     const mandatoryLinkDataExtractor = map()
@@ -27,7 +40,7 @@ export class CapabilitiesResponseDataExtractor
       .mandatory()
       .asString();
 
-    this.dataExtractor = createObjectMapper<UnifiedCapabilitiesResponse>({
+    return createObjectMapper<UnifiedCapabilitiesResponse>({
       version: map()
         .toNode("/wms:WMS_Capabilities/@version")
         .mandatory()
@@ -318,8 +331,5 @@ export class CapabilitiesResponseDataExtractor
             })),
         }),
     });
-  }
-  extract(response: Document): UnifiedCapabilitiesResponse {
-    return this.dataExtractor(response, this.xpathSelect);
   }
 }
