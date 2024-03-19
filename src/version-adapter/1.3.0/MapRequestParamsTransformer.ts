@@ -10,18 +10,11 @@ export class MapRequestParamsTransformer
     Object.keys(params).forEach((key: keyof MapRequestParams) => {
       switch (key) {
         case "layers":
-          requestParams.layers = params[key]
-            .map(({ layer }) => layer)
-            .join(",");
-          requestParams.styles = params[key]
-            .map(({ style }) => style || "")
-            .join(",");
+          requestParams.layers = this.getLayersParam(params[key]);
+          requestParams.styles = this.getStylesParam(params[key]);
           break;
         case "bounds":
-          requestParams.bbox =
-            params.crs.toLowerCase() === "epsg:4326"
-              ? `${params[key].minY},${params[key].minX},${params[key].maxY},${params[key].maxX}`
-              : `${params[key].minX},${params[key].minY},${params[key].maxX},${params[key].maxY}`;
+          requestParams.bbox = this.getBboxParam(params[key], params.crs);
           break;
         case "transparent":
           requestParams.transparent = params[key] ? "TRUE" : "FALSE";
@@ -37,5 +30,24 @@ export class MapRequestParamsTransformer
     requestParams.request = "GetMap";
 
     return requestParams;
+  }
+
+  private getBboxParam(
+    bounds: MapRequestParams["bounds"],
+    crs: string
+  ): string {
+    return (
+      crs.toLowerCase() === "epsg:4326"
+        ? [bounds.minY, bounds.minX, bounds.maxY, bounds.maxX]
+        : [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY]
+    ).join(",");
+  }
+
+  private getLayersParam(layers: MapRequestParams["layers"]): string {
+    return layers.map(({ layer }) => layer).join(",");
+  }
+
+  private getStylesParam(layers: MapRequestParams["layers"]): string {
+    return layers.map(({ style }) => style || "").join(",");
   }
 }
