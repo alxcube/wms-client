@@ -2,15 +2,17 @@ import axios, { type AxiosInstance } from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseWmsClient } from "../../src/BaseWmsClient";
-import { createClient } from "../../src/createClient";
+import type { BaseWmsClientFactory } from "../../src/BaseWmsClientFactory";
 import { WmsException } from "../../src/error/WmsException";
 import { WmsExceptionReport } from "../../src/error/WmsExceptionReport";
 // eslint-disable-next-line import/no-unresolved
 import capabilitiesXml_1_3_0 from "../fixtures/capabilities_1_3_0.xml?raw";
 // eslint-disable-next-line import/no-unresolved
 import exceptionsXml_1_3_0 from "../fixtures/exceptions_1_3_0.xml?raw";
+import { testContainer } from "../testContainer";
 
 describe("BaseWmsClient class", () => {
+  let factory: BaseWmsClientFactory;
   const wmsUrl = "http://wms-example.com?";
   let client: BaseWmsClient;
   let httpClient: AxiosInstance;
@@ -18,9 +20,10 @@ describe("BaseWmsClient class", () => {
   const customQuery = { customString: "str", customNumber: 1 };
 
   beforeEach(() => {
+    factory = testContainer.resolve("WmsClientFactory") as BaseWmsClientFactory;
     httpClient = axios.create();
     axiosMock = new MockAdapter(httpClient);
-    client = createClient(wmsUrl, "1.3.0", {
+    client = factory.create(wmsUrl, "1.3.0", {
       httpClient,
       query: customQuery,
     });
