@@ -1,10 +1,37 @@
 import type { ServiceResolutionContext } from "./ServiceResolutionContext";
 import type {
+  Constructor,
   ResolvedByKey,
   ServiceKey,
   ServiceResolver,
   ServicesMap,
 } from "./ServiceResolver";
+
+export type ServiceResolvingKey<
+  TServicesMap extends ServicesMap,
+  ResolvedType,
+> = {
+  [K in keyof TServicesMap]: TServicesMap[K] extends ResolvedType ? K : never;
+}[keyof TServicesMap];
+
+type ServiceResolvingToken<TServicesMap extends ServicesMap, ResolvedType> = {
+  service:
+    | ServiceResolvingKey<TServicesMap, ResolvedType>
+    | (ResolvedType extends object ? Constructor<ResolvedType> : never);
+  name: string;
+};
+
+export type DependencyToken<TServicesMap extends ServicesMap, ResolvedType> =
+  | ServiceResolvingKey<TServicesMap, ResolvedType>
+  | ServiceResolvingToken<TServicesMap, ResolvedType>
+  | (ResolvedType extends object ? Constructor<ResolvedType> : never);
+
+export type DependenciesTuple<
+  TServicesMap extends ServicesMap,
+  Tuple extends [...unknown[]],
+> = {
+  [K in keyof Tuple]: DependencyToken<TServicesMap, Tuple[K]>;
+} & { length: Tuple["length"] };
 
 /**
  * Service factory function. Takes service resolution context and returns service instance.
@@ -54,6 +81,11 @@ export interface ServiceFactoryRegistrationOptions
   lifecycle?: ServiceLifecycle;
 }
 
+export interface ClassRegistrationOptions
+  extends ServiceFactoryRegistrationOptions {
+  circular?: boolean;
+}
+
 /**
  * Service container interface.
  */
@@ -86,6 +118,18 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
       ResolvedByKey<TServicesMap, TServiceKey>
     >,
     options?: ServiceFactoryRegistrationOptions
+  ): void;
+
+  registerClass<
+    ConstructorType extends Constructor<object>,
+    DepsTuple extends DependenciesTuple<
+      TServicesMap,
+      ConstructorParameters<ConstructorType>
+    >,
+  >(
+    constructor: ConstructorType,
+    deps: DepsTuple,
+    options?: ClassRegistrationOptions
   ): void;
 
   /**

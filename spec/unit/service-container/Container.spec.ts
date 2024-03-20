@@ -6,7 +6,11 @@ import { ServiceResolutionError } from "../../../src/service-container/ServiceRe
 import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
 
 describe("Container class", () => {
-  class DummyService {}
+  class DummyService {
+    identity() {
+      return;
+    }
+  }
 
   class DummyDependent {
     constructor(
@@ -887,6 +891,31 @@ describe("Container class", () => {
     it("should return empty array when there is no registrations of given service", () => {
       // @ts-expect-error testing unknown service key
       expect(container.getServiceNames("NotRegistered")).toEqual([]);
+    });
+  });
+
+  describe("registerClass() method", () => {
+    it("should register class constructor with automatic factory creation", () => {
+      expect(container.has(DummyService)).toBe(false);
+      container.registerClass(DummyService, []);
+      expect(container.has(DummyService)).toBe(true);
+      expect(container.resolve(DummyService)).toBeInstanceOf(DummyService);
+    });
+
+    it("should register class constructor with dependencies", () => {
+      container.registerClass(DummyDependent, [
+        DummyService,
+        { service: DummyService, name: "alt" },
+      ]);
+      container.registerClass(DummyService, [], { lifecycle: "singleton" });
+      container.registerClass(DummyService, [], {
+        name: "alt",
+        lifecycle: "singleton",
+      });
+      const dependent = container.resolve(DummyDependent);
+      expect(dependent.dummyService1).toBeInstanceOf(DummyService);
+      expect(dependent.dummyService2).toBeInstanceOf(DummyService);
+      expect(dependent.dummyService1).not.toBe(dependent.dummyService2);
     });
   });
 });

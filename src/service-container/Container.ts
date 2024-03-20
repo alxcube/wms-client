@@ -1,5 +1,8 @@
+import { circular } from "./circular";
 import { Context, type ServiceRegistration } from "./Context";
 import type {
+  ClassRegistrationOptions,
+  DependenciesTuple,
   ServiceContainer,
   ServiceFactory,
   ServiceFactoryRegistrationOptions,
@@ -11,6 +14,7 @@ import type {
   ServicesMap,
   ServiceKey,
   ResolvedByKey,
+  Constructor,
 } from "./ServiceResolver";
 import { stringifyServiceKey } from "./stringifyServiceKey";
 
@@ -111,6 +115,37 @@ export class Container<TServicesMap extends ServicesMap>
     if (cascade && this.parent) {
       this.parent.unregister(key, name, true);
     }
+  }
+
+  registerClass<
+    ConstructorType extends Constructor<object>,
+    DepsTuple extends DependenciesTuple<
+      TServicesMap,
+      ConstructorParameters<ConstructorType>
+    >,
+  >(
+    constructor: ConstructorType,
+    deps: DepsTuple,
+    options: ClassRegistrationOptions = {}
+  ) {
+    let factory: ServiceFactory<TServicesMap, InstanceType<ConstructorType>> = (
+      context
+    ) => {
+      const resolvedDeps = context.resolveTuple(
+        deps as unknown as ServiceTokensTuple<TServicesMap>
+      ) as ConstructorParameters<ConstructorType>;
+      return new constructor(...resolvedDeps) as InstanceType<ConstructorType>;
+    };
+
+    if (options.circular) {
+      factory = circular(factory);
+    }
+
+    this.registerFactory(
+      constructor,
+      factory as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      options
+    );
   }
 
   /**
