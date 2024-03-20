@@ -29,6 +29,7 @@ export interface Layer {
   styles?: LayerStyle[];
   minScaleDenominator?: number;
   maxScaleDenominator?: number;
+  scaleHint?: { min: number; max: number };
   queryable?: boolean;
   cascaded?: number;
   opaque?: boolean;

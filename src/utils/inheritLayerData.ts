@@ -59,6 +59,10 @@ export function inheritLayerData(layer: Layer, parentLayer: Layer): Layer {
     layer.maxScaleDenominator = parentLayer.maxScaleDenominator;
   }
 
+  if (parentLayer.scaleHint && !layer.scaleHint) {
+    layer.scaleHint = structuredClone(parentLayer.scaleHint);
+  }
+
   if (parentLayer.queryable !== undefined && layer.queryable === undefined) {
     layer.queryable = parentLayer.queryable;
   }
