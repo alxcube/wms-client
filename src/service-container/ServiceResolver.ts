@@ -3,12 +3,36 @@
  */
 export interface ServicesMap {}
 
-export type ServiceKey<TServicesMap extends ServicesMap> = keyof TServicesMap;
+/**
+ * Generic constructor.
+ */
+export type Constructor<ConstructedType extends object> = {
+  new (
+    ...args: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+  ): ConstructedType;
+  name: string;
+  length: number;
+};
 
+/**
+ * Service key.
+ */
+export type ServiceKey<TServicesMap extends ServicesMap> =
+  | keyof TServicesMap
+  | Constructor<object>;
+
+/**
+ * Utility type. Infers service type by ServiceKey.
+ */
 export type ResolvedByKey<
   TServicesMap extends ServicesMap,
   TServiceKey extends ServiceKey<TServicesMap>,
-> = TServicesMap[TServiceKey];
+> =
+  TServiceKey extends Constructor<infer ConstructedType>
+    ? ConstructedType
+    : TServiceKey extends keyof TServicesMap
+      ? TServicesMap[TServiceKey]
+      : never;
 
 /**
  * Object containing service key and name.
@@ -18,6 +42,9 @@ export interface NamedServiceRecord<TServicesMap extends ServicesMap> {
   name: string;
 }
 
+/**
+ * Service key or NamedServiceRecord.
+ */
 export type ServiceToken<TServicesMap extends ServicesMap> =
   | ServiceKey<TServicesMap>
   | NamedServiceRecord<TServicesMap>;

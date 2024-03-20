@@ -6,7 +6,10 @@ import {
 } from "../../../src/service-container/Context";
 import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
 
-import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
+import type {
+  ServiceKey,
+  ServicesMap,
+} from "../../../src/service-container/ServiceResolver";
 
 describe("Context class", () => {
   class DummyService {}
@@ -54,7 +57,7 @@ describe("Context class", () => {
 
   let dummyServiceInstance: DummyService;
   let registry: Map<
-    keyof TestServicesMap,
+    ServiceKey<TestServicesMap>,
     ServiceRegistration<TestServicesMap, unknown>[]
   >;
   let resolver: Context<TestServicesMap>;
@@ -100,6 +103,28 @@ describe("Context class", () => {
         name: "default",
         factory: (res) =>
           new DummyServiceContainer(res.resolve("DummyService")),
+        lifecycle: "transient",
+      },
+    ]);
+
+    // Register using constructor as key
+    registry.set(DummyService, [
+      {
+        name: "default",
+        factory: () => new DummyService(),
+        lifecycle: "transient",
+      },
+      {
+        name: "alt",
+        factory: () => new DummyService(),
+        lifecycle: "transient",
+      },
+    ]);
+    registry.set(DummyServiceContainer, [
+      {
+        name: "default",
+        factory: (context) =>
+          new DummyServiceContainer(context.resolve(DummyService)),
         lifecycle: "transient",
       },
     ]);
@@ -220,6 +245,16 @@ describe("Context class", () => {
       expect(() => resolver.resolve("DummyServiceContainer")).toThrow(
         ServiceResolutionError
       );
+    });
+
+    it("should resolve services by constructor as key", () => {
+      expect(resolver.resolve(DummyService)).toBeInstanceOf(DummyService);
+    });
+
+    it("should resolve services with dependencies by constructor as key", () => {
+      const container = resolver.resolve(DummyServiceContainer);
+      expect(container).toBeInstanceOf(DummyServiceContainer);
+      expect(container.getService()).toBeInstanceOf(DummyService);
     });
 
     describe("circular dependencies resolution using delay() method", () => {
@@ -571,6 +606,13 @@ describe("Context class", () => {
         ServiceResolutionError
       );
     });
+
+    it("should resolve array of services by constructor as key", () => {
+      expect(resolver.resolveAll(DummyService)).toEqual([
+        expect.any(DummyService),
+        expect.any(DummyService),
+      ]);
+    });
   });
 
   describe("resolveTuple() method", () => {
@@ -601,6 +643,15 @@ describe("Context class", () => {
       expect(service1).toBeInstanceOf(DummyService);
       expect(service2).toBeInstanceOf(DummyService);
       expect(service2).toBe(service1);
+    });
+
+    it("should resolve tuple of services, using constructors as keys", () => {
+      const [dummyService1, dummyService2] = resolver.resolveTuple([
+        DummyService,
+        { service: DummyService, name: "alt" },
+      ]);
+      expect(dummyService1).toBeInstanceOf(DummyService);
+      expect(dummyService2).toBeInstanceOf(DummyService);
     });
   });
 

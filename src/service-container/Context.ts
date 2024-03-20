@@ -9,6 +9,7 @@ import type {
   ServiceKey,
   ResolvedByKey,
 } from "./ServiceResolver";
+import { stringifyServiceKey } from "./stringifyServiceKey";
 
 /**
  * Service registration record
@@ -90,7 +91,7 @@ export class Context<TServicesMap extends ServicesMap>
     name = "default"
   ): ResolvedByKey<TServicesMap, TServiceKey> {
     this.resolutionStack.push({ service: key, name });
-    let service: TServicesMap[TServiceKey];
+    let service: ResolvedByKey<TServicesMap, TServiceKey>;
     try {
       this.checkForCircularDependency();
       service = this.doResolve(key, name);
@@ -233,7 +234,7 @@ export class Context<TServicesMap extends ServicesMap>
     if (!registration.factory) {
       // Make sure we have service factory
       throw new TypeError(
-        `Service "${String(key)}" has neither instance, nor factory.`
+        `Service "${stringifyServiceKey(key)}" has neither instance, nor factory.`
       );
     }
 
@@ -281,7 +282,7 @@ export class Context<TServicesMap extends ServicesMap>
         throw e;
       }
       throw new ServiceResolutionError(
-        `An error occurred in "${String(key)}" service factory, named "${name}"`,
+        `An error occurred in "${stringifyServiceKey(key)}" service factory, named "${name}"`,
         this.getStack(),
         e
       );
@@ -300,7 +301,7 @@ export class Context<TServicesMap extends ServicesMap>
     name: string
   ): ResolvedByKey<TServicesMap, TServiceKey> | undefined {
     const resolved = this.resolved.get(key) as
-      | { name: string; service: TServicesMap[TServiceKey] }[]
+      | { name: string; service: ResolvedByKey<TServicesMap, TServiceKey> }[]
       | undefined;
     if (!resolved) {
       return;
@@ -359,12 +360,14 @@ export class Context<TServicesMap extends ServicesMap>
         >[]
       | undefined;
     if (!registrations) {
-      throw new RangeError(`Service "${String(key)}" is not found.`);
+      throw new RangeError(
+        `Service "${stringifyServiceKey(key)}" is not found.`
+      );
     }
     const registration = registrations.find((record) => record.name === name);
     if (!registration) {
       throw new RangeError(
-        `Service "${String(key)}", named "${name}" is not found.`
+        `Service "${stringifyServiceKey(key)}", named "${name}" is not found.`
       );
     }
     return registration;
@@ -377,7 +380,7 @@ export class Context<TServicesMap extends ServicesMap>
    */
   private checkForCircularDependency() {
     const resolutionStackPath = this.resolutionStack.map(
-      (entry) => `${entry.service as string}[${entry.name}]`
+      (entry) => `${stringifyServiceKey(entry.service)}[${entry.name}]`
     );
     const current = resolutionStackPath.pop();
     if (!current) {

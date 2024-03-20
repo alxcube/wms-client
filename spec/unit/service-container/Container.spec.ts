@@ -135,6 +135,12 @@ describe("Container class", () => {
       container.registerConstant("DummyService", instance, { replace: true });
       expect(container.resolve("DummyService")).toBe(instance);
     });
+
+    it("should register service instance, using constructor as key", () => {
+      const instance = new DummyService();
+      container.registerConstant(DummyService, instance);
+      expect(container.resolve(DummyService)).toBe(instance);
+    });
   });
 
   describe("registerFactory() method", () => {
@@ -287,6 +293,11 @@ describe("Container class", () => {
       });
       expect(container.resolve("DummyService")).not.toBe(instance1);
     });
+
+    it("should register service factory, using constructor as key", () => {
+      container.registerFactory(DummyService, () => new DummyService());
+      expect(container.resolve(DummyService)).toBeInstanceOf(DummyService);
+    });
   });
 
   describe("resolve() method", () => {
@@ -374,6 +385,11 @@ describe("Container class", () => {
         DummyDependent
       );
       expect(() => container.resolve("DummyDependent")).toThrow(RangeError);
+    });
+
+    it("should resolve service, registered in parent container, using constructor as key", () => {
+      container.registerFactory(DummyService, () => new DummyService());
+      expect(childContainer.resolve(DummyService)).toBeInstanceOf(DummyService);
     });
 
     describe("circular dependencies resolution, using delay() method", () => {

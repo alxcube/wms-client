@@ -12,6 +12,7 @@ import type {
   ServiceKey,
   ResolvedByKey,
 } from "./ServiceResolver";
+import { stringifyServiceKey } from "./stringifyServiceKey";
 
 /**
  * Service container.
@@ -344,7 +345,7 @@ export class Container<TServicesMap extends ServicesMap>
 
     if (!options.replace) {
       throw new TypeError(
-        `Service "${String(key)}", named "${name}", already registered. Set 'replace' option to true, if you want to replace registration.`
+        `Service "${stringifyServiceKey(key)}", named "${name}", already registered. Set 'replace' option to true, if you want to replace registration.`
       );
     }
 
