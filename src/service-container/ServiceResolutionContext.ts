@@ -1,5 +1,6 @@
 import type {
   NamedServiceRecord,
+  ServiceKey,
   ServiceResolver,
   ServicesMap,
 } from "./ServiceResolver";
@@ -23,7 +24,7 @@ export interface ServiceResolutionContext<TServicesMap extends ServicesMap>
    * @param key
    * @param name
    */
-  isResolvingFor(key: keyof TServicesMap, name?: string): boolean;
+  isResolvingFor(key: ServiceKey<TServicesMap>, name?: string): boolean;
 
   /**
    * Returns true, when current service is being resolved directly for service of given key. Ignores service name,
@@ -32,7 +33,7 @@ export interface ServiceResolutionContext<TServicesMap extends ServicesMap>
    * @param key
    * @param name
    */
-  isDirectlyResolvingFor(key: keyof TServicesMap, name?: string): boolean;
+  isDirectlyResolvingFor(key: ServiceKey<TServicesMap>, name?: string): boolean;
 
   /**
    * Delays given callback. The callback will be executed after current dependencies stack is resolved.

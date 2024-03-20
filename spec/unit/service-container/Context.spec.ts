@@ -167,6 +167,7 @@ describe("Context class", () => {
     });
 
     it("should throw RangeError, when requested service is not registered", () => {
+      // @ts-expect-error testing unknown service key
       expect(() => resolver.resolve("UnknownService")).toThrow(RangeError);
     });
 
@@ -370,6 +371,7 @@ describe("Context class", () => {
     });
 
     it("should return false, when registry has not requested service", () => {
+      // @ts-expect-error testing unknown service key
       expect(resolver.has("NotRegistered")).toBe(false);
     });
 
@@ -556,6 +558,7 @@ describe("Context class", () => {
     });
 
     it("should return empty array, when requested service is not registered", () => {
+      // @ts-expect-error testing unknown service key
       expect(resolver.resolveAll("NotRegistered")).toEqual([]);
     });
 
@@ -612,6 +615,7 @@ describe("Context class", () => {
     });
 
     it("should return empty array when there is no registrations of given service", () => {
+      // @ts-expect-error testing unknown service key
       expect(resolver.getServiceNames("NotRegistered")).toEqual([]);
     });
   });

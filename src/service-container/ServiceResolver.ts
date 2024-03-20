@@ -1,36 +1,45 @@
 /**
  * Services map.
  */
-export interface ServicesMap {
-  [key: string]: unknown;
-}
+export interface ServicesMap {}
+
+export type ServiceKey<TServicesMap extends ServicesMap> = keyof TServicesMap;
+
+export type ResolvedByKey<
+  TServicesMap extends ServicesMap,
+  TServiceKey extends ServiceKey<TServicesMap>,
+> = TServicesMap[TServiceKey];
 
 /**
  * Object containing service key and name.
  */
 export interface NamedServiceRecord<TServicesMap extends ServicesMap> {
-  service: keyof TServicesMap;
+  service: ServiceKey<TServicesMap>;
   name: string;
 }
+
+export type ServiceToken<TServicesMap extends ServicesMap> =
+  | ServiceKey<TServicesMap>
+  | NamedServiceRecord<TServicesMap>;
 
 /**
  * Array of service keys in ServicesMap or NamedServiceRecord objects.
  */
-export type ServiceKeysTuple<TServicesMap extends ServicesMap> = [
-  ...(keyof TServicesMap | NamedServiceRecord<TServicesMap>)[],
+export type ServiceTokensTuple<TServicesMap extends ServicesMap> = [
+  ...ServiceToken<TServicesMap>[],
 ];
 
 /**
  * Utility type. Resolves service type using ServicesMap and service key or NamedServiceRecord.
  */
-export type ResolvedService<
+export type ResolvedByToken<
   TServicesMap extends ServicesMap,
-  T extends keyof TServicesMap | NamedServiceRecord<TServicesMap>,
+  TServiceToken extends ServiceToken<TServicesMap>,
 > =
-  T extends NamedServiceRecord<TServicesMap>
-    ? TServicesMap[T["service"]]
-    : T extends keyof TServicesMap
-      ? TServicesMap[T]
+  TServiceToken extends NamedServiceRecord<TServicesMap>
+    ? ResolvedByKey<TServicesMap, TServiceToken["service"]>
+    : TServiceToken extends keyof TServicesMap
+      ? ResolvedByKey<TServicesMap, TServiceToken>
       : never;
 
 /**
@@ -38,9 +47,9 @@ export type ResolvedService<
  */
 export type ResolvedServicesTuple<
   TServiceMap extends ServicesMap,
-  Tuple extends ServiceKeysTuple<TServiceMap>,
+  Tuple extends ServiceTokensTuple<TServiceMap>,
 > = {
-  [K in keyof Tuple]: ResolvedService<TServiceMap, Tuple[K]>;
+  [K in keyof Tuple]: ResolvedByToken<TServiceMap, Tuple[K]>;
 } & { length: Tuple["length"] };
 
 /**
@@ -54,10 +63,10 @@ export interface ServiceResolver<TServicesMap extends ServicesMap> {
    * @param key
    * @param name
    */
-  resolve<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  resolve<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
     name?: string
-  ): TServicesMap[ServiceKey];
+  ): ResolvedByKey<TServicesMap, TServiceKey>;
 
   /**
    * Resolves array of services, registered under given key with different names. Returns empty array, when there is
@@ -65,9 +74,9 @@ export interface ServiceResolver<TServicesMap extends ServicesMap> {
    *
    * @param key
    */
-  resolveAll<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey
-  ): TServicesMap[ServiceKey][];
+  resolveAll<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey
+  ): ResolvedByKey<TServicesMap, TServiceKey>[];
 
   /**
    * Resolves tuple of services, using given array of service keys / NamedServiceRecord objects. Used to get independent
@@ -77,9 +86,9 @@ export interface ServiceResolver<TServicesMap extends ServicesMap> {
    *
    * @param services
    */
-  resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
-    services: ServiceKeys
-  ): ResolvedServicesTuple<TServicesMap, ServiceKeys>;
+  resolveTuple<ServiceTokens extends ServiceTokensTuple<TServicesMap>>(
+    services: ServiceTokens
+  ): ResolvedServicesTuple<TServicesMap, ServiceTokens>;
 
   /**
    * Checks if given service exists. When name is omitted, returns true, when at least one registration of given service
@@ -89,12 +98,12 @@ export interface ServiceResolver<TServicesMap extends ServicesMap> {
    * @param key
    * @param name
    */
-  has(key: keyof TServicesMap, name?: string): boolean;
+  has(key: ServiceKey<TServicesMap>, name?: string): boolean;
 
   /**
    * Returns array of service names, registered under given key. If service was registered without explicit name,
    * it will have name "default".
    * @param key
    */
-  getServiceNames(key: keyof TServicesMap): string[];
+  getServiceNames(key: ServiceKey<TServicesMap>): string[];
 }

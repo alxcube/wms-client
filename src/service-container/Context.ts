@@ -4,8 +4,10 @@ import { ServiceResolutionError } from "./ServiceResolutionError";
 import type {
   NamedServiceRecord,
   ResolvedServicesTuple,
-  ServiceKeysTuple,
+  ServiceTokensTuple,
   ServicesMap,
+  ServiceKey,
+  ResolvedByKey,
 } from "./ServiceResolver";
 
 /**
@@ -47,7 +49,7 @@ export class Context<TServicesMap extends ServicesMap>
    * @private
    */
   private readonly resolved: Map<
-    keyof TServicesMap,
+    ServiceKey<TServicesMap>,
     { name: string; service: unknown }[]
   >;
 
@@ -71,7 +73,7 @@ export class Context<TServicesMap extends ServicesMap>
    */
   constructor(
     private readonly registry: Map<
-      keyof TServicesMap,
+      ServiceKey<TServicesMap>,
       ServiceRegistration<TServicesMap, unknown>[]
     >
   ) {
@@ -83,12 +85,12 @@ export class Context<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  resolve<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  resolve<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
     name = "default"
-  ): TServicesMap[ServiceKey] {
+  ): ResolvedByKey<TServicesMap, TServiceKey> {
     this.resolutionStack.push({ service: key, name });
-    let service: TServicesMap[ServiceKey];
+    let service: TServicesMap[TServiceKey];
     try {
       this.checkForCircularDependency();
       service = this.doResolve(key, name);
@@ -102,9 +104,9 @@ export class Context<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  resolveAll<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey
-  ): TServicesMap[ServiceKey][] {
+  resolveAll<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey
+  ): ResolvedByKey<TServicesMap, TServiceKey>[] {
     const registrations = this.registry.get(key);
     if (!registrations) {
       return [];
@@ -115,7 +117,7 @@ export class Context<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
+  resolveTuple<ServiceKeys extends ServiceTokensTuple<TServicesMap>>(
     services: ServiceKeys
   ): ResolvedServicesTuple<TServicesMap, ServiceKeys> {
     return services.map((key) => {
@@ -129,7 +131,7 @@ export class Context<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  has(key: keyof TServicesMap, name?: string): boolean {
+  has(key: ServiceKey<TServicesMap>, name?: string): boolean {
     const registrations = this.registry.get(key);
     if (name === undefined) {
       return !!registrations?.length;
@@ -147,7 +149,7 @@ export class Context<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  isResolvingFor(key: keyof TServicesMap, name?: string): boolean {
+  isResolvingFor(key: ServiceKey<TServicesMap>, name?: string): boolean {
     return !!this.resolutionStack.find((entry) => {
       return (
         entry.service === key && (name === undefined || entry.name === name)
@@ -158,7 +160,10 @@ export class Context<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  isDirectlyResolvingFor(key: keyof TServicesMap, name?: string): boolean {
+  isDirectlyResolvingFor(
+    key: ServiceKey<TServicesMap>,
+    name?: string
+  ): boolean {
     if (this.resolutionStack.length < 2) {
       // Call made from resolution root.
       return false;
@@ -173,7 +178,7 @@ export class Context<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  getServiceNames(key: keyof TServicesMap): string[] {
+  getServiceNames(key: ServiceKey<TServicesMap>): string[] {
     const registrations = this.registry.get(key);
     if (!registrations) {
       return [];
@@ -195,10 +200,10 @@ export class Context<TServicesMap extends ServicesMap>
    * @param name
    * @private
    */
-  private doResolve<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  private doResolve<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
     name = "default"
-  ): TServicesMap[ServiceKey] {
+  ): ResolvedByKey<TServicesMap, TServiceKey> {
     const alreadyResolved = this.findInResolved(key, name);
     if (alreadyResolved) {
       return alreadyResolved;
@@ -214,10 +219,10 @@ export class Context<TServicesMap extends ServicesMap>
    * @param name
    * @private
    */
-  private resolveRegistered<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  private resolveRegistered<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
     name: string
-  ): TServicesMap[ServiceKey] {
+  ): ResolvedByKey<TServicesMap, TServiceKey> {
     const registration = this.getServiceRegistration(key, name);
 
     if (registration.instance) {
@@ -259,11 +264,16 @@ export class Context<TServicesMap extends ServicesMap>
    * @param factory
    * @private
    */
-  private resolveWithErrorHandling<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  private resolveWithErrorHandling<
+    TServiceKey extends ServiceKey<TServicesMap>,
+  >(
+    key: TServiceKey,
     name: string,
-    factory: ServiceFactory<TServicesMap, TServicesMap[ServiceKey]>
-  ): TServicesMap[ServiceKey] {
+    factory: ServiceFactory<
+      TServicesMap,
+      ResolvedByKey<TServicesMap, TServiceKey>
+    >
+  ): ResolvedByKey<TServicesMap, TServiceKey> {
     try {
       return factory(this);
     } catch (e) {
@@ -285,12 +295,12 @@ export class Context<TServicesMap extends ServicesMap>
    * @param name
    * @private
    */
-  private findInResolved<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  private findInResolved<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
     name: string
-  ): TServicesMap[ServiceKey] | undefined {
+  ): ResolvedByKey<TServicesMap, TServiceKey> | undefined {
     const resolved = this.resolved.get(key) as
-      | { name: string; service: TServicesMap[ServiceKey] }[]
+      | { name: string; service: TServicesMap[TServiceKey] }[]
       | undefined;
     if (!resolved) {
       return;
@@ -307,9 +317,9 @@ export class Context<TServicesMap extends ServicesMap>
    * @param name
    * @private
    */
-  private saveInResolved<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    service: TServicesMap[ServiceKey],
+  private saveInResolved<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
+    service: ResolvedByKey<TServicesMap, TServiceKey>,
     name: string
   ): void {
     const existingResolved = this.resolved.get(key);
@@ -335,12 +345,18 @@ export class Context<TServicesMap extends ServicesMap>
    * @param name
    * @private
    */
-  private getServiceRegistration<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  private getServiceRegistration<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
     name: string
-  ): ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]> {
+  ): ServiceRegistration<
+    TServicesMap,
+    ResolvedByKey<TServicesMap, TServiceKey>
+  > {
     const registrations = this.registry.get(key) as
-      | ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]>[]
+      | ServiceRegistration<
+          TServicesMap,
+          ResolvedByKey<TServicesMap, TServiceKey>
+        >[]
       | undefined;
     if (!registrations) {
       throw new RangeError(`Service "${String(key)}" is not found.`);

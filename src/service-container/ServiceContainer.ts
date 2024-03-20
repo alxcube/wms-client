@@ -1,5 +1,10 @@
 import type { ServiceResolutionContext } from "./ServiceResolutionContext";
-import type { ServiceResolver, ServicesMap } from "./ServiceResolver";
+import type {
+  ResolvedByKey,
+  ServiceKey,
+  ServiceResolver,
+  ServicesMap,
+} from "./ServiceResolver";
 
 /**
  * Service factory function. Takes service resolution context and returns service instance.
@@ -61,9 +66,9 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
    * @param service
    * @param options
    */
-  registerConstant<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    service: TServicesMap[ServiceKey],
+  registerConstant<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
+    service: ResolvedByKey<TServicesMap, TServiceKey>,
     options?: ServiceRegistrationOptions
   ): void;
 
@@ -74,9 +79,12 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
    * @param factory
    * @param options
    */
-  registerFactory<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    factory: ServiceFactory<TServicesMap, TServicesMap[ServiceKey]>,
+  registerFactory<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
+    factory: ServiceFactory<
+      TServicesMap,
+      ResolvedByKey<TServicesMap, TServiceKey>
+    >,
     options?: ServiceFactoryRegistrationOptions
   ): void;
 
@@ -89,7 +97,11 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
    * @param name
    * @param cascade
    */
-  unregister(key: keyof TServicesMap, name?: string, cascade?: boolean): void;
+  unregister(
+    key: ServiceKey<TServicesMap>,
+    name?: string,
+    cascade?: boolean
+  ): void;
 
   /**
    * Creates child container. Child container can override any service registration, that exists in parent container,
@@ -105,7 +117,7 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
    * @param key
    * @param name
    */
-  hasOwn(key: keyof TServicesMap, name?: string): boolean;
+  hasOwn(key: ServiceKey<TServicesMap>, name?: string): boolean;
 
   /**
    * Returns parent container, if it exists.

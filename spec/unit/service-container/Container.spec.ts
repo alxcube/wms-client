@@ -323,6 +323,7 @@ describe("Container class", () => {
     });
 
     it("should throw RangeError, when requested service is not registered", () => {
+      // @ts-expect-error testing unknown service key
       expect(() => container.resolve("NotRegistered")).toThrow(RangeError);
     });
 
@@ -516,6 +517,7 @@ describe("Container class", () => {
     });
 
     it("should return empty array, when no services registered under given key", () => {
+      // @ts-expect-error testing unknown service key
       expect(container.resolveAll("NotRegistered")).toEqual([]);
     });
 
@@ -867,6 +869,7 @@ describe("Container class", () => {
     });
 
     it("should return empty array when there is no registrations of given service", () => {
+      // @ts-expect-error testing unknown service key
       expect(container.getServiceNames("NotRegistered")).toEqual([]);
     });
   });

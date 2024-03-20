@@ -7,8 +7,10 @@ import type {
 } from "./ServiceContainer";
 import type {
   ResolvedServicesTuple,
-  ServiceKeysTuple,
+  ServiceTokensTuple,
   ServicesMap,
+  ServiceKey,
+  ResolvedByKey,
 } from "./ServiceResolver";
 
 /**
@@ -23,7 +25,7 @@ export class Container<TServicesMap extends ServicesMap>
    * @private
    */
   private registry: Map<
-    keyof TServicesMap,
+    ServiceKey<TServicesMap>,
     ServiceRegistration<TServicesMap, unknown>[]
   >;
 
@@ -33,7 +35,7 @@ export class Container<TServicesMap extends ServicesMap>
    * @private
    */
   private readonly snapshots: Map<
-    keyof TServicesMap,
+    ServiceKey<TServicesMap>,
     ServiceRegistration<TServicesMap, unknown>[]
   >[];
 
@@ -50,26 +52,26 @@ export class Container<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  resolve<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  resolve<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
     name?: string
-  ): TServicesMap[ServiceKey] {
+  ): ResolvedByKey<TServicesMap, TServiceKey> {
     return new Context(this.getMergedRegistry()).resolve(key, name);
   }
 
   /**
    * @inheritDoc
    */
-  resolveAll<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey
-  ): TServicesMap[ServiceKey][] {
+  resolveAll<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey
+  ): ResolvedByKey<TServicesMap, TServiceKey>[] {
     return new Context(this.getMergedRegistry()).resolveAll(key);
   }
 
   /**
    * @inheritDoc
    */
-  resolveTuple<ServiceKeys extends ServiceKeysTuple<TServicesMap>>(
+  resolveTuple<ServiceKeys extends ServiceTokensTuple<TServicesMap>>(
     services: ServiceKeys
   ): ResolvedServicesTuple<TServicesMap, ServiceKeys> {
     return new Context(this.getMergedRegistry()).resolveTuple(services);
@@ -78,9 +80,9 @@ export class Container<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  registerConstant<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    service: TServicesMap[ServiceKey],
+  registerConstant<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
+    service: ResolvedByKey<TServicesMap, TServiceKey>,
     options?: ServiceRegistrationOptions
   ) {
     this.registerConstantOrFactory(key, service, false, options);
@@ -89,9 +91,12 @@ export class Container<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  registerFactory<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    factory: ServiceFactory<TServicesMap, TServicesMap[ServiceKey]>,
+  registerFactory<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
+    factory: ServiceFactory<
+      TServicesMap,
+      ResolvedByKey<TServicesMap, TServiceKey>
+    >,
     options?: ServiceFactoryRegistrationOptions
   ) {
     this.registerConstantOrFactory(key, factory, true, options);
@@ -100,7 +105,7 @@ export class Container<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  unregister(key: keyof TServicesMap, name?: string, cascade = false) {
+  unregister(key: ServiceKey<TServicesMap>, name?: string, cascade = false) {
     this.unregisterOwn(key, name);
     if (cascade && this.parent) {
       this.parent.unregister(key, name, true);
@@ -110,7 +115,7 @@ export class Container<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  has(key: keyof TServicesMap, name?: string): boolean {
+  has(key: ServiceKey<TServicesMap>, name?: string): boolean {
     if (this.hasOwn(key, name)) {
       return true;
     }
@@ -123,7 +128,7 @@ export class Container<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  hasOwn(key: keyof TServicesMap, name?: string): boolean {
+  hasOwn(key: ServiceKey<TServicesMap>, name?: string): boolean {
     const registrations = this.registry.get(key);
     if (name === undefined) {
       return !!registrations?.length;
@@ -150,7 +155,7 @@ export class Container<TServicesMap extends ServicesMap>
    */
   backup(cascade = false) {
     const newRegistry: Map<
-      keyof TServicesMap,
+      ServiceKey<TServicesMap>,
       ServiceRegistration<TServicesMap, unknown>[]
     > = new Map();
     for (const [key, registrations] of this.registry) {
@@ -184,7 +189,7 @@ export class Container<TServicesMap extends ServicesMap>
   /**
    * @inheritDoc
    */
-  getServiceNames(key: keyof TServicesMap): string[] {
+  getServiceNames(key: ServiceKey<TServicesMap>): string[] {
     const mergedRegistry = this.getMergedRegistry();
     const registrations = mergedRegistry.get(key);
     if (!registrations) {
@@ -200,7 +205,7 @@ export class Container<TServicesMap extends ServicesMap>
    * @param name
    * @private
    */
-  private unregisterOwn(key: keyof TServicesMap, name?: string) {
+  private unregisterOwn(key: ServiceKey<TServicesMap>, name?: string) {
     if (name === undefined) {
       this.registry.delete(key);
       return;
@@ -223,7 +228,7 @@ export class Container<TServicesMap extends ServicesMap>
    * @protected
    */
   protected getMergedRegistry(): Map<
-    keyof TServicesMap,
+    ServiceKey<TServicesMap>,
     ServiceRegistration<TServicesMap, unknown>[]
   > {
     if (!this.parent) {
@@ -231,7 +236,7 @@ export class Container<TServicesMap extends ServicesMap>
     }
     const parentRegistry = this.parent.getMergedRegistry();
     const result: Map<
-      keyof TServicesMap,
+      ServiceKey<TServicesMap>,
       ServiceRegistration<TServicesMap, unknown>[]
     > = new Map();
 
@@ -301,11 +306,13 @@ export class Container<TServicesMap extends ServicesMap>
    * @param options
    * @private
    */
-  private registerConstantOrFactory<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
+  private registerConstantOrFactory<
+    TServiceKey extends ServiceKey<TServicesMap>,
+  >(
+    key: TServiceKey,
     serviceOrFactory:
-      | TServicesMap[ServiceKey]
-      | ServiceFactory<TServicesMap, TServicesMap[ServiceKey]>,
+      | ResolvedByKey<TServicesMap, TServiceKey>
+      | ServiceFactory<TServicesMap, ResolvedByKey<TServicesMap, TServiceKey>>,
     isFactory: boolean,
     options: ServiceFactoryRegistrationOptions = {}
   ) {
@@ -316,7 +323,10 @@ export class Container<TServicesMap extends ServicesMap>
     );
 
     const existingRegistrations = this.registry.get(key) as
-      | ServiceRegistration<TServicesMap, TServicesMap[ServiceKey]>[]
+      | ServiceRegistration<
+          TServicesMap,
+          ResolvedByKey<TServicesMap, TServiceKey>
+        >[]
       | undefined;
     if (!existingRegistrations) {
       this.registry.set(key, [registration]);
