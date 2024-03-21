@@ -1,5 +1,6 @@
 import { BaseWmsClientFactory } from "./BaseWmsClientFactory";
 import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryParamsSerializer";
+import { constant } from "./service-container/constant";
 import { Container } from "./service-container/Container";
 import type { TypesMap } from "./TypesMap";
 import { capabilitiesRequestParamsTransformer } from "./version-adapter/1.3.0/capabilitiesRequestParamsTransformer";
@@ -26,21 +27,21 @@ serviceContainer.registerImplementation(
   BaseQueryParamsSerializer
 );
 
-serviceContainer.registerFactory(
+serviceContainer.registerClass(
+  BaseWmsVersionAdapter,
+  [
+    constant("1.3.0"),
+    { service: "WmsCapabilitiesRequestParamsTransformer", name: "1.3.0" },
+    { service: "WmsCapabilitiesResponseDataExtractor", name: "1.3.0" },
+    { service: "WmsMapRequestParamsTransformer", name: "1.3.0" },
+    { service: "WmsErrorsExtractor", name: "1.3.0" },
+  ],
+  { name: "1.3.0" }
+);
+serviceContainer.registerImplementation(
   "WmsVersionAdapter",
-  (context) => {
-    const version = "1.3.0";
-    return new BaseWmsVersionAdapter(
-      version,
-      context.resolve("WmsCapabilitiesRequestParamsTransformer", version),
-      context.resolve("WmsCapabilitiesResponseDataExtractor", version),
-      context.resolve("WmsMapRequestParamsTransformer", version),
-      context.resolve("WmsErrorsExtractor", version)
-    );
-  },
-  {
-    name: "1.3.0",
-  }
+  { service: BaseWmsVersionAdapter, name: "1.3.0" },
+  { name: "1.3.0" }
 );
 
 serviceContainer.registerConstant(
