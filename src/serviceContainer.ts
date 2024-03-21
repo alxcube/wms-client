@@ -11,18 +11,19 @@ import { BaseWmsVersionAdapterResolver } from "./version-adapter/BaseWmsVersionA
 
 export const serviceContainer = new Container<TypesMap>();
 
-serviceContainer.registerFactory(
+serviceContainer.registerClass(BaseWmsClientFactory, [
+  "WmsVersionAdapterResolver",
+  "QueryParamsSerializer",
+]);
+serviceContainer.registerImplementation(
   "WmsClientFactory",
-  (context) =>
-    new BaseWmsClientFactory(
-      context.resolve("WmsVersionAdapterResolver"),
-      context.resolve("QueryParamsSerializer")
-    )
+  BaseWmsClientFactory
 );
 
-serviceContainer.registerFactory(
+serviceContainer.registerClass(BaseQueryParamsSerializer, []);
+serviceContainer.registerImplementation(
   "QueryParamsSerializer",
-  () => new BaseQueryParamsSerializer()
+  BaseQueryParamsSerializer
 );
 
 serviceContainer.registerFactory(
@@ -48,29 +49,24 @@ serviceContainer.registerConstant(
   { name: "1.3.0" }
 );
 
-serviceContainer.registerFactory(
+serviceContainer.registerClass(CapabilitiesResponseDataExtractor, []);
+serviceContainer.registerImplementation(
   "WmsCapabilitiesResponseDataExtractor",
-  () => {
-    return new CapabilitiesResponseDataExtractor();
-  },
+  CapabilitiesResponseDataExtractor,
   { name: "1.3.0" }
 );
 
-serviceContainer.registerFactory(
+serviceContainer.registerClass(MapRequestParamsTransformer, []);
+serviceContainer.registerImplementation(
   "WmsMapRequestParamsTransformer",
-  () => {
-    return new MapRequestParamsTransformer();
-  },
+  MapRequestParamsTransformer,
   { name: "1.3.0" }
 );
 
-serviceContainer.registerFactory(
-  "WmsErrorsExtractor",
-  () => {
-    return new ErrorsExtractor();
-  },
-  { name: "1.3.0" }
-);
+serviceContainer.registerClass(ErrorsExtractor, []);
+serviceContainer.registerImplementation("WmsErrorsExtractor", ErrorsExtractor, {
+  name: "1.3.0",
+});
 
 serviceContainer.registerFactory("WmsVersionAdapterResolver", (context) => {
   return new BaseWmsVersionAdapterResolver(

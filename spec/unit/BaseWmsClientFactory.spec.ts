@@ -7,7 +7,7 @@ describe("BaseWmsClientFactory class", () => {
   let factory: BaseWmsClientFactory;
 
   beforeEach(() => {
-    factory = testContainer.resolve("WmsClientFactory") as BaseWmsClientFactory;
+    factory = testContainer.resolve(BaseWmsClientFactory);
   });
 
   test("correct resolution from service container", () => {

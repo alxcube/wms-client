@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import type { UnifiedCapabilitiesResponse } from "../../../../src/UnifiedCapabilitiesResponse";
 import { CapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/1.3.0/CapabilitiesResponseDataExtractor";
 import { testContainer } from "../../../testContainer";
@@ -17,14 +17,7 @@ describe("CapabilitiesResponseDataExtractor v1.3.0 class", () => {
       capabilities_1_3_0,
       "text/xml"
     );
-    extractor = testContainer.resolve(
-      "WmsCapabilitiesResponseDataExtractor",
-      "1.3.0"
-    ) as CapabilitiesResponseDataExtractor;
-  });
-
-  test("correct resolution from service container", () => {
-    expect(extractor).toBeInstanceOf(CapabilitiesResponseDataExtractor);
+    extractor = testContainer.resolve(CapabilitiesResponseDataExtractor);
   });
 
   describe("extract() method", () => {

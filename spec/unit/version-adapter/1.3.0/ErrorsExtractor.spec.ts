@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { ErrorsExtractor } from "../../../../src/version-adapter/1.3.0/ErrorsExtractor";
 import { testContainer } from "../../../testContainer";
 // eslint-disable-next-line import/no-unresolved
@@ -13,14 +13,7 @@ describe("ErrorsExtractor v1.3.0 class", () => {
   beforeEach(() => {
     xmlParser = new DOMParser();
     errorsDoc = xmlParser.parseFromString(exceptions_1_3_0, "text/xml");
-    extractor = testContainer.resolve(
-      "WmsErrorsExtractor",
-      "1.3.0"
-    ) as ErrorsExtractor;
-  });
-
-  test("correct resolution from service container", () => {
-    expect(extractor).toBeInstanceOf(ErrorsExtractor);
+    extractor = testContainer.resolve(ErrorsExtractor);
   });
 
   describe("extract() method", () => {

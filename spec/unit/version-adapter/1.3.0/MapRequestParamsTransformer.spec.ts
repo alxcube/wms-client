@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import type { MapRequestParams } from "../../../../src/MapRequestParams";
 import { MapRequestParamsTransformer } from "../../../../src/version-adapter/1.3.0/MapRequestParamsTransformer";
 import { testContainer } from "../../../testContainer";
@@ -7,14 +7,7 @@ describe("MapRequestParamsTransformer v1.3.0 class", () => {
   let transformer: MapRequestParamsTransformer;
 
   beforeEach(() => {
-    transformer = testContainer.resolve(
-      "WmsMapRequestParamsTransformer",
-      "1.3.0"
-    ) as MapRequestParamsTransformer;
-  });
-
-  test("correct resolution from service container", () => {
-    expect(transformer).toBeInstanceOf(MapRequestParamsTransformer);
+    transformer = testContainer.resolve(MapRequestParamsTransformer);
   });
 
   describe("transform() method", () => {
