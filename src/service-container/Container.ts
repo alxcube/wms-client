@@ -10,6 +10,7 @@ import {
   type ServiceContainer,
   type ServiceFactory,
   type ServiceFactoryRegistrationOptions,
+  type ServiceModule,
   type ServiceRegistrationOptions,
 } from "./ServiceContainer";
 import {
@@ -170,6 +171,10 @@ export class Container<TServicesMap extends ServicesMap>
       (context) => context.resolve(constructor as unknown as ServiceKey, name),
       options
     );
+  }
+
+  registerModule(module: ServiceModule<TServicesMap>): () => void {
+    return module.register(this);
   }
 
   /**

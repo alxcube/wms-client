@@ -58,6 +58,10 @@ export interface ServiceFactory<TServicesMap extends ServicesMap, ServiceType> {
   (context: ServiceResolutionContext<TServicesMap>): ServiceType;
 }
 
+export interface ServiceModule<TServicesMap extends ServicesMap> {
+  register(container: ServiceContainer<TServicesMap>): () => void;
+}
+
 /**
  * Service lifecycle:
  * - "transient": creates new service instance each time service is requested.
@@ -158,6 +162,8 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     implementation: InterfaceImplementationToken<TServicesMap, ServiceKey>,
     options?: ImplementationRegistrationOptions
   ): void;
+
+  registerModule(module: ServiceModule<TServicesMap>): () => void;
 
   /**
    * Removes service registration. When name is omitted or is `undefined`, removes all registrations of that

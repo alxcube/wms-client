@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { circular } from "../../../src/service-container/circular";
 import { Container } from "../../../src/service-container/Container";
+import type {
+  ServiceContainer,
+  ServiceModule,
+} from "../../../src/service-container/ServiceContainer";
 import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
 
 import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
@@ -945,6 +949,25 @@ describe("Container class", () => {
         name: "named",
       });
       expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+    });
+  });
+
+  describe("registerModule() method", () => {
+    it("should call module's register() method, and return function that unregisters module", () => {
+      const module: ServiceModule<TestServicesMap> = {
+        register(container: ServiceContainer<TestServicesMap>): () => void {
+          container.registerClass(DummyService, []);
+          return () => {
+            container.unregister(DummyService, "default");
+          };
+        },
+      };
+
+      expect(container.has(DummyService)).toBe(false);
+      const unregister = container.registerModule(module);
+      expect(container.has(DummyService)).toBe(true);
+      unregister();
+      expect(container.has(DummyService)).toBe(false);
     });
   });
 });
