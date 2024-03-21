@@ -917,6 +917,17 @@ describe("Container class", () => {
       expect(dependent.dummyService2).toBeInstanceOf(DummyService);
       expect(dependent.dummyService1).not.toBe(dependent.dummyService2);
     });
+
+    it("should register class constructor with constant dependencies", () => {
+      const dummyService = new DummyService();
+      container.registerClass(DummyDependent, [
+        { constant: dummyService },
+        { constant: dummyService },
+      ]);
+      const dummyDependent = container.resolve(DummyDependent);
+      expect(dummyDependent.dummyService1).toBe(dummyService);
+      expect(dummyDependent.dummyService2).toBe(dummyService);
+    });
   });
 
   describe("registerImplementation() method", () => {

@@ -1,22 +1,26 @@
 import { circular } from "./circular";
 import { Context, type ServiceRegistration } from "./Context";
-import type {
-  ClassRegistrationOptions,
-  DependenciesTuple,
-  ImplementationRegistrationOptions,
-  InterfaceImplementationToken,
-  ServiceContainer,
-  ServiceFactory,
-  ServiceFactoryRegistrationOptions,
-  ServiceRegistrationOptions,
+import {
+  type ClassRegistrationOptions,
+  type ConstantToken,
+  type DependenciesTuple,
+  type ImplementationRegistrationOptions,
+  type InterfaceImplementationToken,
+  isConstantToken,
+  type ServiceContainer,
+  type ServiceFactory,
+  type ServiceFactoryRegistrationOptions,
+  type ServiceRegistrationOptions,
 } from "./ServiceContainer";
-import type {
-  ResolvedServicesTuple,
-  ServiceTokensTuple,
-  ServicesMap,
-  ServiceKey,
-  ResolvedByKey,
-  Constructor,
+import {
+  type ResolvedServicesTuple,
+  type ServiceTokensTuple,
+  type ServicesMap,
+  type ServiceKey,
+  type ResolvedByKey,
+  type Constructor,
+  isNamedServiceRecord,
+  type NamedServiceRecord,
 } from "./ServiceResolver";
 import { stringifyServiceKey } from "./stringifyServiceKey";
 
@@ -123,9 +127,21 @@ export class Container<TServicesMap extends ServicesMap>
     let factory: ServiceFactory<TServicesMap, InstanceType<ConstructorType>> = (
       context
     ) => {
-      const resolvedDeps = context.resolveTuple(
-        deps as unknown as ServiceTokensTuple<TServicesMap>
-      ) as ConstructorParameters<ConstructorType>;
+      const resolvedDeps = (
+        deps as unknown as (
+          | ServiceKey<TServicesMap>
+          | NamedServiceRecord<TServicesMap>
+          | ConstantToken<unknown>
+        )[]
+      ).map((dep) => {
+        if (isConstantToken(dep)) {
+          return dep.constant;
+        }
+        if (isNamedServiceRecord(dep)) {
+          return context.resolve(dep.service, dep.name);
+        }
+        return context.resolve(dep as ServiceKey<TServicesMap>);
+      }) as ConstructorParameters<ConstructorType>;
       return new constructor(...resolvedDeps) as InstanceType<ConstructorType>;
     };
 

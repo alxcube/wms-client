@@ -42,6 +42,19 @@ export interface NamedServiceRecord<TServicesMap extends ServicesMap> {
   name: string;
 }
 
+export function isNamedServiceRecord(
+  obj: unknown
+): obj is NamedServiceRecord<object> {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "service" in obj &&
+    ["string", "function"].includes(typeof obj.service) &&
+    "name" in obj &&
+    typeof obj.name === "string"
+  );
+}
+
 /**
  * Service key or NamedServiceRecord.
  */

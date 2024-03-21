@@ -21,9 +21,18 @@ type ServiceResolvingToken<TServicesMap extends ServicesMap, ResolvedType> = {
   name: string;
 };
 
+export interface ConstantToken<T> {
+  constant: T;
+}
+
+export function isConstantToken(obj: unknown): obj is ConstantToken<unknown> {
+  return typeof obj === "object" && obj !== null && "constant" in obj;
+}
+
 export type DependencyToken<TServicesMap extends ServicesMap, ResolvedType> =
   | ServiceResolvingKey<TServicesMap, ResolvedType>
   | ServiceResolvingToken<TServicesMap, ResolvedType>
+  | ConstantToken<ResolvedType>
   | (ResolvedType extends object ? Constructor<ResolvedType> : never);
 
 export type DependenciesTuple<
