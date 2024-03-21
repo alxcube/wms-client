@@ -59,7 +59,7 @@ export interface ServiceFactory<TServicesMap extends ServicesMap, ServiceType> {
 }
 
 export interface ServiceModule<TServicesMap extends ServicesMap> {
-  register(container: ServiceContainer<TServicesMap>): () => void;
+  register(container: ServiceContainer<TServicesMap>): (() => void) | void;
 }
 
 /**
@@ -163,7 +163,7 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     options?: ImplementationRegistrationOptions
   ): void;
 
-  registerModule(module: ServiceModule<TServicesMap>): () => void;
+  registerModule(module: ServiceModule<TServicesMap>): (() => void) | void;
 
   /**
    * Removes service registration. When name is omitted or is `undefined`, removes all registrations of that

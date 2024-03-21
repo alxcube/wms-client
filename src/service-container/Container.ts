@@ -173,7 +173,7 @@ export class Container<TServicesMap extends ServicesMap>
     );
   }
 
-  registerModule(module: ServiceModule<TServicesMap>): () => void {
+  registerModule(module: ServiceModule<TServicesMap>): (() => void) | void {
     return module.register(this);
   }
 

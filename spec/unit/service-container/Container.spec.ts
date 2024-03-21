@@ -966,7 +966,7 @@ describe("Container class", () => {
       expect(container.has(DummyService)).toBe(false);
       const unregister = container.registerModule(module);
       expect(container.has(DummyService)).toBe(true);
-      unregister();
+      unregister!();
       expect(container.has(DummyService)).toBe(false);
     });
   });
