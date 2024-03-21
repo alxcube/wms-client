@@ -918,4 +918,22 @@ describe("Container class", () => {
       expect(dependent.dummyService1).not.toBe(dependent.dummyService2);
     });
   });
+
+  describe("registerImplementation() method", () => {
+    it("should register constructor as implementation of interface", () => {
+      container.registerClass(DummyService, []);
+      container.registerImplementation("DummyService", DummyService);
+
+      expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+    });
+
+    it("should register named constructor as implementation of interface", () => {
+      container.registerClass(DummyService, [], { name: "named" });
+      container.registerImplementation("DummyService", {
+        service: DummyService,
+        name: "named",
+      });
+      expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+    });
+  });
 });

@@ -3,6 +3,8 @@ import { Context, type ServiceRegistration } from "./Context";
 import type {
   ClassRegistrationOptions,
   DependenciesTuple,
+  ImplementationRegistrationOptions,
+  InterfaceImplementationToken,
   ServiceContainer,
   ServiceFactory,
   ServiceFactoryRegistrationOptions,
@@ -107,16 +109,6 @@ export class Container<TServicesMap extends ServicesMap>
     this.registerConstantOrFactory(key, factory, true, options);
   }
 
-  /**
-   * @inheritDoc
-   */
-  unregister(key: ServiceKey<TServicesMap>, name?: string, cascade = false) {
-    this.unregisterOwn(key, name);
-    if (cascade && this.parent) {
-      this.parent.unregister(key, name, true);
-    }
-  }
-
   registerClass<
     ConstructorType extends Constructor<object>,
     DepsTuple extends DependenciesTuple<
@@ -146,6 +138,32 @@ export class Container<TServicesMap extends ServicesMap>
       factory as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       options
     );
+  }
+
+  registerImplementation<ServiceKey extends keyof TServicesMap>(
+    key: ServiceKey,
+    implementation: InterfaceImplementationToken<TServicesMap, ServiceKey>,
+    options?: ImplementationRegistrationOptions
+  ) {
+    const constructor =
+      "service" in implementation ? implementation.service : implementation;
+    const name = "service" in implementation ? implementation.name : "default";
+
+    this.registerFactory(
+      key,
+      (context) => context.resolve(constructor as unknown as ServiceKey, name),
+      options
+    );
+  }
+
+  /**
+   * @inheritDoc
+   */
+  unregister(key: ServiceKey<TServicesMap>, name?: string, cascade = false) {
+    this.unregisterOwn(key, name);
+    if (cascade && this.parent) {
+      this.parent.unregister(key, name, true);
+    }
   }
 
   /**
