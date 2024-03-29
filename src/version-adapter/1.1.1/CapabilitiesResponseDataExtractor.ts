@@ -6,6 +6,8 @@ import {
 import xpath, { type XPathSelect } from "xpath";
 import type { ExceptionFormat } from "../../ExceptionFormat";
 import type { UnifiedCapabilitiesResponse } from "../../UnifiedCapabilitiesResponse";
+import { trim } from "../../utils/trim";
+import type { Dimension } from "../../wms-data-types/Dimension";
 import type { Keyword } from "../../wms-data-types/Keyword";
 import type { Layer } from "../../wms-data-types/Layer";
 import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdapter";
@@ -13,12 +15,8 @@ import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdap
 export class CapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor
 {
-  private dataExtractor:
-    | SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse>
-    | undefined;
-
   extract(response: Document): UnifiedCapabilitiesResponse {
-    return this.getDataExtractor()(
+    return this.buildDataExtractor()(
       response,
       xpath.useNamespaces({
         wms: "http://www.opengis.net/wms",
@@ -27,19 +25,12 @@ export class CapabilitiesResponseDataExtractor
     );
   }
 
-  private getDataExtractor(): SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse> {
-    if (!this.dataExtractor) {
-      this.dataExtractor = this.buildDataExtractor();
-    }
-    return this.dataExtractor;
-  }
-
   private buildDataExtractor(): SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse> {
     const keywordsDataExtractor = map()
-      .toNodesArray("KeywordList")
+      .toNodesArray("KeywordList/Keyword")
       .asArray()
       .ofObjects<Keyword>({
-        value: map().toNode(".").mandatory().asString(),
+        value: map().toNode(".").mandatory().asString().withConversion(trim),
         vocabulary: map().toNode("@vocabulary").asString(),
       });
 
@@ -49,6 +40,9 @@ export class CapabilitiesResponseDataExtractor
       .toNode(linkUrlXpath)
       .mandatory()
       .asString();
+
+    const layerDimensionsDataExtractor =
+      this.buildLayerDimensionsDataExtractor();
 
     return createObjectMapper<UnifiedCapabilitiesResponse>({
       version: map()
@@ -92,10 +86,7 @@ export class CapabilitiesResponseDataExtractor
                     .toNode("StateOrProvince")
                     .asString()
                     .withDefault(""),
-                  postCode: map()
-                    .toNode("StateOrProvince")
-                    .asString()
-                    .withDefault(""),
+                  postCode: map().toNode("PostCode").asString().withDefault(""),
                   country: map().toNode("Country").asString().withDefault(""),
                 }),
               telephone: map().toNode("ContactVoiceTelephone").asString(),
@@ -156,7 +147,7 @@ export class CapabilitiesResponseDataExtractor
                 }),
             }),
           exceptionFormats: map()
-            .toNodesArray("Exception")
+            .toNodesArray("Exception/Format")
             .mandatory()
             .asArray()
             .ofStrings()
@@ -204,7 +195,7 @@ export class CapabilitiesResponseDataExtractor
                   resX: map().toNode("@resx").asNumber(),
                   resY: map().toNode("@resy").asNumber(),
                 }),
-              dimensions: this.buildLayerDimensionsDataExtractor(),
+              dimensions: layerDimensionsDataExtractor,
               attribution: map()
                 .toNode("Attribution")
                 .asObject({
@@ -279,7 +270,6 @@ export class CapabilitiesResponseDataExtractor
                     }),
                   styleUrl: map()
                     .toNode("StyleURL")
-                    .mandatory()
                     .asObject({
                       format: map().toNode("Format").mandatory().asString(),
                       url: mandatoryLinkDataExtractor,
@@ -309,6 +299,11 @@ export class CapabilitiesResponseDataExtractor
   private buildLayerDimensionsDataExtractor(): SingleNodeDataExtractorFn<
     Layer["dimensions"]
   > {
+    // Storage for unique dimensions in capabilities response, used for building Layer.dimensions[number] object,
+    // when only "Extent" element is present in "Layer" element, and no parent layers has declared dimension of
+    // such name. The keys are dimension names, and values are dimension units.
+    const declaredDimensions: { [key: string]: string } = {};
+
     const extractDimensionElementData = map()
       .toNode(".")
       .mandatory()
@@ -342,13 +337,23 @@ export class CapabilitiesResponseDataExtractor
     };
 
     return (layerNode, select) => {
+      if (
+        !select("boolean(Dimension)", layerNode) &&
+        !select("boolean(Extent)", layerNode)
+      ) {
+        // Do not parse dimensions, when Layer node has neither Dimension, nor Extent child elements.
+        return undefined;
+      }
+
+      const dimensions: Dimension[] = [];
+
+      // Get all dimension elements from current Layer element and from all ancestor layer elements.
       const dimensionElements = getDimensionElementsRecursive(
         layerNode,
         select
       );
-      if (!dimensionElements.length) {
-        return;
-      }
+
+      // Create object for accessing dimension data by name
       const dimensionsMap: {
         [key: string]: NonNullable<Layer["dimensions"]>[number];
       } = {};
@@ -362,20 +367,36 @@ export class CapabilitiesResponseDataExtractor
         }
       }
 
+      // Find all Extent child elements in current Layer node.
       const extentElements = select("Extent", layerNode) as Element[];
       for (const extentEl of extentElements) {
         const name = select("string(@name)", extentEl) as string;
-        const dimension = dimensionsMap[name];
+
+        // Look for dimension from current/ancestor Layer(s)
+        let dimension =
+          name in dimensionsMap ? { ...dimensionsMap[name] } : undefined;
+        if (!dimension && name in declaredDimensions) {
+          // When reference dimension is not found in current and ancestor layers, but was declared previously in XML, use it
+          dimension = { name, units: declaredDimensions[name] };
+        }
         if (!dimension) {
+          // Reference dimension is not found, skip Extent node.
           continue;
         }
+
+        // Add info from Extent node to Dimension object
         Object.assign(
           dimension,
           extractExtentNodeElementData(extentEl, select)
         );
+
+        dimensions.push(dimension);
+
+        // Save declared dimension for possible future use
+        declaredDimensions[dimension.name] = dimension.units;
       }
 
-      return Object.values(dimensionsMap);
+      return dimensions;
     };
   }
 }

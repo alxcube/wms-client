@@ -3,6 +3,7 @@ import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryPa
 import { Container } from "./service-container/Container";
 import type { TypesMap } from "./TypesMap";
 import { BaseWmsVersionAdapterResolver } from "./version-adapter/BaseWmsVersionAdapterResolver";
+import { versionAdapterContainerModule_1_1_1 } from "./version-adapter/versionAdapterContainerModule_1_1_1";
 import { versionAdapterContainerModule_1_3_0 } from "./version-adapter/versionAdapterContainerModule_1_3_0";
 
 export const serviceContainer = new Container<TypesMap>();
@@ -28,4 +29,5 @@ serviceContainer.registerFactory("WmsVersionAdapterResolver", (context) => {
   );
 });
 
+serviceContainer.registerModule(versionAdapterContainerModule_1_1_1);
 serviceContainer.registerModule(versionAdapterContainerModule_1_3_0);
