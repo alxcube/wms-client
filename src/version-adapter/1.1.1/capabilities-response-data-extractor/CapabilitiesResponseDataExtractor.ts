@@ -6,15 +6,15 @@ import {
 import xpath from "xpath";
 import type { UnifiedCapabilitiesResponse } from "../../../UnifiedCapabilitiesResponse";
 import type { WmsCapabilitiesResponseDataExtractor } from "../../BaseWmsVersionAdapter";
-import type { CapabilitiesExtractorFactory } from "./CapabilitiesExtractorFactory";
-import type { ServiceDataExtractorFactory } from "./ServiceDataExtractorFactory";
+import type { CapabilitiesSectionExtractorFactory } from "./CapabilitiesSectionExtractorFactory";
+import type { ServiceSectionExtractorFactory } from "./ServiceSectionExtractorFactory";
 
 export class CapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor
 {
   constructor(
-    private readonly serviceDataExtractorFactory: ServiceDataExtractorFactory,
-    private readonly capabilitiesExtractorFactory: CapabilitiesExtractorFactory
+    private readonly serviceSectionExtractorFactory: ServiceSectionExtractorFactory,
+    private readonly capabilitiesSectionExtractorFactory: CapabilitiesSectionExtractorFactory
   ) {}
   extract(response: Document): UnifiedCapabilitiesResponse {
     return this.buildDataExtractor()(
@@ -35,8 +35,8 @@ export class CapabilitiesResponseDataExtractor
       updateSequence: map()
         .toNode("/WMT_MS_Capabilities/@updatesequence")
         .asString(),
-      service: this.serviceDataExtractorFactory,
-      capability: this.capabilitiesExtractorFactory,
+      service: this.serviceSectionExtractorFactory,
+      capability: this.capabilitiesSectionExtractorFactory,
     });
   }
 }
