@@ -8,13 +8,14 @@ import type {
   OperationType,
   UnifiedCapabilitiesResponse,
 } from "../../../UnifiedCapabilitiesResponse";
-import type { LayersExtractorFactory } from "./layers-data-extractor/LayersExtractorFactory";
+import type { Layer } from "../../../wms-data-types/Layer";
+import type { XmlDataExtractor } from "../../XmlDataExtractor";
 
 export class CapabilitiesSectionExtractorFactory
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["capability"]>
 {
-  constructor(private layersDataExtractor: LayersExtractorFactory) {}
+  constructor(private layersDataExtractor: XmlDataExtractor<Layer[]>) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["capability"]
   > {

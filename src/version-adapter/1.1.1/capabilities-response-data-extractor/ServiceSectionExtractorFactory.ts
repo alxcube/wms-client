@@ -9,15 +9,17 @@ import type {
   ContactPerson,
   UnifiedCapabilitiesResponse,
 } from "../../../UnifiedCapabilitiesResponse";
-
-import type { KeywordsExtractorFactory } from "./KeywordsExtractorFactory";
+import type { Keyword } from "../../../wms-data-types/Keyword";
+import type { XmlDataExtractor } from "../../XmlDataExtractor";
 
 export class ServiceSectionExtractorFactory
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["service"]>
 {
   constructor(
-    private readonly keywordsDataExtractor: KeywordsExtractorFactory
+    private readonly keywordsDataExtractor: XmlDataExtractor<
+      Keyword[] | undefined
+    >
   ) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["service"]

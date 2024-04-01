@@ -3,34 +3,42 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
+import type { Keyword } from "../../../../wms-data-types/Keyword";
 import type { Layer } from "../../../../wms-data-types/Layer";
-import type { KeywordsExtractorFactory } from "../KeywordsExtractorFactory";
-import type { LayerAttributionExtractorFactory } from "./LayerAttributionExtractorFactory";
-import type { LayerAuthorityUrlsExtractorFactory } from "./LayerAuthorityUrlsExtractorFactory";
-import type { LayerBoundingBoxesExtractorFactory } from "./LayerBoundingBoxesExtractorFactory";
-import type { LayerCrsExtractorFactory } from "./LayerCrsExtractorFactory";
-import type { LayerDimensionsExtractorFactory } from "./LayerDimensionsExtractorFactory";
-import type { LayerGeographicBoundsExtractorFactory } from "./LayerGeographicBoundsExtractorFactory";
-import type { LayerIdentifiersExtractorFactory } from "./LayerIdentifiersExtractorFactory";
-import type { LayerMetadataUrlsExtractorFactory } from "./LayerMetadataUrlsExtractorFactory";
-import type { LayerStylesExtractorFactory } from "./LayerStylesExtractorFactory";
-import type { ResourceUrlsExtractorFactory } from "./ResourceUrlsExtractorFactory";
+import type { XmlDataExtractor } from "../../../XmlDataExtractor";
 
 export class LayersExtractorFactory
   implements SingleNodeDataExtractorFnFactory<Layer[]>
 {
   constructor(
-    private readonly keywordsDataExtractor: KeywordsExtractorFactory,
-    private readonly crsExtractorFactory: LayerCrsExtractorFactory,
-    private readonly layerDimensionsExtractorFactory: LayerDimensionsExtractorFactory,
-    private readonly geographicBoundsExtractorFactory: LayerGeographicBoundsExtractorFactory,
-    private readonly boundingBoxesExtractorFactory: LayerBoundingBoxesExtractorFactory,
-    private readonly attributionExtractorFactory: LayerAttributionExtractorFactory,
-    private readonly authorityUrlsExtractorFactory: LayerAuthorityUrlsExtractorFactory,
-    private readonly identifiersExtractorFactory: LayerIdentifiersExtractorFactory,
-    private readonly metadataUrlsExtractorFactory: LayerMetadataUrlsExtractorFactory,
-    private readonly resourceUrlsExtractorFactory: ResourceUrlsExtractorFactory,
-    private readonly stylesExtractorFactory: LayerStylesExtractorFactory
+    private readonly keywordsExtractor: XmlDataExtractor<Keyword[] | undefined>,
+    private readonly crsExtractor: XmlDataExtractor<Layer["crs"]>,
+    private readonly layerDimensionsExtractor: XmlDataExtractor<
+      Layer["dimensions"]
+    >,
+    private readonly geographicBoundsExtractor: XmlDataExtractor<
+      Layer["geographicBounds"]
+    >,
+    private readonly boundingBoxesExtractor: XmlDataExtractor<
+      Layer["boundingBoxes"]
+    >,
+    private readonly attributionExtractor: XmlDataExtractor<
+      Layer["attribution"]
+    >,
+    private readonly authorityUrlsExtractor: XmlDataExtractor<
+      Layer["authorityUrls"]
+    >,
+    private readonly identifiersExtractor: XmlDataExtractor<
+      Layer["identifiers"]
+    >,
+    private readonly metadataUrlsExtractor: XmlDataExtractor<
+      Layer["metadataUrls"]
+    >,
+    private readonly dataUrlsExtractor: XmlDataExtractor<Layer["dataUrls"]>,
+    private readonly featureListUrlsExtractor: XmlDataExtractor<
+      Layer["featureListUrls"]
+    >,
+    private readonly stylesExtractor: XmlDataExtractor<Layer["styles"]>
   ) {}
 
   createNodeDataExtractor(): SingleNodeDataExtractorFn<Layer[]> {
@@ -40,22 +48,20 @@ export class LayersExtractorFactory
       .asArray()
       .ofRecursiveObjects<Layer>((recursion) => ({
         title: map().toNode("Title").mandatory().asString(),
-        crs: this.crsExtractorFactory,
+        crs: this.crsExtractor,
         name: map().toNode("Name").asString(),
         description: map().toNode("Abstract").asString(),
-        keywords: this.keywordsDataExtractor,
-        geographicBounds: this.geographicBoundsExtractorFactory,
-        boundingBoxes: this.boundingBoxesExtractorFactory,
-        dimensions: this.layerDimensionsExtractorFactory,
-        attribution: this.attributionExtractorFactory,
-        authorityUrls: this.authorityUrlsExtractorFactory,
-        identifiers: this.identifiersExtractorFactory,
-        metadataUrls: this.metadataUrlsExtractorFactory,
-        dataUrls:
-          this.resourceUrlsExtractorFactory.createForNodeName("DataURL"),
-        featureListUrls:
-          this.resourceUrlsExtractorFactory.createForNodeName("FeatureListURL"),
-        styles: this.stylesExtractorFactory,
+        keywords: this.keywordsExtractor,
+        geographicBounds: this.geographicBoundsExtractor,
+        boundingBoxes: this.boundingBoxesExtractor,
+        dimensions: this.layerDimensionsExtractor,
+        attribution: this.attributionExtractor,
+        authorityUrls: this.authorityUrlsExtractor,
+        identifiers: this.identifiersExtractor,
+        metadataUrls: this.metadataUrlsExtractor,
+        dataUrls: this.dataUrlsExtractor,
+        featureListUrls: this.featureListUrlsExtractor,
+        styles: this.stylesExtractor,
         scaleHint: map()
           .toNode("ScaleHint")
           .asObject({

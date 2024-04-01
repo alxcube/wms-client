@@ -1,40 +1,41 @@
 import {
   createObjectMapper,
-  map,
   type SingleNodeDataExtractorFn,
 } from "@alxcube/xml-mapper";
 import xpath from "xpath";
 import type { UnifiedCapabilitiesResponse } from "../../../UnifiedCapabilitiesResponse";
 import type { WmsCapabilitiesResponseDataExtractor } from "../../BaseWmsVersionAdapter";
-import type { CapabilitiesSectionExtractorFactory } from "./CapabilitiesSectionExtractorFactory";
-import type { ServiceSectionExtractorFactory } from "./ServiceSectionExtractorFactory";
+import type { XmlDataExtractor } from "../../XmlDataExtractor";
 
 export class CapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor
 {
   constructor(
-    private readonly serviceSectionExtractorFactory: ServiceSectionExtractorFactory,
-    private readonly capabilitiesSectionExtractorFactory: CapabilitiesSectionExtractorFactory
+    private readonly versionExtractorFactory: XmlDataExtractor<
+      UnifiedCapabilitiesResponse["version"]
+    >,
+    private readonly updateSequenceExtractorFactory: XmlDataExtractor<
+      UnifiedCapabilitiesResponse["updateSequence"]
+    >,
+    private readonly serviceSectionExtractorFactory: XmlDataExtractor<
+      UnifiedCapabilitiesResponse["service"]
+    >,
+    private readonly capabilitiesSectionExtractorFactory: XmlDataExtractor<
+      UnifiedCapabilitiesResponse["capability"]
+    >,
+    private readonly namespaces: { [key: string]: string }
   ) {}
   extract(response: Document): UnifiedCapabilitiesResponse {
     return this.buildDataExtractor()(
       response,
-      xpath.useNamespaces({
-        wms: "http://www.opengis.net/wms",
-        xlink: "http://www.w3.org/1999/xlink",
-      })
+      xpath.useNamespaces(this.namespaces)
     );
   }
 
   private buildDataExtractor(): SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse> {
     return createObjectMapper<UnifiedCapabilitiesResponse>({
-      version: map()
-        .toNode("/WMT_MS_Capabilities/@version")
-        .mandatory()
-        .asString(),
-      updateSequence: map()
-        .toNode("/WMT_MS_Capabilities/@updatesequence")
-        .asString(),
+      version: this.versionExtractorFactory,
+      updateSequence: this.updateSequenceExtractorFactory,
       service: this.serviceSectionExtractorFactory,
       capability: this.capabilitiesSectionExtractorFactory,
     });
