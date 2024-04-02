@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { constant } from "../../../../src/service-container/constant";
 import type { UnifiedCapabilitiesResponse } from "../../../../src/UnifiedCapabilitiesResponse";
 import { CapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/1.1.1/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
 import { testContainer } from "../../../testContainer";
@@ -15,6 +16,30 @@ describe("CapabilitiesResponseDataExtractor v1.1.1 class", () => {
   let extractor: CapabilitiesResponseDataExtractor;
 
   beforeEach(() => {
+    testContainer.backup();
+    testContainer.registerClass(CapabilitiesResponseDataExtractor, [
+      {
+        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
+        name: "1.1.1",
+      },
+      {
+        service:
+          "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>",
+        name: "1.1.1",
+      },
+      {
+        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
+        name: "1.1.1",
+      },
+      {
+        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>",
+        name: "1.1.1",
+      },
+      constant({
+        xlink: "http://www.w3.org/1999/xlink",
+      }),
+    ]);
+
     xmlParser = new DOMParser();
     capabilitiesResponseDocument = xmlParser.parseFromString(
       capabilities_1_1_1,
@@ -25,6 +50,10 @@ describe("CapabilitiesResponseDataExtractor v1.1.1 class", () => {
       "text/xml"
     );
     extractor = testContainer.resolve(CapabilitiesResponseDataExtractor);
+  });
+
+  afterEach(() => {
+    testContainer.restore();
   });
 
   describe("extract() method", () => {

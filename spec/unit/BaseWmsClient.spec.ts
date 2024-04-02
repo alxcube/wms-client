@@ -20,6 +20,11 @@ describe("BaseWmsClient class", () => {
   const customQuery = { customString: "str", customNumber: 1 };
 
   beforeEach(() => {
+    testContainer.backup();
+    testContainer.registerClass(BaseWmsClientFactory, [
+      "WmsVersionAdapterResolver",
+      "QueryParamsSerializer",
+    ]);
     factory = testContainer.resolve(BaseWmsClientFactory);
     httpClient = axios.create();
     axiosMock = new MockAdapter(httpClient);
@@ -30,6 +35,7 @@ describe("BaseWmsClient class", () => {
   });
 
   afterEach(() => {
+    testContainer.restore();
     axiosMock.restore();
   });
 

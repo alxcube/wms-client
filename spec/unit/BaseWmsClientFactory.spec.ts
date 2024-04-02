@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
 import { BaseWmsClient } from "../../src/BaseWmsClient";
 import { BaseWmsClientFactory } from "../../src/BaseWmsClientFactory";
 import { testContainer } from "../testContainer";
@@ -7,7 +7,16 @@ describe("BaseWmsClientFactory class", () => {
   let factory: BaseWmsClientFactory;
 
   beforeEach(() => {
+    testContainer.backup();
+    testContainer.registerClass(BaseWmsClientFactory, [
+      "WmsVersionAdapterResolver",
+      "QueryParamsSerializer",
+    ]);
     factory = testContainer.resolve(BaseWmsClientFactory);
+  });
+
+  afterEach(() => {
+    testContainer.restore();
   });
 
   test("correct resolution from service container", () => {

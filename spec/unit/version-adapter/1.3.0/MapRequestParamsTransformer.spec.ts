@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { MapRequestParams } from "../../../../src/MapRequestParams";
 import { MapRequestParamsTransformer } from "../../../../src/version-adapter/1.3.0/MapRequestParamsTransformer";
 import { testContainer } from "../../../testContainer";
@@ -7,7 +7,13 @@ describe("MapRequestParamsTransformer v1.3.0 class", () => {
   let transformer: MapRequestParamsTransformer;
 
   beforeEach(() => {
+    testContainer.backup();
+    testContainer.registerClass(MapRequestParamsTransformer, []);
     transformer = testContainer.resolve(MapRequestParamsTransformer);
+  });
+
+  afterEach(() => {
+    testContainer.restore();
   });
 
   describe("transform() method", () => {

@@ -214,29 +214,6 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Capabilities response extractor v1.1.1
-    // TODO: remove registerClass() (should update test)
-    container.registerClass(CapabilitiesResponseDataExtractor, [
-      {
-        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
-        name,
-      },
-      {
-        service:
-          "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>",
-        name,
-      },
-      {
-        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
-        name,
-      },
-      {
-        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>",
-        name,
-      },
-      constant({
-        xlink: "http://www.w3.org/1999/xlink",
-      }),
-    ]);
     container.implement(
       "WmsCapabilitiesResponseDataExtractor",
       CapabilitiesResponseDataExtractor,

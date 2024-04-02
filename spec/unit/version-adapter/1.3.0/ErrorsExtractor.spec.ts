@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ErrorsExtractor } from "../../../../src/version-adapter/1.3.0/ErrorsExtractor";
 import { testContainer } from "../../../testContainer";
 // eslint-disable-next-line import/no-unresolved
@@ -11,9 +11,15 @@ describe("ErrorsExtractor v1.3.0 class", () => {
   let extractor: ErrorsExtractor;
 
   beforeEach(() => {
+    testContainer.backup();
+    testContainer.registerClass(ErrorsExtractor, []);
     xmlParser = new DOMParser();
     errorsDoc = xmlParser.parseFromString(exceptions_1_3_0, "text/xml");
     extractor = testContainer.resolve(ErrorsExtractor);
+  });
+
+  afterEach(() => {
+    testContainer.restore();
   });
 
   describe("extract() method", () => {

@@ -8,19 +8,15 @@ import { versionAdapterContainerModule_1_3_0 } from "./version-adapter/versionAd
 
 export const serviceContainer = new Container<TypesMap>();
 
-serviceContainer.registerClass(BaseWmsClientFactory, [
+serviceContainer.implement("WmsClientFactory", BaseWmsClientFactory, [
   "WmsVersionAdapterResolver",
   "QueryParamsSerializer",
 ]);
-serviceContainer.registerImplementation(
-  "WmsClientFactory",
-  BaseWmsClientFactory
-);
 
-serviceContainer.registerClass(BaseQueryParamsSerializer, []);
-serviceContainer.registerImplementation(
+serviceContainer.implement(
   "QueryParamsSerializer",
-  BaseQueryParamsSerializer
+  BaseQueryParamsSerializer,
+  []
 );
 
 serviceContainer.registerFactory("WmsVersionAdapterResolver", (context) => {
