@@ -984,19 +984,14 @@ describe("Container class", () => {
   describe("registerModule() method", () => {
     it("should call module's register() method, and return function that unregisters module", () => {
       const module: ServiceModule<TestServicesMap> = {
-        register(container: ServiceContainer<TestServicesMap>): () => void {
+        register(container: ServiceContainer<TestServicesMap>): void {
           container.registerClass(DummyService, []);
-          return () => {
-            container.unregister(DummyService, "default");
-          };
         },
       };
 
       expect(container.has(DummyService)).toBe(false);
-      const unregister = container.registerModule(module);
+      container.registerModule(module);
       expect(container.has(DummyService)).toBe(true);
-      unregister!();
-      expect(container.has(DummyService)).toBe(false);
     });
   });
 });
