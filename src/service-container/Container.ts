@@ -4,9 +4,7 @@ import {
   type ClassRegistrationOptions,
   type ConstantToken,
   type DependenciesTuple,
-  type ImplementationRegistrationOptions,
   type InterfaceImplementation,
-  type InterfaceImplementationToken,
   isConstantToken,
   type ServiceContainer,
   type ServiceFactory,
@@ -138,22 +136,6 @@ export class Container<TServicesMap extends ServicesMap>
         TServicesMap,
         ResolvedByKey<TServicesMap, ConstructorType>
       >,
-      options
-    );
-  }
-
-  registerImplementation<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    implementation: InterfaceImplementationToken<TServicesMap, ServiceKey>,
-    options?: ImplementationRegistrationOptions
-  ) {
-    const constructor =
-      "service" in implementation ? implementation.service : implementation;
-    const name = "service" in implementation ? implementation.name : "default";
-
-    this.registerFactory(
-      key,
-      (context) => context.resolve(constructor as unknown as ServiceKey, name),
       options
     );
   }

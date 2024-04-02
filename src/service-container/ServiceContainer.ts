@@ -42,15 +42,6 @@ export type DependenciesTuple<
   [K in keyof Tuple]: DependencyToken<TServicesMap, Tuple[K]>;
 } & { length: Tuple["length"] };
 
-export type InterfaceImplementationToken<
-  TServicesMap extends ServicesMap,
-  ServiceKey extends keyof TServicesMap,
-> = TServicesMap[ServiceKey] extends object
-  ?
-      | Constructor<TServicesMap[ServiceKey]>
-      | { service: Constructor<TServicesMap[ServiceKey]>; name: string }
-  : never;
-
 export type InterfaceImplementation<
   TServicesMap extends ServicesMap,
   ServiceKey extends keyof TServicesMap,
@@ -115,9 +106,6 @@ export interface ClassRegistrationOptions
   circular?: boolean;
 }
 
-export interface ImplementationRegistrationOptions
-  extends ServiceRegistrationOptions {}
-
 /**
  * Service container interface.
  */
@@ -162,12 +150,6 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     constructor: ConstructorType,
     deps: DepsTuple,
     options?: ClassRegistrationOptions
-  ): void;
-
-  registerImplementation<ServiceKey extends keyof TServicesMap>(
-    key: ServiceKey,
-    implementation: InterfaceImplementationToken<TServicesMap, ServiceKey>,
-    options?: ImplementationRegistrationOptions
   ): void;
 
   implement<
