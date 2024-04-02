@@ -114,18 +114,24 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Layer attribution extractor v1.1.1
-    container.registerClass(LayerAttributionExtractorFactory, [constant("")]);
+    container.registerClass(LayerAttributionExtractorFactory, [constant("")], {
+      name,
+    });
     container.registerImplementation(
       "XmlDataExtractor<Layer[attribution]>",
-      LayerAttributionExtractorFactory,
+      { service: LayerAttributionExtractorFactory, name },
       { name }
     );
 
     // Layer authority URLs extractor v1.1.1
-    container.registerClass(LayerAuthorityUrlsExtractorFactory, [constant("")]);
+    container.registerClass(
+      LayerAuthorityUrlsExtractorFactory,
+      [constant("")],
+      { name }
+    );
     container.registerImplementation(
       "XmlDataExtractor<Layer[authorityUrls]>",
-      LayerAuthorityUrlsExtractorFactory,
+      { service: LayerAuthorityUrlsExtractorFactory, name },
       { name }
     );
 
