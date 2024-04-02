@@ -126,34 +126,18 @@ export class Container<TServicesMap extends ServicesMap>
     deps: DepsTuple,
     options: ClassRegistrationOptions = {}
   ) {
-    let factory: ServiceFactory<TServicesMap, InstanceType<ConstructorType>> = (
-      context
-    ) => {
-      const resolvedDeps = (
-        deps as unknown as (
-          | ServiceKey<TServicesMap>
-          | NamedServiceRecord<TServicesMap>
-          | ConstantToken<unknown>
-        )[]
-      ).map((dep) => {
-        if (isConstantToken(dep)) {
-          return dep.constant;
-        }
-        if (isNamedServiceRecord(dep)) {
-          return context.resolve(dep.service, dep.name);
-        }
-        return context.resolve(dep as ServiceKey<TServicesMap>);
-      }) as ConstructorParameters<ConstructorType>;
-      return new constructor(...resolvedDeps) as InstanceType<ConstructorType>;
-    };
-
-    if (options.circular) {
-      factory = circular(factory);
-    }
+    const factory = this.createFactoryForConstructor(
+      constructor,
+      deps,
+      options.circular
+    );
 
     this.registerFactory(
       constructor,
-      factory as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      factory as ServiceFactory<
+        TServicesMap,
+        ResolvedByKey<TServicesMap, ConstructorType>
+      >,
       options
     );
   }
@@ -187,28 +171,11 @@ export class Container<TServicesMap extends ServicesMap>
     deps: DepsTuple,
     options: ClassRegistrationOptions = {}
   ) {
-    let factory: ServiceFactory<TServicesMap, object> = (context) => {
-      const resolvedDeps = (
-        deps as unknown as (
-          | ServiceKey<TServicesMap>
-          | NamedServiceRecord<TServicesMap>
-          | ConstantToken<unknown>
-        )[]
-      ).map((dep) => {
-        if (isConstantToken(dep)) {
-          return dep.constant;
-        }
-        if (isNamedServiceRecord(dep)) {
-          return context.resolve(dep.service, dep.name);
-        }
-        return context.resolve(dep as ServiceKey<TServicesMap>);
-      });
-      return new implementation(...resolvedDeps);
-    };
-
-    if (options.circular) {
-      factory = circular(factory);
-    }
+    const factory = this.createFactoryForConstructor(
+      implementation,
+      deps,
+      options.circular
+    );
 
     this.registerFactory(
       key,
@@ -495,5 +462,44 @@ export class Container<TServicesMap extends ServicesMap>
         ? (serviceOrFactory as ServiceFactory<TServicesMap, ServiceType>)
         : undefined,
     };
+  }
+
+  private createFactoryForConstructor<
+    ConstructorType extends Constructor<object>,
+    DepsTuple extends DependenciesTuple<
+      TServicesMap,
+      ConstructorParameters<ConstructorType>
+    >,
+  >(
+    constructor: ConstructorType,
+    deps: DepsTuple,
+    hasCircularDeps = false
+  ): ServiceFactory<TServicesMap, InstanceType<ConstructorType>> {
+    let factory: ServiceFactory<TServicesMap, InstanceType<ConstructorType>> = (
+      context
+    ) => {
+      const resolvedDeps = (
+        deps as unknown as (
+          | ServiceKey<TServicesMap>
+          | NamedServiceRecord<TServicesMap>
+          | ConstantToken<unknown>
+        )[]
+      ).map((dep) => {
+        if (isConstantToken(dep)) {
+          return dep.constant;
+        }
+        if (isNamedServiceRecord(dep)) {
+          return context.resolve(dep.service, dep.name);
+        }
+        return context.resolve(dep as ServiceKey<TServicesMap>);
+      }) as ConstructorParameters<ConstructorType>;
+      return new constructor(...resolvedDeps) as InstanceType<ConstructorType>;
+    };
+
+    if (hasCircularDeps) {
+      factory = circular(factory);
+    }
+
+    return factory;
   }
 }
