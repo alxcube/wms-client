@@ -51,6 +51,13 @@ export type InterfaceImplementationToken<
       | { service: Constructor<TServicesMap[ServiceKey]>; name: string }
   : never;
 
+export type InterfaceImplementation<
+  TServicesMap extends ServicesMap,
+  ServiceKey extends keyof TServicesMap,
+> = TServicesMap[ServiceKey] extends object
+  ? Constructor<TServicesMap[ServiceKey]>
+  : never;
+
 /**
  * Service factory function. Takes service resolution context and returns service instance.
  */
@@ -161,6 +168,20 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     key: ServiceKey,
     implementation: InterfaceImplementationToken<TServicesMap, ServiceKey>,
     options?: ImplementationRegistrationOptions
+  ): void;
+
+  implement<
+    ServiceKey extends keyof TServicesMap,
+    ConstructorType extends InterfaceImplementation<TServicesMap, ServiceKey>,
+    DepsTuple extends DependenciesTuple<
+      TServicesMap,
+      ConstructorParameters<ConstructorType>
+    >,
+  >(
+    key: ServiceKey,
+    implementation: ConstructorType,
+    deps: DepsTuple,
+    options?: ClassRegistrationOptions
   ): void;
 
   registerModule(module: ServiceModule<TServicesMap>): (() => void) | void;

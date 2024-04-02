@@ -5,6 +5,7 @@ import {
   type ConstantToken,
   type DependenciesTuple,
   type ImplementationRegistrationOptions,
+  type InterfaceImplementation,
   type InterfaceImplementationToken,
   isConstantToken,
   type ServiceContainer,
@@ -169,6 +170,52 @@ export class Container<TServicesMap extends ServicesMap>
     this.registerFactory(
       key,
       (context) => context.resolve(constructor as unknown as ServiceKey, name),
+      options
+    );
+  }
+
+  implement<
+    TServiceKey extends keyof TServicesMap,
+    ConstructorType extends InterfaceImplementation<TServicesMap, TServiceKey>,
+    DepsTuple extends DependenciesTuple<
+      TServicesMap,
+      ConstructorParameters<ConstructorType>
+    >,
+  >(
+    key: TServiceKey,
+    implementation: ConstructorType,
+    deps: DepsTuple,
+    options: ClassRegistrationOptions = {}
+  ) {
+    let factory: ServiceFactory<TServicesMap, object> = (context) => {
+      const resolvedDeps = (
+        deps as unknown as (
+          | ServiceKey<TServicesMap>
+          | NamedServiceRecord<TServicesMap>
+          | ConstantToken<unknown>
+        )[]
+      ).map((dep) => {
+        if (isConstantToken(dep)) {
+          return dep.constant;
+        }
+        if (isNamedServiceRecord(dep)) {
+          return context.resolve(dep.service, dep.name);
+        }
+        return context.resolve(dep as ServiceKey<TServicesMap>);
+      });
+      return new implementation(...resolvedDeps);
+    };
+
+    if (options.circular) {
+      factory = circular(factory);
+    }
+
+    this.registerFactory(
+      key,
+      factory as ServiceFactory<
+        TServicesMap,
+        ResolvedByKey<TServicesMap, TServiceKey>
+      >,
       options
     );
   }

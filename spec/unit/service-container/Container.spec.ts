@@ -952,6 +952,35 @@ describe("Container class", () => {
     });
   });
 
+  describe("implement() method", () => {
+    it("should register class as implementation of interface", () => {
+      container.implement("DummyService", DummyService, []);
+      expect(container.resolve("DummyService")).toBeInstanceOf(DummyService);
+    });
+
+    it("should register class with dependencies as implementation of interface", () => {
+      container.implement("DummyService", DummyService, []);
+      container.implement("DummyDependent", DummyDependent, [
+        "DummyService",
+        "DummyService",
+      ]);
+      const dependent = container.resolve("DummyDependent");
+      expect(dependent).toBeInstanceOf(DummyDependent);
+      expect(dependent.dummyService1).toBeInstanceOf(DummyService);
+      expect(dependent.dummyService2).toBeInstanceOf(DummyService);
+    });
+
+    it("should register named implementation of interface", () => {
+      container.implement("DummyService", DummyService, [], {
+        name: "alt-name",
+      });
+      expect(() => container.resolve("DummyService")).toThrow(RangeError);
+      expect(container.resolve("DummyService", "alt-name")).toBeInstanceOf(
+        DummyService
+      );
+    });
+  });
+
   describe("registerModule() method", () => {
     it("should call module's register() method, and return function that unregisters module", () => {
       const module: ServiceModule<TestServicesMap> = {
