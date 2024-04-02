@@ -4,9 +4,10 @@ import {
   type SingleNodeDataExtractorFn,
 } from "@alxcube/xml-mapper";
 import xpath from "xpath";
-import type { ExceptionFormat } from "../../ExceptionFormat";
-import type { UnifiedCapabilitiesResponse } from "../../UnifiedCapabilitiesResponse";
-import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdapter";
+import type { ExceptionFormat } from "../../../ExceptionFormat";
+import type { UnifiedCapabilitiesResponse } from "../../../UnifiedCapabilitiesResponse";
+import type { WmsCapabilitiesResponseDataExtractor } from "../../BaseWmsVersionAdapter";
+import type { XmlDataExtractor } from "../../XmlDataExtractor";
 
 export class CapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor
@@ -14,6 +15,18 @@ export class CapabilitiesResponseDataExtractor
   private dataExtractor:
     | SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse>
     | undefined;
+
+  constructor(
+    private readonly versionExtractor: XmlDataExtractor<
+      UnifiedCapabilitiesResponse["version"]
+    >,
+    private readonly updateSequenceExtractor: XmlDataExtractor<
+      UnifiedCapabilitiesResponse["updateSequence"]
+    >,
+    private readonly serviceExtractor: XmlDataExtractor<
+      UnifiedCapabilitiesResponse["service"]
+    >
+  ) {}
 
   extract(response: Document): UnifiedCapabilitiesResponse {
     return this.getDataExtractor()(
@@ -41,71 +54,9 @@ export class CapabilitiesResponseDataExtractor
       .asString();
 
     return createObjectMapper<UnifiedCapabilitiesResponse>({
-      version: map()
-        .toNode("/wms:WMS_Capabilities/@version")
-        .mandatory()
-        .asString(),
-      updateSequence: map()
-        .toNode("/wms:WMS_Capabilities/@updatesequence")
-        .asString(),
-      service: map()
-        .toNode("/wms:WMS_Capabilities/wms:Service")
-        .mandatory()
-        .asObject({
-          title: map().toNode("wms:Title").mandatory().asString(),
-          url: mandatoryLinkDataExtractor,
-          description: map().toNode("wms:Abstract").asString(),
-          keywords: map()
-            .toNodesArray("wms:KeywordList/wms:Keyword")
-            .asArray()
-            .ofObjects({
-              vocabulary: map().toNode("@vocabulary").asString(),
-              value: map().toNode(".").mandatory().asString(),
-            }),
-          contactInformation: map()
-            .toNode("wms:ContactInformation")
-            .asObject({
-              contactPerson: map()
-                .toNode("wms:ContactPersonPrimary")
-                .asObject({
-                  name: map()
-                    .toNode("wms:ContactPerson")
-                    .mandatory()
-                    .asString(),
-                  organization: map()
-                    .toNode("wms:ContactOrganization")
-                    .mandatory()
-                    .asString(),
-                }),
-              position: map().toNode("wms:ContactPosition").asString(),
-              address: map()
-                .toNode("wms:ContactAddress")
-                .asObject({
-                  addressType: map()
-                    .toNode("wms:AddressType")
-                    .mandatory()
-                    .asString(),
-                  address: map().toNode("wms:Address").mandatory().asString(),
-                  city: map().toNode("wms:City").mandatory().asString(),
-                  stateOrProvince: map()
-                    .toNode("wms:StateOrProvince")
-                    .mandatory()
-                    .asString(),
-                  postCode: map().toNode("wms:PostCode").mandatory().asString(),
-                  country: map().toNode("wms:Country").mandatory().asString(),
-                }),
-              telephone: map().toNode("wms:ContactVoiceTelephone").asString(),
-              fax: map().toNode("wms:ContactFacsimileTelephone").asString(),
-              email: map()
-                .toNode("wms:ContactElectronicMailAddress")
-                .asString(),
-            }),
-          fees: map().toNode("wms:Fees").asString(),
-          accessConstraints: map().toNode("wms:AccessConstraints").asString(),
-          layerLimit: map().toNode("wms:LayerLimit").asNumber(),
-          maxWidth: map().toNode("wms:MaxWidth").asNumber(),
-          maxHeight: map().toNode("wms:MaxHeight").asNumber(),
-        }),
+      version: this.versionExtractor,
+      updateSequence: this.updateSequenceExtractor,
+      service: this.serviceExtractor,
       capability: map()
         .toNode("/wms:WMS_Capabilities/wms:Capability")
         .mandatory()

@@ -1,3 +1,4 @@
+import type { ExceptionFormat } from "./ExceptionFormat";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { ServicesMap } from "./service-container/ServiceResolver";
 import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
@@ -69,4 +70,5 @@ export interface TypesMap extends ServicesMap {
     Layer["featureListUrls"]
   >;
   "XmlDataExtractor<Layer[styles]>": XmlDataExtractor<Layer["styles"]>;
+  "XmlDataExtractor<ExceptionFormat[]>": XmlDataExtractor<ExceptionFormat[]>;
 }

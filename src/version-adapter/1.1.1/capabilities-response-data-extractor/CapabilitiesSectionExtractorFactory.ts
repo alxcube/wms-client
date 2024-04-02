@@ -15,16 +15,21 @@ export class CapabilitiesSectionExtractorFactory
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["capability"]>
 {
-  constructor(private layersDataExtractor: XmlDataExtractor<Layer[]>) {}
+  constructor(
+    private layersDataExtractor: XmlDataExtractor<Layer[]>,
+    private exceptionFormatsExtractor: XmlDataExtractor<ExceptionFormat[]>,
+    private readonly rootNodeName: string,
+    private readonly ns: string
+  ) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["capability"]
   > {
     return map()
-      .toNode("/WMT_MS_Capabilities/Capability")
+      .toNode(`/${this.rootNodeName}/${this.withNamespace("Capability")}`)
       .mandatory()
       .asObject({
         request: map()
-          .toNode("Request")
+          .toNode(this.withNamespace("Request"))
           .mandatory()
           .asObject({
             getCapabilities:
@@ -35,25 +40,7 @@ export class CapabilitiesSectionExtractorFactory
               true
             ),
           }),
-        exceptionFormats: map()
-          .toNodesArray("Exception/Format")
-          .mandatory()
-          .asArray()
-          .ofStrings()
-          .withConversion((formats) =>
-            formats.map((format) => {
-              switch (format) {
-                case "application/vnd.ogc.se_xml":
-                  return "XML";
-                case "application/vnd.ogc.se_inimage":
-                  return "INIMAGE";
-                case "application/vnd.ogc.se_blank":
-                  return "BLANK";
-                default:
-                  return format as ExceptionFormat;
-              }
-            })
-          ),
+        exceptionFormats: this.exceptionFormatsExtractor,
         layers: this.layersDataExtractor,
       })
       .createNodeDataExtractor();
@@ -73,7 +60,9 @@ export class CapabilitiesSectionExtractorFactory
   ):
     | SingleNodeDataExtractorFnFactory<string | undefined>
     | SingleNodeDataExtractorFnFactory<string> {
-    let builder = map().toNode(`${pathPrefix}OnlineResource/@xlink:href`);
+    let builder = map().toNode(
+      `${pathPrefix}${this.withNamespace("OnlineResource")}/@xlink:href`
+    );
     if (mandatory) {
       builder = builder.mandatory();
     }
@@ -93,17 +82,24 @@ export class CapabilitiesSectionExtractorFactory
   ):
     | SingleNodeDataExtractorFnFactory<OperationType>
     | SingleNodeDataExtractorFnFactory<OperationType | undefined> {
-    let builder = map().toNode(requestType);
+    let builder = map().toNode(this.withNamespace(requestType));
     if (!optional) {
       builder = builder.mandatory();
     }
     return builder.asObject({
       responseFormats: map()
-        .toNodesArray("Format")
+        .toNodesArray(this.withNamespace("Format"))
         .mandatory()
         .asArray()
         .ofStrings(),
-      httpGetUrl: this.buildLinkUrlDataExtractor("DCPType/HTTP/Get/", true),
+      httpGetUrl: this.buildLinkUrlDataExtractor(
+        `${this.withNamespace("DCPType")}/${this.withNamespace("HTTP")}/${this.withNamespace("Get")}/`,
+        true
+      ),
     });
+  }
+
+  private withNamespace(nodeName: string): string {
+    return this.ns.length ? `${this.ns}:${nodeName}` : nodeName;
   }
 }

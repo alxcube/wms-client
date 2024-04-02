@@ -11,9 +11,10 @@ export class UpdateSequenceExtractorFactory
       UnifiedCapabilitiesResponse["updateSequence"]
     >
 {
+  constructor(private readonly rootNodeName: string) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<string | undefined> {
     return map()
-      .toNode("/WMT_MS_Capabilities/@updatesequence")
+      .toNode(`/${this.rootNodeName}/@updatesequence`)
       .asString()
       .createNodeDataExtractor();
   }

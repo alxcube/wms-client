@@ -3,6 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
+import { withNamespace } from "../../../../utils/withNamespace";
 import type { Keyword } from "../../../../wms-data-types/Keyword";
 import type { Layer } from "../../../../wms-data-types/Layer";
 import type { XmlDataExtractor } from "../../../XmlDataExtractor";
@@ -38,19 +39,25 @@ export class LayersExtractorFactory
     private readonly featureListUrlsExtractor: XmlDataExtractor<
       Layer["featureListUrls"]
     >,
-    private readonly stylesExtractor: XmlDataExtractor<Layer["styles"]>
+    private readonly stylesExtractor: XmlDataExtractor<Layer["styles"]>,
+    private readonly ns: string
   ) {}
 
   createNodeDataExtractor(): SingleNodeDataExtractorFn<Layer[]> {
     return map()
-      .toNodesArray("Layer")
+      .toNodesArray(withNamespace("Layer", this.ns))
       .mandatory()
       .asArray()
       .ofRecursiveObjects<Layer>((recursion) => ({
-        title: map().toNode("Title").mandatory().asString(),
+        title: map()
+          .toNode(withNamespace("Title", this.ns))
+          .mandatory()
+          .asString(),
         crs: this.crsExtractor,
-        name: map().toNode("Name").asString(),
-        description: map().toNode("Abstract").asString(),
+        name: map().toNode(withNamespace("Name", this.ns)).asString(),
+        description: map()
+          .toNode(withNamespace("Abstract", this.ns))
+          .asString(),
         keywords: this.keywordsExtractor,
         geographicBounds: this.geographicBoundsExtractor,
         boundingBoxes: this.boundingBoxesExtractor,
@@ -63,7 +70,7 @@ export class LayersExtractorFactory
         featureListUrls: this.featureListUrlsExtractor,
         styles: this.stylesExtractor,
         scaleHint: map()
-          .toNode("ScaleHint")
+          .toNode(withNamespace("ScaleHint", this.ns))
           .asObject({
             min: map().toNode("@min").mandatory().asNumber(),
             max: map().toNode("@max").mandatory().asNumber(),
@@ -75,7 +82,7 @@ export class LayersExtractorFactory
         fixedWidth: map().toNode("@fixedWidth").asNumber(),
         fixedHeight: map().toNode("@fixedHeight").asNumber(),
         layers: map()
-          .toNodesArray("Layer")
+          .toNodesArray(withNamespace("Layer", this.ns))
           .asArray()
           .ofRecursiveObjects(recursion),
       }))

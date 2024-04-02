@@ -19,22 +19,32 @@ export class ServiceSectionExtractorFactory
   constructor(
     private readonly keywordsDataExtractor: XmlDataExtractor<
       Keyword[] | undefined
-    >
+    >,
+    private readonly rootNodeName: string,
+    private readonly ns: string
   ) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["service"]
   > {
     return map()
-      .toNode("/WMT_MS_Capabilities/Service")
+      .toNode(`/${this.rootNodeName}/${this.withNamespace("Service")}`)
       .mandatory()
       .asObject({
-        title: map().toNode("Title").mandatory().asString(),
-        description: map().toNode("Abstract").asString(),
+        title: map().toNode(this.withNamespace("Title")).mandatory().asString(),
+        description: map().toNode(this.withNamespace("Abstract")).asString(),
         keywords: this.keywordsDataExtractor,
-        url: map().toNode("OnlineResource/@xlink:href").mandatory().asString(),
+        url: map()
+          .toNode(`${this.withNamespace("OnlineResource")}/@xlink:href`)
+          .mandatory()
+          .asString(),
         contactInformation: this.buildContactInformationExtractor(),
-        fees: map().toNode("Fees").asString(),
-        accessConstraints: map().toNode("AccessConstraints").asString(),
+        fees: map().toNode(this.withNamespace("Fees")).asString(),
+        accessConstraints: map()
+          .toNode(this.withNamespace("AccessConstraints"))
+          .asString(),
+        layerLimit: map().toNode(this.withNamespace("LayerLimit")).asNumber(),
+        maxWidth: map().toNode(this.withNamespace("MaxWidth")).asNumber(),
+        maxHeight: map().toNode(this.withNamespace("MaxHeight")).asNumber(),
       })
       .createNodeDataExtractor();
   }
@@ -43,14 +53,22 @@ export class ServiceSectionExtractorFactory
     ContactInformation | undefined
   > {
     return map()
-      .toNode("ContactInformation")
+      .toNode(this.withNamespace("ContactInformation"))
       .asObject({
         contactPerson: this.buildContactPersonExtractor(),
-        position: map().toNode("ContactPosition").asString(),
+        position: map()
+          .toNode(this.withNamespace("ContactPosition"))
+          .asString(),
         address: this.buildAddressExtractor(),
-        telephone: map().toNode("ContactVoiceTelephone").asString(),
-        fax: map().toNode("ContactFacsimileTelephone").asString(),
-        email: map().toNode("ContactElectronicMailAddress").asString(),
+        telephone: map()
+          .toNode(this.withNamespace("ContactVoiceTelephone"))
+          .asString(),
+        fax: map()
+          .toNode(this.withNamespace("ContactFacsimileTelephone"))
+          .asString(),
+        email: map()
+          .toNode(this.withNamespace("ContactElectronicMailAddress"))
+          .asString(),
       });
   }
 
@@ -58,11 +76,14 @@ export class ServiceSectionExtractorFactory
     ContactPerson | undefined
   > {
     return map()
-      .toNode("ContactPersonPrimary")
+      .toNode(this.withNamespace("ContactPersonPrimary"))
       .asObject({
-        name: map().toNode("ContactPerson").mandatory().asString(),
+        name: map()
+          .toNode(this.withNamespace("ContactPerson"))
+          .mandatory()
+          .asString(),
         organization: map()
-          .toNode("ContactOrganization")
+          .toNode(this.withNamespace("ContactOrganization"))
           .mandatory()
           .asString(),
       });
@@ -72,17 +93,36 @@ export class ServiceSectionExtractorFactory
     ContactAddress | undefined
   > {
     return map()
-      .toNode("ContactAddress")
+      .toNode(this.withNamespace("ContactAddress"))
       .asObject({
-        addressType: map().toNode("AddressType").asString().withDefault(""),
-        address: map().toNode("Address").asString().withDefault(""),
-        city: map().toNode("City").asString().withDefault(""),
-        stateOrProvince: map()
-          .toNode("StateOrProvince")
+        addressType: map()
+          .toNode(this.withNamespace("AddressType"))
           .asString()
           .withDefault(""),
-        postCode: map().toNode("PostCode").asString().withDefault(""),
-        country: map().toNode("Country").asString().withDefault(""),
+        address: map()
+          .toNode(this.withNamespace("Address"))
+          .asString()
+          .withDefault(""),
+        city: map()
+          .toNode(this.withNamespace("City"))
+          .asString()
+          .withDefault(""),
+        stateOrProvince: map()
+          .toNode(this.withNamespace("StateOrProvince"))
+          .asString()
+          .withDefault(""),
+        postCode: map()
+          .toNode(this.withNamespace("PostCode"))
+          .asString()
+          .withDefault(""),
+        country: map()
+          .toNode(this.withNamespace("Country"))
+          .asString()
+          .withDefault(""),
       });
+  }
+
+  private withNamespace(nodeName: string): string {
+    return this.ns.length ? `${this.ns}:${nodeName}` : nodeName;
   }
 }

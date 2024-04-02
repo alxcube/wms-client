@@ -3,48 +3,67 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
+import { withNamespace } from "../../../../utils/withNamespace";
 import type { LayerStyle } from "../../../../wms-data-types/LayerStyle";
 
 export class LayerStylesExtractorFactory
   implements SingleNodeDataExtractorFnFactory<LayerStyle[] | undefined>
 {
+  constructor(private readonly ns: string) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     LayerStyle[] | undefined
   > {
     return map()
-      .toNodesArray("Style")
+      .toNodesArray(withNamespace("Style", this.ns))
       .asArray()
       .ofObjects({
-        name: map().toNode("Name").mandatory().asString(),
-        title: map().toNode("Title").mandatory().asString(),
-        description: map().toNode("Abstract").asString(),
+        name: map()
+          .toNode(withNamespace("Name", this.ns))
+          .mandatory()
+          .asString(),
+        title: map()
+          .toNode(withNamespace("Title", this.ns))
+          .mandatory()
+          .asString(),
+        description: map()
+          .toNode(withNamespace("Abstract", this.ns))
+          .asString(),
         legendUrls: map()
-          .toNodesArray("LegendURL")
+          .toNodesArray(withNamespace("LegendURL", this.ns))
           .asArray()
           .ofObjects({
             width: map().toNode("@width").mandatory().asNumber(),
             height: map().toNode("@height").mandatory().asNumber(),
-            format: map().toNode("Format").mandatory().asString(),
+            format: map()
+              .toNode(withNamespace("Format", this.ns))
+              .mandatory()
+              .asString(),
             url: map()
-              .toNode("OnlineResource/@xlink:href")
+              .toNode(`${withNamespace("OnlineResource", this.ns)}/@xlink:href`)
               .mandatory()
               .asString(),
           }),
         stylesheetUrl: map()
-          .toNode("StyleSheetURL")
+          .toNode(withNamespace("StyleSheetURL", this.ns))
           .asObject({
-            format: map().toNode("Format").mandatory().asString(),
+            format: map()
+              .toNode(withNamespace("Format", this.ns))
+              .mandatory()
+              .asString(),
             url: map()
-              .toNode("OnlineResource/@xlink:href")
+              .toNode(`${withNamespace("OnlineResource", this.ns)}/@xlink:href`)
               .mandatory()
               .asString(),
           }),
         styleUrl: map()
-          .toNode("StyleURL")
+          .toNode(withNamespace("StyleURL", this.ns))
           .asObject({
-            format: map().toNode("Format").mandatory().asString(),
+            format: map()
+              .toNode(withNamespace("Format", this.ns))
+              .mandatory()
+              .asString(),
             url: map()
-              .toNode("OnlineResource/@xlink:href")
+              .toNode(`${withNamespace("OnlineResource", this.ns)}/@xlink:href`)
               .mandatory()
               .asString(),
           }),

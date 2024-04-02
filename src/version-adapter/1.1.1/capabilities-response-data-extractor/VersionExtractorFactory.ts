@@ -9,11 +9,12 @@ export class VersionExtractorFactory
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["version"]>
 {
+  constructor(private readonly rootNodeName: string) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["version"]
   > {
     return map()
-      .toNode("/WMT_MS_Capabilities/@version")
+      .toNode(`/${this.rootNodeName}/@version`)
       .mandatory()
       .asString()
       .createNodeDataExtractor();

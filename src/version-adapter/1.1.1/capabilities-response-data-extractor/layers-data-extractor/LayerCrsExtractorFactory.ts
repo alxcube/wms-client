@@ -8,9 +8,10 @@ import type { Layer } from "../../../../wms-data-types/Layer";
 export class LayerCrsExtractorFactory
   implements SingleNodeDataExtractorFnFactory<Layer["crs"]>
 {
+  constructor(private readonly crsNodeName: string) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<string[] | undefined> {
     return map()
-      .toNodesArray("SRS")
+      .toNodesArray(this.crsNodeName)
       .asArray()
       .ofStrings()
       .withConversion((crses) => {

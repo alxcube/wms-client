@@ -1,3 +1,5 @@
+import { map } from "@alxcube/xml-mapper";
+import type { ExceptionFormat } from "../ExceptionFormat";
 import { constant } from "../service-container/constant";
 import type {
   ServiceContainer,
@@ -25,9 +27,10 @@ import { VersionExtractorFactory } from "./1.1.1/capabilities-response-data-extr
 export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     const name = "1.1.1";
+    const rootNodeName = "WMT_MS_Capabilities";
 
-    // Keywords extractor
-    container.registerClass(KeywordsExtractorFactory, [], { name });
+    // Keywords extractor v1.1.1
+    container.registerClass(KeywordsExtractorFactory, [constant("")], { name });
     container.registerImplementation(
       "XmlDataExtractor<Keyword[]>",
       { service: KeywordsExtractorFactory, name },
@@ -35,7 +38,9 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Version extractor v1.1.1
-    container.registerClass(VersionExtractorFactory, [], { name });
+    container.registerClass(VersionExtractorFactory, [constant(rootNodeName)], {
+      name,
+    });
     container.registerImplementation(
       "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
       { service: VersionExtractorFactory, name },
@@ -43,7 +48,11 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // UpdateSequence extractor v1.1.1
-    container.registerClass(UpdateSequenceExtractorFactory, [], { name });
+    container.registerClass(
+      UpdateSequenceExtractorFactory,
+      [constant(rootNodeName)],
+      { name }
+    );
     container.registerImplementation(
       "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>",
       { service: UpdateSequenceExtractorFactory, name },
@@ -53,7 +62,11 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     // Service section extractor v1.1.1
     container.registerClass(
       ServiceSectionExtractorFactory,
-      [{ service: "XmlDataExtractor<Keyword[]>", name }],
+      [
+        { service: "XmlDataExtractor<Keyword[]>", name },
+        constant(rootNodeName),
+        constant(""),
+      ],
       { name }
     );
     container.registerImplementation(
@@ -63,7 +76,9 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Layer CRS extractor v1.1.1
-    container.registerClass(LayerCrsExtractorFactory, [], { name });
+    container.registerClass(LayerCrsExtractorFactory, [constant("SRS")], {
+      name,
+    });
     container.registerImplementation(
       "XmlDataExtractor<Layer[crs]>",
       { service: LayerCrsExtractorFactory, name },
@@ -87,15 +102,19 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Layer bounding boxes extractor v1.1.1
-    container.registerClass(LayerBoundingBoxesExtractorFactory, []);
+    container.registerClass(
+      LayerBoundingBoxesExtractorFactory,
+      [constant("SRS"), constant("")],
+      { name }
+    );
     container.registerImplementation(
       "XmlDataExtractor<Layer[boundingBoxes]>",
-      LayerBoundingBoxesExtractorFactory,
+      { service: LayerBoundingBoxesExtractorFactory, name },
       { name }
     );
 
     // Layer attribution extractor v1.1.1
-    container.registerClass(LayerAttributionExtractorFactory, []);
+    container.registerClass(LayerAttributionExtractorFactory, [constant("")]);
     container.registerImplementation(
       "XmlDataExtractor<Layer[attribution]>",
       LayerAttributionExtractorFactory,
@@ -103,7 +122,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Layer authority URLs extractor v1.1.1
-    container.registerClass(LayerAuthorityUrlsExtractorFactory, []);
+    container.registerClass(LayerAuthorityUrlsExtractorFactory, [constant("")]);
     container.registerImplementation(
       "XmlDataExtractor<Layer[authorityUrls]>",
       LayerAuthorityUrlsExtractorFactory,
@@ -111,25 +130,29 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Layer identifiers extractor v1.1.1
-    container.registerClass(LayerIdentifiersExtractorFactory, []);
+    container.registerClass(LayerIdentifiersExtractorFactory, [constant("")], {
+      name,
+    });
     container.registerImplementation(
       "XmlDataExtractor<Layer[identifiers]>",
-      LayerIdentifiersExtractorFactory,
+      { service: LayerIdentifiersExtractorFactory, name },
       { name }
     );
 
     // Layer metadata URLs extractor v1.1.1
-    container.registerClass(LayerMetadataUrlsExtractorFactory, []);
+    container.registerClass(LayerMetadataUrlsExtractorFactory, [constant("")], {
+      name,
+    });
     container.registerImplementation(
       "XmlDataExtractor<Layer[metadataUrls]>",
-      LayerMetadataUrlsExtractorFactory,
+      { service: LayerMetadataUrlsExtractorFactory, name },
       { name }
     );
 
     // Layer data URLs extractor v1.1.1
     container.registerClass(
       LayerResourceUrlsExtractorFactory,
-      [constant("DataURL")],
+      [constant("DataURL"), constant("")],
       { name: "LayerDataUrlsExtractor_1.1.1" }
     );
     container.registerImplementation(
@@ -144,7 +167,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     // Layer feature list URLs extractor v1.1.1
     container.registerClass(
       LayerResourceUrlsExtractorFactory,
-      [constant("FeatureListURL")],
+      [constant("FeatureListURL"), constant("")],
       { name: "LayerFeatureListUrlsExtractor_1.1.1" }
     );
     container.registerImplementation(
@@ -157,10 +180,12 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     // Layer styles extractor v1.1.1
-    container.registerClass(LayerStylesExtractorFactory, []);
+    container.registerClass(LayerStylesExtractorFactory, [constant("")], {
+      name,
+    });
     container.registerImplementation(
       "XmlDataExtractor<Layer[styles]>",
-      LayerStylesExtractorFactory,
+      { service: LayerStylesExtractorFactory, name },
       { name }
     );
 
@@ -180,6 +205,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
         { service: "XmlDataExtractor<Layer[dataUrls]>", name },
         { service: "XmlDataExtractor<Layer[featureListUrls]>", name },
         { service: "XmlDataExtractor<Layer[styles]>", name },
+        constant(""),
       ],
       { name }
     );
@@ -189,10 +215,40 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
       { name }
     );
 
+    // Exception formats extractor v1.1.1
+    container.registerConstant(
+      "XmlDataExtractor<ExceptionFormat[]>",
+      map()
+        .toNodesArray("Exception/Format")
+        .mandatory()
+        .asArray()
+        .ofStrings()
+        .withConversion((formats) =>
+          formats.map((format) => {
+            switch (format) {
+              case "application/vnd.ogc.se_xml":
+                return "XML";
+              case "application/vnd.ogc.se_inimage":
+                return "INIMAGE";
+              case "application/vnd.ogc.se_blank":
+                return "BLANK";
+              default:
+                return format as ExceptionFormat;
+            }
+          })
+        ),
+      { name }
+    );
+
     // Capability section extractor v1.1.1
     container.registerClass(
       CapabilitiesSectionExtractorFactory,
-      [{ service: "XmlDataExtractor<Layer[]>", name }],
+      [
+        { service: "XmlDataExtractor<Layer[]>", name },
+        { service: "XmlDataExtractor<ExceptionFormat[]>", name },
+        constant(rootNodeName),
+        constant(""),
+      ],
       { name }
     );
     container.registerImplementation(

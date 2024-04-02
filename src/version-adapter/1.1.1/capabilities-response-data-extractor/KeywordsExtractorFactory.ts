@@ -9,14 +9,21 @@ import type { Keyword } from "../../../wms-data-types/Keyword";
 export class KeywordsExtractorFactory
   implements SingleNodeDataExtractorFnFactory<Keyword[] | undefined>
 {
+  constructor(private readonly ns: string) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<Keyword[] | undefined> {
     return map()
-      .toNodesArray("KeywordList/Keyword")
+      .toNodesArray(
+        `${this.withNameSpace("KeywordList")}/${this.withNameSpace("Keyword")}`
+      )
       .asArray()
       .ofObjects<Keyword>({
         value: map().toNode(".").mandatory().asString().withConversion(trim),
         vocabulary: map().toNode("@vocabulary").asString(),
       })
       .createNodeDataExtractor();
+  }
+
+  private withNameSpace(nodeName: string): string {
+    return this.ns.length ? `${this.ns}:${nodeName}` : nodeName;
   }
 }

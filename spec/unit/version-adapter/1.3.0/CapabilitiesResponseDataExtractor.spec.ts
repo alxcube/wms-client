@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { UnifiedCapabilitiesResponse } from "../../../../src/UnifiedCapabilitiesResponse";
-import { CapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/1.3.0/CapabilitiesResponseDataExtractor";
+import { CapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/1.3.0/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
 import { testContainer } from "../../../testContainer";
 import { DOMParser } from "@xmldom/xmldom";
 // eslint-disable-next-line import/no-unresolved
