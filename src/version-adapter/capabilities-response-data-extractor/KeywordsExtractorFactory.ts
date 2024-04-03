@@ -3,8 +3,8 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import { trim } from "../../../utils/trim";
-import type { Keyword } from "../../../wms-data-types/Keyword";
+import { trim } from "../../utils/trim";
+import type { Keyword } from "../../wms-data-types/Keyword";
 
 export class KeywordsExtractorFactory
   implements SingleNodeDataExtractorFnFactory<Keyword[] | undefined>

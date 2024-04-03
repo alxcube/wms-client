@@ -3,8 +3,8 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import { withNamespace } from "../../../../utils/withNamespace";
-import type { LayerStyle } from "../../../../wms-data-types/LayerStyle";
+import { withNamespace } from "../../../utils/withNamespace";
+import type { LayerStyle } from "../../../wms-data-types/LayerStyle";
 
 export class LayerStylesExtractorFactory
   implements SingleNodeDataExtractorFnFactory<LayerStyle[] | undefined>

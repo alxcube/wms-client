@@ -8,9 +8,9 @@ import type {
   ContactInformation,
   ContactPerson,
   UnifiedCapabilitiesResponse,
-} from "../../../UnifiedCapabilitiesResponse";
-import type { Keyword } from "../../../wms-data-types/Keyword";
-import type { XmlDataExtractor } from "../../XmlDataExtractor";
+} from "../../UnifiedCapabilitiesResponse";
+import type { Keyword } from "../../wms-data-types/Keyword";
+import type { XmlDataExtractor } from "../XmlDataExtractor";
 
 export class ServiceSectionExtractorFactory
   implements

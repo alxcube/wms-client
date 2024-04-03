@@ -3,8 +3,8 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import { withNamespace } from "../../../../utils/withNamespace";
-import type { MetadataUrl } from "../../../../wms-data-types/MetadataUrl";
+import { withNamespace } from "../../../utils/withNamespace";
+import type { MetadataUrl } from "../../../wms-data-types/MetadataUrl";
 
 export class LayerMetadataUrlsExtractorFactory
   implements SingleNodeDataExtractorFnFactory<MetadataUrl[] | undefined>

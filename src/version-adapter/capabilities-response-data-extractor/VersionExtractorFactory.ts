@@ -3,7 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import type { UnifiedCapabilitiesResponse } from "../../../UnifiedCapabilitiesResponse";
+import type { UnifiedCapabilitiesResponse } from "../../UnifiedCapabilitiesResponse";
 
 export class VersionExtractorFactory
   implements

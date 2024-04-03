@@ -3,13 +3,13 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import type { ExceptionFormat } from "../../../ExceptionFormat";
+import type { ExceptionFormat } from "../../ExceptionFormat";
 import type {
   OperationType,
   UnifiedCapabilitiesResponse,
-} from "../../../UnifiedCapabilitiesResponse";
-import type { Layer } from "../../../wms-data-types/Layer";
-import type { XmlDataExtractor } from "../../XmlDataExtractor";
+} from "../../UnifiedCapabilitiesResponse";
+import type { Layer } from "../../wms-data-types/Layer";
+import type { XmlDataExtractor } from "../XmlDataExtractor";
 
 export class CapabilitiesSectionExtractorFactory
   implements

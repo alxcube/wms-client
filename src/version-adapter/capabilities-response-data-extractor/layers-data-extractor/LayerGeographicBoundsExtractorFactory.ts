@@ -3,7 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import type { GeographicBoundingBox } from "../../../../wms-data-types/GeographicBoundingBox";
+import type { GeographicBoundingBox } from "../../../wms-data-types/GeographicBoundingBox";
 
 export class LayerGeographicBoundsExtractorFactory
   implements

@@ -3,10 +3,10 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import { withNamespace } from "../../../../utils/withNamespace";
-import type { Keyword } from "../../../../wms-data-types/Keyword";
-import type { Layer } from "../../../../wms-data-types/Layer";
-import type { XmlDataExtractor } from "../../../XmlDataExtractor";
+import { withNamespace } from "../../../utils/withNamespace";
+import type { Keyword } from "../../../wms-data-types/Keyword";
+import type { Layer } from "../../../wms-data-types/Layer";
+import type { XmlDataExtractor } from "../../XmlDataExtractor";
 
 export class LayersExtractorFactory
   implements SingleNodeDataExtractorFnFactory<Layer[]>

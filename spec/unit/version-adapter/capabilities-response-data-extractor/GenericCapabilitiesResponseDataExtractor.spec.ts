@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { constant } from "../../../../src/service-container/constant";
 import type { UnifiedCapabilitiesResponse } from "../../../../src/UnifiedCapabilitiesResponse";
-import { GenericCapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/1.1.1/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
+import { GenericCapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
 import { testContainer } from "../../../testContainer";
 import { DOMParser } from "@xmldom/xmldom";
 // eslint-disable-next-line import/no-unresolved

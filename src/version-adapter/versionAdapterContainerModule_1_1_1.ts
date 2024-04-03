@@ -6,23 +6,23 @@ import type {
   ServiceModule,
 } from "../service-container/ServiceContainer";
 import type { TypesMap } from "../TypesMap";
-import { CapabilitiesSectionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
-import { GenericCapabilitiesResponseDataExtractor } from "./1.1.1/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
-import { KeywordsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/KeywordsExtractorFactory";
-import { LayerAttributionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerAttributionExtractorFactory";
-import { LayerAuthorityUrlsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerAuthorityUrlsExtractorFactory";
-import { LayerBoundingBoxesExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerBoundingBoxesExtractorFactory";
-import { LayerCrsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerCrsExtractorFactory";
-import { LayerDimensionsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerDimensionsExtractorFactory";
-import { LayerGeographicBoundsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerGeographicBoundsExtractorFactory";
-import { LayerIdentifiersExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerIdentifiersExtractorFactory";
-import { LayerMetadataUrlsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerMetadataUrlsExtractorFactory";
-import { LayerResourceUrlsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerResourceUrlsExtractorFactory";
-import { LayersExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayersExtractorFactory";
-import { LayerStylesExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerStylesExtractorFactory";
-import { ServiceSectionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/ServiceSectionExtractorFactory";
-import { UpdateSequenceExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
-import { VersionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/VersionExtractorFactory";
+import { CapabilitiesSectionExtractorFactory } from "./capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
+import { GenericCapabilitiesResponseDataExtractor } from "./capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
+import { KeywordsExtractorFactory } from "./capabilities-response-data-extractor/KeywordsExtractorFactory";
+import { LayerAttributionExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerAttributionExtractorFactory";
+import { LayerAuthorityUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerAuthorityUrlsExtractorFactory";
+import { LayerBoundingBoxesExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerBoundingBoxesExtractorFactory";
+import { LayerCrsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerCrsExtractorFactory";
+import { LayerDimensionsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerDimensionsExtractorFactory";
+import { LayerGeographicBoundsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerGeographicBoundsExtractorFactory";
+import { LayerIdentifiersExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerIdentifiersExtractorFactory";
+import { LayerMetadataUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerMetadataUrlsExtractorFactory";
+import { LayerResourceUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerResourceUrlsExtractorFactory";
+import { LayersExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayersExtractorFactory";
+import { LayerStylesExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerStylesExtractorFactory";
+import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
+import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
+import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
 
 export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {

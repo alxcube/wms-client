@@ -3,8 +3,8 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import { withNamespace } from "../../../../utils/withNamespace";
-import type { AuthorityUrl } from "../../../../wms-data-types/AuthorityUrl";
+import { withNamespace } from "../../../utils/withNamespace";
+import type { AuthorityUrl } from "../../../wms-data-types/AuthorityUrl";
 
 export class LayerAuthorityUrlsExtractorFactory
   implements SingleNodeDataExtractorFnFactory<AuthorityUrl[] | undefined>
