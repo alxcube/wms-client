@@ -6,6 +6,7 @@ import type {
   ServiceModule,
 } from "../service-container/ServiceContainer";
 import type { TypesMap } from "../TypesMap";
+import { GenericCapabilitiesRequestParamsTransformer } from "./capabilities-request-params-transformer/GenericCapabilitiesRequestParamsTransformer";
 import { CapabilitiesSectionExtractorFactory } from "./capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
 import { GenericCapabilitiesResponseDataExtractor } from "./capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
 import { KeywordsExtractorFactory } from "./capabilities-response-data-extractor/KeywordsExtractorFactory";
@@ -28,6 +29,14 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     const name = "1.1.1";
     const rootNodeName = "WMT_MS_Capabilities";
+
+    // GetCapabilities request params transformer v1.1.1
+    container.implement(
+      "WmsCapabilitiesRequestParamsTransformer",
+      GenericCapabilitiesRequestParamsTransformer,
+      [constant(name)],
+      { name }
+    );
 
     // Keywords extractor v1.1.1
     container.implement(

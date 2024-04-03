@@ -6,6 +6,7 @@ import type {
   ServiceModule,
 } from "../service-container/ServiceContainer";
 import type { TypesMap } from "../TypesMap";
+import { GenericCapabilitiesRequestParamsTransformer } from "./capabilities-request-params-transformer/GenericCapabilitiesRequestParamsTransformer";
 import { GenericCapabilitiesResponseDataExtractor } from "./capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
 import { CapabilitiesSectionExtractorFactory } from "./capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
 import { KeywordsExtractorFactory } from "./capabilities-response-data-extractor/KeywordsExtractorFactory";
@@ -21,7 +22,6 @@ import { LayerStylesExtractorFactory } from "./capabilities-response-data-extrac
 import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
-import { capabilitiesRequestParamsTransformer } from "./1.3.0/capabilitiesRequestParamsTransformer";
 import { ErrorsExtractor } from "./1.3.0/ErrorsExtractor";
 import { MapRequestParamsTransformer } from "./1.3.0/MapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
@@ -45,13 +45,15 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
       { name }
     );
 
-    container.registerConstant(
+    // GetCapabilities request params transformer v1.3.0
+    container.implement(
       "WmsCapabilitiesRequestParamsTransformer",
-      capabilitiesRequestParamsTransformer,
+      GenericCapabilitiesRequestParamsTransformer,
+      [constant(name)],
       { name }
     );
 
-    // Keywords extractor v1.1.1
+    // Keywords extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Keyword[]>",
       KeywordsExtractorFactory,
