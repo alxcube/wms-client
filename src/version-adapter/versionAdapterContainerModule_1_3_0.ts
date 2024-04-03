@@ -6,6 +6,7 @@ import type {
   ServiceModule,
 } from "../service-container/ServiceContainer";
 import type { TypesMap } from "../TypesMap";
+import { CapabilitiesResponseDataExtractor } from "./1.1.1/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
 import { CapabilitiesSectionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
 import { KeywordsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/KeywordsExtractorFactory";
 import { LayerAttributionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerAttributionExtractorFactory";
@@ -21,7 +22,6 @@ import { ServiceSectionExtractorFactory } from "./1.1.1/capabilities-response-da
 import { UpdateSequenceExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/VersionExtractorFactory";
 import { capabilitiesRequestParamsTransformer } from "./1.3.0/capabilitiesRequestParamsTransformer";
-import { CapabilitiesResponseDataExtractor } from "./1.3.0/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
 import { ErrorsExtractor } from "./1.3.0/ErrorsExtractor";
 import { MapRequestParamsTransformer } from "./1.3.0/MapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
@@ -261,6 +261,10 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
           service: "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>",
           name,
         },
+        constant({
+          xlink: "http://www.w3.org/1999/xlink",
+          wms: "http://www.opengis.net/wms",
+        }),
       ],
       { name }
     );
