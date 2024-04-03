@@ -6,6 +6,7 @@ import type {
   ServiceModule,
 } from "../service-container/ServiceContainer";
 import type { TypesMap } from "../TypesMap";
+import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
 import { GenericCapabilitiesRequestParamsTransformer } from "./capabilities-request-params-transformer/GenericCapabilitiesRequestParamsTransformer";
 import { CapabilitiesSectionExtractorFactory } from "./capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
 import { GenericCapabilitiesResponseDataExtractor } from "./capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
@@ -25,11 +26,25 @@ import { ServiceSectionExtractorFactory } from "./capabilities-response-data-ext
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
 import { ErrorsExtractor } from "./errors-extractor/ErrorsExtractor";
+import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
 
 export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     const name = "1.1.1";
     const rootNodeName = "WMT_MS_Capabilities";
+
+    container.implement(
+      "WmsVersionAdapter",
+      BaseWmsVersionAdapter,
+      [
+        constant("1.1.1"),
+        { service: "WmsCapabilitiesRequestParamsTransformer", name },
+        { service: "WmsCapabilitiesResponseDataExtractor", name },
+        { service: "WmsMapRequestParamsTransformer", name },
+        { service: "WmsErrorsExtractor", name },
+      ],
+      { name }
+    );
 
     // GetCapabilities request params transformer v1.1.1
     container.implement(
@@ -255,5 +270,12 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     container.implement("WmsErrorsExtractor", ErrorsExtractor, [constant("")], {
       name,
     });
+
+    container.implement(
+      "WmsMapRequestParamsTransformer",
+      GenericMapRequestParamsTransformer,
+      ["VersionComparator", constant("1.1.1")],
+      { name }
+    );
   },
 };

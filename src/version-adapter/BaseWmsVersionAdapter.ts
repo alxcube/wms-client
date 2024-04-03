@@ -16,14 +16,14 @@ export interface WmsErrorsExtractor {
 }
 
 export interface WmsCapabilitiesRequestParamsTransformer {
-  transform(
-    params: CapabilitiesRequestParams,
-    options?: TransformMapRequestParamsOptions
-  ): object;
+  transform(params: CapabilitiesRequestParams): object;
 }
 
 export interface WmsMapRequestParamsTransformer {
-  transform(params: MapRequestParams): object;
+  transform(
+    params: MapRequestParams,
+    options?: TransformMapRequestParamsOptions
+  ): object;
 }
 
 export class BaseWmsVersionAdapter implements WmsVersionAdapter {
@@ -46,13 +46,15 @@ export class BaseWmsVersionAdapter implements WmsVersionAdapter {
   }
 
   transformCapabilitiesRequestParams(
-    params: CapabilitiesRequestParams,
-    options: TransformMapRequestParamsOptions = {}
+    params: CapabilitiesRequestParams
   ): object {
-    return this.capabilitiesRequestParamsTransformer.transform(params, options);
+    return this.capabilitiesRequestParamsTransformer.transform(params);
   }
 
-  transformMapRequestParams(params: MapRequestParams): object {
-    return this.mapRequestParamsTransformer.transform(params);
+  transformMapRequestParams(
+    params: MapRequestParams,
+    options: TransformMapRequestParamsOptions = {}
+  ): object {
+    return this.mapRequestParamsTransformer.transform(params, options);
   }
 }

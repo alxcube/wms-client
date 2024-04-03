@@ -23,7 +23,7 @@ import { ServiceSectionExtractorFactory } from "./capabilities-response-data-ext
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
 import { ErrorsExtractor } from "./errors-extractor/ErrorsExtractor";
-import { MapRequestParamsTransformer_1_3_0 } from "./map-request-params-transformer/MapRequestParamsTransformer_1_3_0";
+import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
 
 export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
@@ -273,8 +273,8 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
 
     container.implement(
       "WmsMapRequestParamsTransformer",
-      MapRequestParamsTransformer_1_3_0,
-      [],
+      GenericMapRequestParamsTransformer,
+      ["VersionComparator", constant("1.3.0")],
       { name }
     );
 

@@ -1,6 +1,6 @@
 import { createClient } from "./createClient";
 
-const client = createClient("https://wms.gebco.net/mapserv", "1.3.0");
+const client = createClient("https://wms.gebco.net/mapserv", "1.1.1");
 
 //window.wmsClient = client;
 
@@ -22,7 +22,7 @@ const getMapParams = {
   height: 600,
 };
 
-const mapImage = await client.getMap(getMapParams);
+const mapImage = await client.getMap(getMapParams, { flipAxes: true });
 const blob = new Blob([mapImage]);
 const reader = new FileReader();
 reader.onload = () => {

@@ -5,6 +5,7 @@ import type { TypesMap } from "./TypesMap";
 import { BaseWmsVersionAdapterResolver } from "./version-adapter/BaseWmsVersionAdapterResolver";
 import { versionAdapterContainerModule_1_1_1 } from "./version-adapter/versionAdapterContainerModule_1_1_1";
 import { versionAdapterContainerModule_1_3_0 } from "./version-adapter/versionAdapterContainerModule_1_3_0";
+import { BaseVersionComparator } from "./version-comparator/BaseVersionComparator";
 
 export const serviceContainer = new Container<TypesMap>();
 
@@ -18,6 +19,8 @@ serviceContainer.implement(
   BaseQueryParamsSerializer,
   []
 );
+
+serviceContainer.implement("VersionComparator", BaseVersionComparator, []);
 
 serviceContainer.registerFactory("WmsVersionAdapterResolver", (context) => {
   return new BaseWmsVersionAdapterResolver(

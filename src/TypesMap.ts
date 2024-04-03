@@ -11,6 +11,7 @@ import type {
 import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
 import type { WmsVersionAdapterResolver } from "./version-adapter/WmsVersionAdapterResolver";
 import type { XmlDataExtractor } from "./version-adapter/XmlDataExtractor";
+import type { VersionComparator } from "./version-comparator/VersionComparator";
 import type { Keyword } from "./wms-data-types/Keyword";
 import type { Layer } from "./wms-data-types/Layer";
 import type { WmsClientFactory } from "./WmsClientFactory";
@@ -71,4 +72,6 @@ export interface TypesMap extends ServicesMap {
   >;
   "XmlDataExtractor<Layer[styles]>": XmlDataExtractor<Layer["styles"]>;
   "XmlDataExtractor<ExceptionFormat[]>": XmlDataExtractor<ExceptionFormat[]>;
+
+  VersionComparator: VersionComparator;
 }
