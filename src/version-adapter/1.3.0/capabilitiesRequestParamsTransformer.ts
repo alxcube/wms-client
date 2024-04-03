@@ -4,11 +4,20 @@ import type { WmsCapabilitiesRequestParamsTransformer } from "../BaseWmsVersionA
 export const capabilitiesRequestParamsTransformer: WmsCapabilitiesRequestParamsTransformer =
   {
     transform(params: CapabilitiesRequestParams): object {
-      return {
-        service: "WMS",
-        request: "GetCapabilities",
-        version: "1.3.0",
-        updateSequence: params.updateSequence,
-      };
+      const transformedParams: { [key: string]: unknown } = {};
+      Object.keys(params).forEach((key: keyof CapabilitiesRequestParams) => {
+        switch (key) {
+          case "updateSequence":
+            transformedParams.updatesequence = params[key];
+            break;
+          default:
+            transformedParams[key] = params[key];
+            break;
+        }
+      });
+      transformedParams.service = "WMS";
+      transformedParams.request = "GetCapabilities";
+      transformedParams.version = "1.3.0";
+      return transformedParams;
     },
   };

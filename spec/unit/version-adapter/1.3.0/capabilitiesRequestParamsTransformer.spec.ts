@@ -7,7 +7,7 @@ describe("capabilitiesRequestParamsTransformer object", () => {
       expect(
         capabilitiesRequestParamsTransformer.transform({ updateSequence: 1 })
       ).toEqual({
-        updateSequence: 1,
+        updatesequence: 1,
         service: "WMS",
         request: "GetCapabilities",
         version: "1.3.0",
