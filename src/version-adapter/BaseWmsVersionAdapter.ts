@@ -2,7 +2,10 @@ import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
 import type { WmsException } from "../error/WmsException";
 import type { MapRequestParams } from "../MapRequestParams";
 import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
-import type { WmsVersionAdapter } from "./WmsVersionAdapter";
+import type {
+  TransformMapRequestParamsOptions,
+  WmsVersionAdapter,
+} from "./WmsVersionAdapter";
 
 export interface WmsCapabilitiesResponseDataExtractor {
   extract(response: Document): UnifiedCapabilitiesResponse;
@@ -13,7 +16,10 @@ export interface WmsErrorsExtractor {
 }
 
 export interface WmsCapabilitiesRequestParamsTransformer {
-  transform(params: CapabilitiesRequestParams): object;
+  transform(
+    params: CapabilitiesRequestParams,
+    options?: TransformMapRequestParamsOptions
+  ): object;
 }
 
 export interface WmsMapRequestParamsTransformer {
@@ -40,9 +46,10 @@ export class BaseWmsVersionAdapter implements WmsVersionAdapter {
   }
 
   transformCapabilitiesRequestParams(
-    params: CapabilitiesRequestParams
+    params: CapabilitiesRequestParams,
+    options: TransformMapRequestParamsOptions = {}
   ): object {
-    return this.capabilitiesRequestParamsTransformer.transform(params);
+    return this.capabilitiesRequestParamsTransformer.transform(params, options);
   }
 
   transformMapRequestParams(params: MapRequestParams): object {

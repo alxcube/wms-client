@@ -7,7 +7,12 @@ import type { QueryParamsSerializer } from "./query-params-serializer/QueryParam
 import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
 import { inheritLayersData } from "./utils/inheritLayersData";
 import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
-import type { WmsClient, WmsClientOptions } from "./WmsClient";
+import type {
+  GetMapOptions,
+  GetMapUrlOptions,
+  WmsClient,
+  WmsClientOptions,
+} from "./WmsClient";
 export class BaseWmsClient implements WmsClient {
   constructor(
     private readonly httpClient: AxiosInstance,
@@ -50,8 +55,11 @@ export class BaseWmsClient implements WmsClient {
     }
   }
 
-  async getMap(params: MapRequestParams): Promise<ArrayBuffer> {
-    const url = this.getMapUrl(params);
+  async getMap(
+    params: MapRequestParams,
+    options: GetMapOptions = {}
+  ): Promise<ArrayBuffer> {
+    const url = this.getMapUrl(params, options);
     try {
       const response = await this.httpClient.get<ArrayBuffer>(url, {
         responseType: "arraybuffer",
@@ -62,10 +70,11 @@ export class BaseWmsClient implements WmsClient {
     }
   }
 
-  getMapUrl(params: MapRequestParams): string {
+  getMapUrl(params: MapRequestParams, options: GetMapUrlOptions = {}): string {
+    const { flipAxes } = options;
     const requestParams = {
       ...this.getCustomQueryParams(),
-      ...this.versionAdapter.transformMapRequestParams(params),
+      ...this.versionAdapter.transformMapRequestParams(params, { flipAxes }),
     };
     const query = this.queryParamsSerializer.serialize(requestParams);
 

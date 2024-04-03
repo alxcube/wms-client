@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { MapRequestParams } from "../../../../src/MapRequestParams";
-import { MapRequestParamsTransformer } from "../../../../src/version-adapter/1.3.0/MapRequestParamsTransformer";
+import { MapRequestParamsTransformer_1_3_0 } from "../../../../src/version-adapter/map-request-params-transformer/MapRequestParamsTransformer_1_3_0";
 import { testContainer } from "../../../testContainer";
 
-describe("MapRequestParamsTransformer v1.3.0 class", () => {
-  let transformer: MapRequestParamsTransformer;
+describe("MapRequestParamsTransformer_1_3_0 v1.3.0 class", () => {
+  let transformer: MapRequestParamsTransformer_1_3_0;
 
   beforeEach(() => {
     testContainer.backup();
-    testContainer.registerClass(MapRequestParamsTransformer, []);
-    transformer = testContainer.resolve(MapRequestParamsTransformer);
+    testContainer.registerClass(MapRequestParamsTransformer_1_3_0, []);
+    transformer = testContainer.resolve(MapRequestParamsTransformer_1_3_0);
   });
 
   afterEach(() => {
@@ -83,15 +83,18 @@ describe("MapRequestParamsTransformer v1.3.0 class", () => {
       });
     });
 
-    it("should change format of 'bbox' param from 'minX,minY,maxX,maxY' to 'minY,minX,maxY,maxX', when crs is 'EPSG:4326'", () => {
-      const transformed = transformer.transform({
-        crs: "EPSG:4326",
-        bounds,
-        width,
-        height,
-        format,
-        layers,
-      }) as { bbox: string };
+    it("should change format of 'bbox' param from 'minX,minY,maxX,maxY' to 'minY,minX,maxY,maxX', when 'flipAxes' option is set to true", () => {
+      const transformed = transformer.transform(
+        {
+          crs: "EPSG:4326",
+          bounds,
+          width,
+          height,
+          format,
+          layers,
+        },
+        { flipAxes: true }
+      ) as { bbox: string };
       expect(transformed.bbox).toBe("-20,-10,40,30");
     });
   });

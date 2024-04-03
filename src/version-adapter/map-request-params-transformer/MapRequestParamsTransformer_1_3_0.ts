@@ -1,10 +1,14 @@
 import type { MapRequestParams } from "../../MapRequestParams";
 import type { WmsMapRequestParamsTransformer } from "../BaseWmsVersionAdapter";
+import type { TransformMapRequestParamsOptions } from "../WmsVersionAdapter";
 
-export class MapRequestParamsTransformer
+export class MapRequestParamsTransformer_1_3_0
   implements WmsMapRequestParamsTransformer
 {
-  transform(params: MapRequestParams): object {
+  transform(
+    params: MapRequestParams,
+    options: TransformMapRequestParamsOptions = {}
+  ): object {
     const requestParams: { [key: string]: unknown } = {};
 
     Object.keys(params).forEach((key: keyof MapRequestParams) => {
@@ -14,7 +18,7 @@ export class MapRequestParamsTransformer
           requestParams.styles = this.getStylesParam(params[key]);
           break;
         case "bounds":
-          requestParams.bbox = this.getBboxParam(params[key], params.crs);
+          requestParams.bbox = this.getBboxParam(params[key], options.flipAxes);
           break;
         case "transparent":
           requestParams.transparent = params[key] ? "TRUE" : "FALSE";
@@ -34,10 +38,10 @@ export class MapRequestParamsTransformer
 
   private getBboxParam(
     bounds: MapRequestParams["bounds"],
-    crs: string
+    flipAxes = false
   ): string {
     return (
-      crs.toLowerCase() === "epsg:4326"
+      flipAxes
         ? [bounds.minY, bounds.minX, bounds.maxY, bounds.maxX]
         : [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY]
     ).join(",");

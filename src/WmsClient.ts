@@ -6,6 +6,12 @@ import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse"
 export interface WmsClientOptions {
   query?: { [key: string]: unknown };
 }
+
+export interface GetMapUrlOptions {
+  flipAxes?: boolean;
+}
+
+export interface GetMapOptions extends GetMapUrlOptions {}
 export interface WmsClient {
   getVersion(): string;
 
@@ -13,9 +19,12 @@ export interface WmsClient {
     params?: CapabilitiesRequestParams
   ): Promise<UnifiedCapabilitiesResponse>;
 
-  getMap(params: MapRequestParams): Promise<ArrayBuffer>;
+  getMap(
+    params: MapRequestParams,
+    options?: GetMapOptions
+  ): Promise<ArrayBuffer>;
 
-  getMapUrl(params: MapRequestParams): string;
+  getMapUrl(params: MapRequestParams, options?: GetMapUrlOptions): string;
 
   getCustomQueryParams(): { [key: string]: unknown };
 
