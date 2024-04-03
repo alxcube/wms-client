@@ -7,7 +7,7 @@ import type {
 } from "../service-container/ServiceContainer";
 import type { TypesMap } from "../TypesMap";
 import { CapabilitiesSectionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
-import { CapabilitiesResponseDataExtractor } from "./1.1.1/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
+import { GenericCapabilitiesResponseDataExtractor } from "./1.1.1/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
 import { KeywordsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/KeywordsExtractorFactory";
 import { LayerAttributionExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerAttributionExtractorFactory";
 import { LayerAuthorityUrlsExtractorFactory } from "./1.1.1/capabilities-response-data-extractor/layers-data-extractor/LayerAuthorityUrlsExtractorFactory";
@@ -216,7 +216,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     // Capabilities response extractor v1.1.1
     container.implement(
       "WmsCapabilitiesResponseDataExtractor",
-      CapabilitiesResponseDataExtractor,
+      GenericCapabilitiesResponseDataExtractor,
       [
         {
           service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",

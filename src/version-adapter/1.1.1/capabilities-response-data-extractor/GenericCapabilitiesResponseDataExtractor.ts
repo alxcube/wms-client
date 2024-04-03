@@ -7,7 +7,7 @@ import type { UnifiedCapabilitiesResponse } from "../../../UnifiedCapabilitiesRe
 import type { WmsCapabilitiesResponseDataExtractor } from "../../BaseWmsVersionAdapter";
 import type { XmlDataExtractor } from "../../XmlDataExtractor";
 
-export class CapabilitiesResponseDataExtractor
+export class GenericCapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor
 {
   constructor(

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { constant } from "../../../../src/service-container/constant";
 import type { UnifiedCapabilitiesResponse } from "../../../../src/UnifiedCapabilitiesResponse";
-import { CapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/1.1.1/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
+import { GenericCapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/1.1.1/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
 import { testContainer } from "../../../testContainer";
 import { DOMParser } from "@xmldom/xmldom";
 // eslint-disable-next-line import/no-unresolved
@@ -11,17 +11,17 @@ import capabilities_1_1_0 from "../../../fixtures/capabilities_1_1_0.xml?raw";
 // eslint-disable-next-line import/no-unresolved
 import capabilities_1_3_0 from "../../../fixtures/capabilities_1_3_0.xml?raw";
 
-describe("CapabilitiesResponseDataExtractor v1.1.1 class", () => {
+describe("GenericCapabilitiesResponseDataExtractor class", () => {
   let xmlParser: DOMParser;
   let capabilitiesResponseDocument_1_1_1: Document;
   let capabilitiesResponseDocument_1_1_0: Document;
   let capabilitiesResponseDocument_1_3_0: Document;
-  let extractor_1_1_1: CapabilitiesResponseDataExtractor;
-  let extractor_1_3_0: CapabilitiesResponseDataExtractor;
+  let extractor_1_1_1: GenericCapabilitiesResponseDataExtractor;
+  let extractor_1_3_0: GenericCapabilitiesResponseDataExtractor;
 
   beforeEach(() => {
     testContainer.backup();
-    testContainer.registerClass(CapabilitiesResponseDataExtractor, [
+    testContainer.registerClass(GenericCapabilitiesResponseDataExtractor, [
       {
         service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
         name: "1.1.1",
@@ -45,7 +45,7 @@ describe("CapabilitiesResponseDataExtractor v1.1.1 class", () => {
     ]);
 
     testContainer.registerClass(
-      CapabilitiesResponseDataExtractor,
+      GenericCapabilitiesResponseDataExtractor,
       [
         {
           service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
@@ -85,9 +85,11 @@ describe("CapabilitiesResponseDataExtractor v1.1.1 class", () => {
       capabilities_1_3_0,
       "text/xml"
     );
-    extractor_1_1_1 = testContainer.resolve(CapabilitiesResponseDataExtractor);
+    extractor_1_1_1 = testContainer.resolve(
+      GenericCapabilitiesResponseDataExtractor
+    );
     extractor_1_3_0 = testContainer.resolve(
-      CapabilitiesResponseDataExtractor,
+      GenericCapabilitiesResponseDataExtractor,
       "1.3.0"
     );
   });
