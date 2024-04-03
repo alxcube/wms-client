@@ -24,6 +24,7 @@ import { LayerStylesExtractorFactory } from "./capabilities-response-data-extrac
 import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
+import { ErrorsExtractor } from "./errors-extractor/ErrorsExtractor";
 
 export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
@@ -250,5 +251,9 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
       ],
       { name }
     );
+
+    container.implement("WmsErrorsExtractor", ErrorsExtractor, [constant("")], {
+      name,
+    });
   },
 };
