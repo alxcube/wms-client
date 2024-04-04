@@ -42,7 +42,7 @@ export class BaseWmsClient implements WmsClient {
       });
 
       const doc = this.parseXml(data);
-      this.checkForErrorResponse(doc);
+      this.checkForErrorXml(doc);
 
       const capabilities =
         this.versionAdapter.extractCapabilitiesResponseData(doc);
@@ -60,14 +60,18 @@ export class BaseWmsClient implements WmsClient {
     options: GetMapOptions = {}
   ): Promise<ArrayBuffer> {
     const url = this.getMapUrl(params, options);
+    let response: AxiosResponse<ArrayBuffer>;
     try {
-      const response = await this.httpClient.get<ArrayBuffer>(url, {
+      response = await this.httpClient.get<ArrayBuffer>(url, {
         responseType: "arraybuffer",
       });
-      return response.data;
     } catch (e) {
       this.handleErrorResponse(e);
     }
+
+    this.checkForErrorResponse(response);
+
+    return response.data;
   }
 
   getMapUrl(params: MapRequestParams, options: GetMapUrlOptions = {}): string {
@@ -100,7 +104,16 @@ export class BaseWmsClient implements WmsClient {
     return this.xmlParser.parseFromString(xml, "text/xml");
   }
 
-  private checkForErrorResponse(doc: Document) {
+  private checkForErrorResponse(response: AxiosResponse) {
+    if (!this.isXmlResponse(response)) {
+      return;
+    }
+    const responseString = this.getResponseString(response);
+    const responseDoc = this.parseXml(responseString);
+    this.checkForErrorXml(responseDoc);
+  }
+
+  private checkForErrorXml(doc: Document) {
     const rootNode = xpath.select1("/*", doc) as Node;
     if (/exception/i.test(rootNode.nodeName)) {
       const wmsExceptions = this.versionAdapter.extractErrors(doc);
@@ -124,7 +137,7 @@ export class BaseWmsClient implements WmsClient {
           } catch (e) {
             throw new Error(`Unexpected WMS response: ${responseStr}`);
           }
-          this.checkForErrorResponse(errorDoc);
+          this.checkForErrorXml(errorDoc);
         }
       }
     }
@@ -141,5 +154,9 @@ export class BaseWmsClient implements WmsClient {
       return decoder.decode(response.data);
     }
     throw new TypeError(`Unexpected response type`);
+  }
+
+  private isXmlResponse(response: AxiosResponse): boolean {
+    return /(?:\b|_)xml(?:\b|_)/.test(response.headers["content-type"]);
   }
 }
