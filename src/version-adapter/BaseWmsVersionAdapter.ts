@@ -1,7 +1,7 @@
 import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
-import type { WmsException } from "../error/WmsException";
 import type { MapRequestParams } from "../MapRequestParams";
 import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
+import type { VersionCompatibilityChecker } from "./VersionCompatibilityChecker";
 import type {
   TransformMapRequestParamsOptions,
   WmsVersionAdapter,
@@ -9,10 +9,6 @@ import type {
 
 export interface WmsCapabilitiesResponseDataExtractor {
   extract(response: Document): UnifiedCapabilitiesResponse;
-}
-
-export interface WmsErrorsExtractor {
-  extract(response: Document): WmsException[];
 }
 
 export interface WmsCapabilitiesRequestParamsTransformer {
@@ -32,17 +28,13 @@ export class BaseWmsVersionAdapter implements WmsVersionAdapter {
     private readonly capabilitiesRequestParamsTransformer: WmsCapabilitiesRequestParamsTransformer,
     private readonly capabilitiesResponseDataExtractor: WmsCapabilitiesResponseDataExtractor,
     private readonly mapRequestParamsTransformer: WmsMapRequestParamsTransformer,
-    private readonly errorsExtractor: WmsErrorsExtractor
+    private readonly versionCompatibilityChecker: VersionCompatibilityChecker
   ) {}
 
   extractCapabilitiesResponseData(
     response: Document
   ): UnifiedCapabilitiesResponse {
     return this.capabilitiesResponseDataExtractor.extract(response);
-  }
-
-  extractErrors(doc: Document): WmsException[] {
-    return this.errorsExtractor.extract(doc);
   }
 
   transformCapabilitiesRequestParams(
@@ -56,5 +48,8 @@ export class BaseWmsVersionAdapter implements WmsVersionAdapter {
     options: TransformMapRequestParamsOptions = {}
   ): object {
     return this.mapRequestParamsTransformer.transform(params, options);
+  }
+  isCompatible(wmsVersion: string): boolean {
+    return this.versionCompatibilityChecker.isCompatible(wmsVersion);
   }
 }

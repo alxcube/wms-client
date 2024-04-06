@@ -1,6 +1,8 @@
-import { createClient } from "./createClient";
+//import { createClient } from "./createClient";
+import { negotiate } from "./negotiate";
 
-const client = createClient("https://wms.gebco.net/mapserv", "1.1.1");
+//const client = createClient("https://wms.gebco.net/mapserv", "1.1.1");
+const client = await negotiate("https://wms.gebco.net/mapserv");
 
 //window.wmsClient = client;
 

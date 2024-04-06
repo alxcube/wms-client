@@ -1,5 +1,4 @@
 import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
-import type { WmsException } from "../error/WmsException";
 import type { MapRequestParams } from "../MapRequestParams";
 import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
 
@@ -16,5 +15,5 @@ export interface WmsVersionAdapter {
     params: MapRequestParams,
     options?: TransformMapRequestParamsOptions
   ): object;
-  extractErrors(doc: Document): WmsException[];
+  isCompatible(wmsVersion: string): boolean;
 }

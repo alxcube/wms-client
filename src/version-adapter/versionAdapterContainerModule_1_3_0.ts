@@ -1,4 +1,5 @@
 import { map } from "@alxcube/xml-mapper";
+import { GenericExceptionReportExtractor } from "../error/GenericExceptionReportExtractor";
 import type { ExceptionFormat } from "../ExceptionFormat";
 import { constant } from "../service-container/constant";
 import type {
@@ -22,15 +23,22 @@ import { LayerStylesExtractorFactory } from "./capabilities-response-data-extrac
 import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
-import { ErrorsExtractor } from "./errors-extractor/ErrorsExtractor";
 import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
+import { RangeVersionCompatibilityChecker } from "./RangeVersionCompatibilityChecker";
 
 export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     const name = "1.3.0";
     const rootNodeName = "wms:WMS_Capabilities";
     const namespace = "wms";
+
+    container.implement(
+      "VersionCompatibilityChecker",
+      RangeVersionCompatibilityChecker,
+      ["VersionComparator", constant("1.3"), constant("1.4")],
+      { name }
+    );
 
     container.implement(
       "WmsVersionAdapter",
@@ -40,7 +48,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
         { service: "WmsCapabilitiesRequestParamsTransformer", name },
         { service: "WmsCapabilitiesResponseDataExtractor", name },
         { service: "WmsMapRequestParamsTransformer", name },
-        { service: "WmsErrorsExtractor", name },
+        { service: "VersionCompatibilityChecker", name },
       ],
       { name }
     );
@@ -279,9 +287,15 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     );
 
     container.implement(
-      "WmsErrorsExtractor",
-      ErrorsExtractor,
-      [constant("ogc")],
+      "ExceptionReportExtractor",
+      GenericExceptionReportExtractor,
+      [
+        "XmlResponseVersionExtractor",
+        "VersionComparator",
+        constant("1.3.0"),
+        constant("1.4.0"),
+        constant("ogc"),
+      ],
       { name }
     );
   },

@@ -7,5 +7,6 @@ export class WmsException extends Error {
     readonly locator?: string
   ) {
     super(message);
+    this.name = "WmsException";
   }
 }

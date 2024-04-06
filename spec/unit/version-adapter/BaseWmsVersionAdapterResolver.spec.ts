@@ -18,7 +18,7 @@ describe("BaseWmsVersionAdapterResolver class", () => {
       expect(adapter.transformCapabilitiesRequestParams).toBeTypeOf("function");
       expect(adapter.extractCapabilitiesResponseData).toBeTypeOf("function");
       expect(adapter.transformMapRequestParams).toBeTypeOf("function");
-      expect(adapter.extractErrors).toBeTypeOf("function");
+      expect(adapter.isCompatible).toBeTypeOf("function");
     });
 
     it("should throw RangeError, when no adapter for given version was found", () => {

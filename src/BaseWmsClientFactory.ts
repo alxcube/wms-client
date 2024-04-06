@@ -1,6 +1,7 @@
 import { DOMParser } from "@xmldom/xmldom";
 import axios from "axios";
 import { BaseWmsClient } from "./BaseWmsClient";
+import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { WmsVersionAdapterResolver } from "./version-adapter/WmsVersionAdapterResolver";
 import type {
@@ -11,7 +12,8 @@ import type {
 export class BaseWmsClientFactory implements WmsClientFactory {
   constructor(
     private readonly versionAdapterResolver: WmsVersionAdapterResolver,
-    private readonly queryParamsSerializer: QueryParamsSerializer
+    private readonly queryParamsSerializer: QueryParamsSerializer,
+    private readonly exceptionXmlChecker: ExceptionXmlChecker
   ) {}
   create(
     wmsUrl: string,
@@ -27,6 +29,7 @@ export class BaseWmsClientFactory implements WmsClientFactory {
       this.queryParamsSerializer,
       xmlParser,
       versionAdapter,
+      this.exceptionXmlChecker,
       wmsUrl,
       options
     );

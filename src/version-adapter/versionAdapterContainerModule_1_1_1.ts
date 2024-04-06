@@ -1,4 +1,5 @@
 import { map } from "@alxcube/xml-mapper";
+import { GenericExceptionReportExtractor } from "../error/GenericExceptionReportExtractor";
 import type { ExceptionFormat } from "../ExceptionFormat";
 import { constant } from "../service-container/constant";
 import type {
@@ -25,13 +26,20 @@ import { LayerStylesExtractorFactory } from "./capabilities-response-data-extrac
 import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
-import { ErrorsExtractor } from "./errors-extractor/ErrorsExtractor";
 import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
+import { RangeVersionCompatibilityChecker } from "./RangeVersionCompatibilityChecker";
 
 export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     const name = "1.1.1";
     const rootNodeName = "WMT_MS_Capabilities";
+
+    container.implement(
+      "VersionCompatibilityChecker",
+      RangeVersionCompatibilityChecker,
+      ["VersionComparator", constant("1.1"), constant("1.2")],
+      { name }
+    );
 
     container.implement(
       "WmsVersionAdapter",
@@ -41,7 +49,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
         { service: "WmsCapabilitiesRequestParamsTransformer", name },
         { service: "WmsCapabilitiesResponseDataExtractor", name },
         { service: "WmsMapRequestParamsTransformer", name },
-        { service: "WmsErrorsExtractor", name },
+        { service: "VersionCompatibilityChecker", name },
       ],
       { name }
     );
@@ -267,14 +275,23 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
       { name }
     );
 
-    container.implement("WmsErrorsExtractor", ErrorsExtractor, [constant("")], {
-      name,
-    });
-
     container.implement(
       "WmsMapRequestParamsTransformer",
       GenericMapRequestParamsTransformer,
       ["VersionComparator", constant("1.1.1")],
+      { name }
+    );
+
+    container.implement(
+      "ExceptionReportExtractor",
+      GenericExceptionReportExtractor,
+      [
+        "XmlResponseVersionExtractor",
+        "VersionComparator",
+        constant("1.1.0"),
+        constant("1.2.0"),
+        constant(""),
+      ],
       { name }
     );
   },

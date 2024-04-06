@@ -98,8 +98,8 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
     testContainer.restore();
   });
 
-  describe("extract() method", () => {
-    it("should extract WMS GetCapabilities response from XML response v1.1.1 and return UnifiedCapabilitiesResponse", () => {
+  describe("extractVersion() method", () => {
+    it("should extractVersion WMS GetCapabilities response from XML response v1.1.1 and return UnifiedCapabilitiesResponse", () => {
       const response = extractor_1_1_1.extract(
         capabilitiesResponseDocument_1_1_1
       );
@@ -387,7 +387,7 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
       expect(response).toEqual(expected);
     });
 
-    it("should extract WMS GetCapabilities response from XML response v1.1.0 and return UnifiedCapabilitiesResponse", () => {
+    it("should extractVersion WMS GetCapabilities response from XML response v1.1.0 and return UnifiedCapabilitiesResponse", () => {
       const response = extractor_1_1_1.extract(
         capabilitiesResponseDocument_1_1_0
       );
@@ -674,7 +674,7 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
       expect(response).toEqual(expected);
     });
 
-    it("should extract WMS GetCapabilities response from XML response v1.3.0 and return UnifiedCapabilitiesResponse", () => {
+    it("should extractVersion WMS GetCapabilities response from XML response v1.3.0 and return UnifiedCapabilitiesResponse", () => {
       const response = extractor_1_3_0.extract(
         capabilitiesResponseDocument_1_3_0
       );

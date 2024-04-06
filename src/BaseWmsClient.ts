@@ -1,7 +1,6 @@
 import { type AxiosInstance, type AxiosResponse, isAxiosError } from "axios";
-import xpath from "xpath";
 import type { CapabilitiesRequestParams } from "./CapabilitiesRequestParams";
-import { WmsExceptionReport } from "./error/WmsExceptionReport";
+import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
 import type { MapRequestParams } from "./MapRequestParams";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
@@ -19,6 +18,7 @@ export class BaseWmsClient implements WmsClient {
     private readonly queryParamsSerializer: QueryParamsSerializer,
     private readonly xmlParser: DOMParser,
     private readonly versionAdapter: WmsVersionAdapter,
+    private readonly exceptionXmlChecker: ExceptionXmlChecker,
     private readonly wmsUrl: string,
     private readonly options: WmsClientOptions = {}
   ) {}
@@ -114,15 +114,7 @@ export class BaseWmsClient implements WmsClient {
   }
 
   private checkForErrorXml(doc: Document) {
-    const rootNode = xpath.select1("/*", doc) as Node;
-    if (/exception/i.test(rootNode.nodeName)) {
-      const wmsExceptions = this.versionAdapter.extractErrors(doc);
-      if (wmsExceptions.length === 1) {
-        throw wmsExceptions[0];
-      } else {
-        throw new WmsExceptionReport(wmsExceptions);
-      }
-    }
+    this.exceptionXmlChecker.check(doc);
   }
 
   private handleErrorResponse(error: Error | unknown): never {

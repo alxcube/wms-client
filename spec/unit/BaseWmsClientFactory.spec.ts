@@ -11,6 +11,7 @@ describe("BaseWmsClientFactory class", () => {
     testContainer.registerClass(BaseWmsClientFactory, [
       "WmsVersionAdapterResolver",
       "QueryParamsSerializer",
+      "ExceptionXmlChecker",
     ]);
     factory = testContainer.resolve(BaseWmsClientFactory);
   });

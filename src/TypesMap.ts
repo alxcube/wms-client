@@ -1,3 +1,5 @@
+import type { ExceptionReportExtractor } from "./error/ExceptionReportExtractor";
+import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
 import type { ExceptionFormat } from "./ExceptionFormat";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { ServicesMap } from "./service-container/ServiceResolver";
@@ -5,9 +7,9 @@ import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse"
 import type {
   WmsCapabilitiesRequestParamsTransformer,
   WmsCapabilitiesResponseDataExtractor,
-  WmsErrorsExtractor,
   WmsMapRequestParamsTransformer,
 } from "./version-adapter/BaseWmsVersionAdapter";
+import type { VersionCompatibilityChecker } from "./version-adapter/VersionCompatibilityChecker";
 import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
 import type { WmsVersionAdapterResolver } from "./version-adapter/WmsVersionAdapterResolver";
 import type { XmlDataExtractor } from "./version-adapter/XmlDataExtractor";
@@ -15,15 +17,17 @@ import type { VersionComparator } from "./version-comparator/VersionComparator";
 import type { Keyword } from "./wms-data-types/Keyword";
 import type { Layer } from "./wms-data-types/Layer";
 import type { WmsClientFactory } from "./WmsClientFactory";
+import type { WmsNegotiator } from "./WmsNegotiator";
+import type { XmlResponseVersionExtractor } from "./XmlResponseVersionExtractor";
 
 export interface TypesMap extends ServicesMap {
   WmsClientFactory: WmsClientFactory;
   QueryParamsSerializer: QueryParamsSerializer;
   WmsVersionAdapter: WmsVersionAdapter;
+  "WmsVersionAdapter[]": WmsVersionAdapter[];
   WmsCapabilitiesRequestParamsTransformer: WmsCapabilitiesRequestParamsTransformer;
   WmsCapabilitiesResponseDataExtractor: WmsCapabilitiesResponseDataExtractor;
   WmsMapRequestParamsTransformer: WmsMapRequestParamsTransformer;
-  WmsErrorsExtractor: WmsErrorsExtractor;
   WmsVersionAdapterResolver: WmsVersionAdapterResolver;
 
   //
@@ -74,4 +78,11 @@ export interface TypesMap extends ServicesMap {
   "XmlDataExtractor<ExceptionFormat[]>": XmlDataExtractor<ExceptionFormat[]>;
 
   VersionComparator: VersionComparator;
+  ExceptionXmlChecker: ExceptionXmlChecker;
+  ExceptionReportExtractor: ExceptionReportExtractor;
+  "ExceptionReportExtractor[]": ExceptionReportExtractor[];
+  XmlResponseVersionExtractor: XmlResponseVersionExtractor;
+  WmsNegotiator: WmsNegotiator;
+  DOMParser: DOMParser;
+  VersionCompatibilityChecker: VersionCompatibilityChecker;
 }
