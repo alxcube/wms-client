@@ -10,7 +10,8 @@ import { XMLSerializer } from "@xmldom/xmldom";
 
 export class BaseExceptionXmlChecker implements ExceptionXmlChecker {
   constructor(
-    private readonly exceptionReportExtractors: ExceptionReportExtractor[]
+    private readonly exceptionReportExtractors: ExceptionReportExtractor[],
+    private readonly xmlSerializer: XMLSerializer
   ) {}
   check(responseDoc: Document) {
     if (!this.isException(responseDoc)) {
@@ -40,9 +41,8 @@ export class BaseExceptionXmlChecker implements ExceptionXmlChecker {
         return report;
       }
     }
-    // Todo: make dependency
-    const xmlSerializer = new XMLSerializer();
-    const errorXml = xmlSerializer.serializeToString(exceptionResponseDoc);
+
+    const errorXml = this.xmlSerializer.serializeToString(exceptionResponseDoc);
     throw new WmsException(
       `Could not find matching ExceptionReportExtractor. Response XML:\n${errorXml}`
     );

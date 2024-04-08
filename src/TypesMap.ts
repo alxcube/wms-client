@@ -84,5 +84,6 @@ export interface TypesMap extends ServicesMap {
   XmlResponseVersionExtractor: XmlResponseVersionExtractor;
   WmsNegotiator: WmsNegotiator;
   DOMParser: DOMParser;
+  XMLSerializer: XMLSerializer;
   VersionCompatibilityChecker: VersionCompatibilityChecker;
 }

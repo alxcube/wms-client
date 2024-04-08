@@ -9,7 +9,7 @@ import { BaseWmsVersionAdapterResolver } from "./version-adapter/version-adapter
 import { versionAdapterContainerModule_1_1_1 } from "./version-adapter/versionAdapterContainerModule_1_1_1";
 import { versionAdapterContainerModule_1_3_0 } from "./version-adapter/versionAdapterContainerModule_1_3_0";
 import { BaseVersionComparator } from "./version-comparator/BaseVersionComparator";
-import { DOMParser } from "@xmldom/xmldom";
+import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 
 export const serviceContainer = new Container<TypesMap>();
 
@@ -50,8 +50,11 @@ serviceContainer.registerFactory("ExceptionReportExtractor[]", (context) =>
   context.resolveAll("ExceptionReportExtractor")
 );
 
+serviceContainer.implement("XMLSerializer", XMLSerializer, []);
+
 serviceContainer.implement("ExceptionXmlChecker", BaseExceptionXmlChecker, [
   "ExceptionReportExtractor[]",
+  "XMLSerializer",
 ]);
 
 serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
