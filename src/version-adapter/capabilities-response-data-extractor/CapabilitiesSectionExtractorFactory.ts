@@ -9,7 +9,7 @@ import type {
   UnifiedCapabilitiesResponse,
 } from "../../UnifiedCapabilitiesResponse";
 import type { Layer } from "../../wms-data-types/Layer";
-import type { XmlDataExtractor } from "../XmlDataExtractor";
+import type { XmlDataExtractor } from "./XmlDataExtractor";
 
 export class CapabilitiesSectionExtractorFactory
   implements

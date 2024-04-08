@@ -10,7 +10,7 @@ import type {
   UnifiedCapabilitiesResponse,
 } from "../../UnifiedCapabilitiesResponse";
 import type { Keyword } from "../../wms-data-types/Keyword";
-import type { XmlDataExtractor } from "../XmlDataExtractor";
+import type { XmlDataExtractor } from "./XmlDataExtractor";
 
 export class ServiceSectionExtractorFactory
   implements
@@ -35,8 +35,8 @@ export class ServiceSectionExtractorFactory
         keywords: this.keywordsDataExtractor,
         url: map()
           .toNode(`${this.withNamespace("OnlineResource")}/@xlink:href`)
-          .mandatory()
-          .asString(),
+          .asString()
+          .withDefault(""),
         contactInformation: this.buildContactInformationExtractor(),
         fees: map().toNode(this.withNamespace("Fees")).asString(),
         accessConstraints: map()

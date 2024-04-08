@@ -9,10 +9,10 @@ import type {
   WmsCapabilitiesResponseDataExtractor,
   WmsMapRequestParamsTransformer,
 } from "./version-adapter/BaseWmsVersionAdapter";
-import type { VersionCompatibilityChecker } from "./version-adapter/VersionCompatibilityChecker";
+import type { VersionCompatibilityChecker } from "./version-adapter/version-compatibility-checker/VersionCompatibilityChecker";
 import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
-import type { WmsVersionAdapterResolver } from "./version-adapter/WmsVersionAdapterResolver";
-import type { XmlDataExtractor } from "./version-adapter/XmlDataExtractor";
+import type { WmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
+import type { XmlDataExtractor } from "./version-adapter/capabilities-response-data-extractor/XmlDataExtractor";
 import type { VersionComparator } from "./version-comparator/VersionComparator";
 import type { Keyword } from "./wms-data-types/Keyword";
 import type { Layer } from "./wms-data-types/Layer";

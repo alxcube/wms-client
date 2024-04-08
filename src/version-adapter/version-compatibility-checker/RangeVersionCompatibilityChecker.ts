@@ -1,4 +1,4 @@
-import type { VersionComparator } from "../version-comparator/VersionComparator";
+import type { VersionComparator } from "../../version-comparator/VersionComparator";
 import type { VersionCompatibilityChecker } from "./VersionCompatibilityChecker";
 
 export class RangeVersionCompatibilityChecker

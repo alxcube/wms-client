@@ -27,7 +27,7 @@ import { ServiceSectionExtractorFactory } from "./capabilities-response-data-ext
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
 import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
-import { RangeVersionCompatibilityChecker } from "./RangeVersionCompatibilityChecker";
+import { RangeVersionCompatibilityChecker } from "./version-compatibility-checker/RangeVersionCompatibilityChecker";
 
 export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {

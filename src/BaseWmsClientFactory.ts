@@ -3,7 +3,7 @@ import axios from "axios";
 import { BaseWmsClient } from "./BaseWmsClient";
 import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
-import type { WmsVersionAdapterResolver } from "./version-adapter/WmsVersionAdapterResolver";
+import type { WmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
 import type {
   WmsClientFactory,
   WmsClientFactoryOptions,

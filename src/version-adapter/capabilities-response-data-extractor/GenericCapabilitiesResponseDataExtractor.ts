@@ -5,7 +5,7 @@ import {
 import xpath from "xpath";
 import type { UnifiedCapabilitiesResponse } from "../../UnifiedCapabilitiesResponse";
 import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdapter";
-import type { XmlDataExtractor } from "../XmlDataExtractor";
+import type { XmlDataExtractor } from "./XmlDataExtractor";
 
 export class GenericCapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor

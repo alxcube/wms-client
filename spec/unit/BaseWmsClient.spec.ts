@@ -96,14 +96,16 @@ describe("BaseWmsClient class", () => {
     it("should throw WmsException when WMS server returns error response with single error in report with error http code", () => {
       const errorXml = `<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc"><ServiceException>Error message</ServiceException></ServiceExceptionReport>`;
       axiosMock.reset();
-      axiosMock.onGet().reply(400, errorXml);
+      axiosMock.onGet().reply(400, errorXml, { "content-type": "text/xml" });
 
       expect(() => client.getCapabilities()).rejects.toThrow(WmsException);
     });
 
     it("should throw WmsExceptionReport, when WMS server returns error response with multiple errors in report with error http code", () => {
       axiosMock.reset();
-      axiosMock.onGet().reply(400, exceptionsXml_1_3_0);
+      axiosMock
+        .onGet()
+        .reply(400, exceptionsXml_1_3_0, { "content-type": "text/xml" });
 
       expect(() => client.getCapabilities()).rejects.toThrow(
         WmsExceptionReport

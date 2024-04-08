@@ -1,4 +1,4 @@
-import type { WmsVersionAdapter } from "./WmsVersionAdapter";
+import type { WmsVersionAdapter } from "../WmsVersionAdapter";
 import type { WmsVersionAdapterResolver } from "./WmsVersionAdapterResolver";
 
 export class BaseWmsVersionAdapterResolver

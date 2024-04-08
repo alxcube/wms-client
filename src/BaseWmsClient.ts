@@ -121,7 +121,7 @@ export class BaseWmsClient implements WmsClient {
     if (isAxiosError(error)) {
       if (error.response) {
         const responseStr = this.getResponseString(error.response);
-        if (responseStr.length) {
+        if (this.isXmlResponse(error.response)) {
           // Try to get error xml
           let errorDoc: Document;
           try {

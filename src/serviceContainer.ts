@@ -5,7 +5,7 @@ import { BaseExceptionXmlChecker } from "./error/BaseExceptionXmlChecker";
 import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryParamsSerializer";
 import { Container } from "./service-container/Container";
 import type { TypesMap } from "./TypesMap";
-import { BaseWmsVersionAdapterResolver } from "./version-adapter/BaseWmsVersionAdapterResolver";
+import { BaseWmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
 import { versionAdapterContainerModule_1_1_1 } from "./version-adapter/versionAdapterContainerModule_1_1_1";
 import { versionAdapterContainerModule_1_3_0 } from "./version-adapter/versionAdapterContainerModule_1_3_0";
 import { BaseVersionComparator } from "./version-comparator/BaseVersionComparator";
