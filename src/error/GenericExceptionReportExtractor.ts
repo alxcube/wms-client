@@ -21,7 +21,13 @@ export class GenericExceptionReportExtractor
     private readonly ns: string
   ) {}
   extractExceptionReport(doc: Document): ExceptionReportEntry[] | undefined {
-    const version = this.versionExtractor.extractVersion(doc);
+    let version;
+    try {
+      version = this.versionExtractor.extractVersion(doc);
+    } catch (e) {
+      return undefined;
+    }
+
     if (
       this.versionComparator.is(version, ">=", this.fromVersion) &&
       this.versionComparator.is(version, "<", this.toVersion)
