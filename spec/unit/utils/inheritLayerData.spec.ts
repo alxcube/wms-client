@@ -804,4 +804,30 @@ describe("inheritLayerData() function", () => {
     expect(parent.fixedHeight).toBeUndefined();
     expect(child.fixedHeight).toBe(1);
   });
+
+  it("should copy scaleHint value, when parent layer has scaleHint, and child layer has not", () => {
+    const parent: Layer = {
+      title: "parent",
+      scaleHint: { min: 1, max: 2 },
+    };
+    const child: Layer = { title: "child" };
+
+    inheritLayerData(child, parent);
+
+    expect(parent.scaleHint).toEqual({ min: 1, max: 2 });
+    expect(child.scaleHint).toEqual(parent.scaleHint);
+  });
+
+  it("should not change scaleHint value, when parent and child layers has scaleHint", () => {
+    const parent: Layer = {
+      title: "parent",
+      scaleHint: { min: 1, max: 2 },
+    };
+    const child: Layer = { title: "child", scaleHint: { min: 3, max: 4 } };
+
+    inheritLayerData(child, parent);
+
+    expect(parent.scaleHint).toEqual({ min: 1, max: 2 });
+    expect(child.scaleHint).toEqual({ min: 3, max: 4 });
+  });
 });
