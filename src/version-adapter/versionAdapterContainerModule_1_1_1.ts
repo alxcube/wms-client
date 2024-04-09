@@ -17,7 +17,7 @@ import { LayerAuthorityUrlsExtractorFactory } from "./capabilities-response-data
 import { LayerBoundingBoxesExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerBoundingBoxesExtractorFactory";
 import { LayerCrsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerCrsExtractorFactory";
 import { LayerDimensionsExtractorFactory_1_1 } from "./capabilities-response-data-extractor/layers-data-extractor/LayerDimensionsExtractorFactory_1_1";
-import { layerGeorgraphicBoundsExtractor_1_1 } from "./capabilities-response-data-extractor/layers-data-extractor/layerGeorgraphicBoundsExtractor_1_1";
+import { layerGeographicBoundsExtractor_1_1 } from "./capabilities-response-data-extractor/layers-data-extractor/layerGeographicBoundsExtractor_1_1";
 import { LayerIdentifiersExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerIdentifiersExtractorFactory";
 import { LayerMetadataUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerMetadataUrlsExtractorFactory";
 import { LayerResourceUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerResourceUrlsExtractorFactory";
@@ -118,7 +118,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     // Layer geographic bounds extractor v1.1.1
     container.registerConstant(
       "XmlDataExtractor<Layer[geographicBounds]>",
-      layerGeorgraphicBoundsExtractor_1_1,
+      layerGeographicBoundsExtractor_1_1,
       { name }
     );
 
