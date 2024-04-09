@@ -23,9 +23,11 @@ import { LayerStylesExtractorFactory } from "./capabilities-response-data-extrac
 import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
 import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
 import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
+import { xlinkXmlNamespace } from "./capabilities-response-data-extractor/xlinkXmlNamespace";
 import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
 import { RangeVersionCompatibilityChecker } from "./version-compatibility-checker/RangeVersionCompatibilityChecker";
+import { wmsXmlNamespace } from "./wmsXmlNamespace";
 
 export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
@@ -272,8 +274,8 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
           name,
         },
         constant({
-          xlink: "http://www.w3.org/1999/xlink",
-          wms: "http://www.opengis.net/wms",
+          xlink: xlinkXmlNamespace,
+          wms: wmsXmlNamespace,
         }),
       ],
       { name }

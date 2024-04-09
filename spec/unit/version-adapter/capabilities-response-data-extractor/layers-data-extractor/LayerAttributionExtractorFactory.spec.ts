@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { LayerAttributionExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerAttributionExtractorFactory";
+import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
+import { wmsXmlNamespace } from "../../../../../src/version-adapter/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
 describe("LayerAttributionExtractorFactory class", () => {
@@ -47,8 +49,8 @@ describe("LayerAttributionExtractorFactory class", () => {
       "1.3.0"
     );
     select = xpath.useNamespaces({
-      xlink: "http://www.w3.org/1999/xlink",
-      wms: "http://www.opengis.net/wms",
+      xlink: xlinkXmlNamespace,
+      wms: wmsXmlNamespace,
     });
 
     xmlParser = testContainer.resolve("DOMParser");
