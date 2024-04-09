@@ -69,7 +69,7 @@ describe("LayerBoundingBoxesExtractorFactory class", () => {
     testContainer.restore();
   });
 
-  describe("createSingleNodeDataExtractor() method", () => {
+  describe("createNodeDataExtractor() method", () => {
     it("should return SingleNodeDataExtractorFn, which returns BoundingBox objects array from given parent context node v1.1.1", () => {
       const extract = factory_1_1.createNodeDataExtractor();
       expect(extract).toBeTypeOf("function");
