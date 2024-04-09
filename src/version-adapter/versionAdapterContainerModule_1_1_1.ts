@@ -16,7 +16,7 @@ import { LayerAttributionExtractorFactory } from "./capabilities-response-data-e
 import { LayerAuthorityUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerAuthorityUrlsExtractorFactory";
 import { LayerBoundingBoxesExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerBoundingBoxesExtractorFactory";
 import { LayerCrsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerCrsExtractorFactory";
-import { LayerDimensionsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerDimensionsExtractorFactory";
+import { LayerDimensionsExtractorFactory_1_1 } from "./capabilities-response-data-extractor/layers-data-extractor/LayerDimensionsExtractorFactory_1_1";
 import { LayerGeographicBoundsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerGeographicBoundsExtractorFactory";
 import { LayerIdentifiersExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerIdentifiersExtractorFactory";
 import { LayerMetadataUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerMetadataUrlsExtractorFactory";
@@ -110,7 +110,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     // Layer dimensions extractor v1.1.1
     container.implement(
       "XmlDataExtractor<Layer[dimensions]>",
-      LayerDimensionsExtractorFactory,
+      LayerDimensionsExtractorFactory_1_1,
       [],
       { name }
     );

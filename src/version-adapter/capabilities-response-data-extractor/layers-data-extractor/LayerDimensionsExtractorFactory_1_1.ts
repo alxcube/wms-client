@@ -14,7 +14,7 @@ interface ExtentElementData {
   current?: boolean;
   value?: string;
 }
-export class LayerDimensionsExtractorFactory
+export class LayerDimensionsExtractorFactory_1_1
   implements SingleNodeDataExtractorFnFactory<Layer["dimensions"]>
 {
   createNodeDataExtractor(): SingleNodeDataExtractorFn<Layer["dimensions"]> {
