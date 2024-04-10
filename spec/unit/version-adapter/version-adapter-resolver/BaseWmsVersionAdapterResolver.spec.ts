@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { serviceContainer } from "../../../src/serviceContainer";
-import type { BaseWmsVersionAdapterResolver } from "../../../src/version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
+import { serviceContainer } from "../../../../src/serviceContainer";
+import type { BaseWmsVersionAdapterResolver } from "../../../../src/version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
 
 describe("BaseWmsVersionAdapterResolver class", () => {
   let resolver: BaseWmsVersionAdapterResolver;
@@ -19,6 +19,10 @@ describe("BaseWmsVersionAdapterResolver class", () => {
       expect(adapter.extractCapabilitiesResponseData).toBeTypeOf("function");
       expect(adapter.transformMapRequestParams).toBeTypeOf("function");
       expect(adapter.isCompatible).toBeTypeOf("function");
+    });
+
+    it("should resolve WmsVersionAdapter for v1.1.1", () => {
+      expect(resolver.resolve("1.1.1")).toBeTypeOf("object");
     });
 
     it("should throw RangeError, when no adapter for given version was found", () => {
