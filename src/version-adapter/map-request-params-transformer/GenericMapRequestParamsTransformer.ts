@@ -2,7 +2,6 @@ import type { ExceptionFormat } from "../../ExceptionFormat";
 import type { MapRequestParams } from "../../MapRequestParams";
 import type { VersionComparator } from "../../version-comparator/VersionComparator";
 import type { WmsMapRequestParamsTransformer } from "../BaseWmsVersionAdapter";
-import type { TransformMapRequestParamsOptions } from "../WmsVersionAdapter";
 
 export class GenericMapRequestParamsTransformer
   implements WmsMapRequestParamsTransformer
@@ -11,10 +10,7 @@ export class GenericMapRequestParamsTransformer
     private readonly versionComparator: VersionComparator,
     private readonly version: string
   ) {}
-  transform(
-    params: MapRequestParams,
-    options: TransformMapRequestParamsOptions = {}
-  ): object {
+  transform(params: MapRequestParams): object {
     const requestParams: { [key: string]: unknown } = {};
 
     Object.keys(params).forEach((key: keyof MapRequestParams) => {
@@ -24,7 +20,7 @@ export class GenericMapRequestParamsTransformer
           requestParams.styles = this.getStylesParam(params[key]);
           break;
         case "bounds":
-          requestParams.bbox = this.getBboxParam(params[key], options.flipAxes);
+          requestParams.bbox = this.getBboxParam(params[key]);
           break;
         case "transparent":
           requestParams.transparent = params[key] ? "TRUE" : "FALSE";
@@ -36,6 +32,9 @@ export class GenericMapRequestParamsTransformer
           requestParams["exceptions"] = this.transformExceptionFormat(
             params[key]
           );
+          break;
+        case "bgColor":
+          requestParams.bgcolor = params[key];
           break;
         default:
           requestParams[key] = params[key];
@@ -50,15 +49,8 @@ export class GenericMapRequestParamsTransformer
     return requestParams;
   }
 
-  private getBboxParam(
-    bounds: MapRequestParams["bounds"],
-    flipAxes = false
-  ): string {
-    return (
-      flipAxes && this.isV1_3_x()
-        ? [bounds.minY, bounds.minX, bounds.maxY, bounds.maxX]
-        : [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY]
-    ).join(",");
+  private getBboxParam(bounds: MapRequestParams["bounds"]): string {
+    return [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join(",");
   }
 
   private getLayersParam(layers: MapRequestParams["layers"]): string {

@@ -7,11 +7,6 @@ export interface WmsClientOptions {
   query?: { [key: string]: unknown };
 }
 
-export interface GetMapUrlOptions {
-  flipAxes?: boolean;
-}
-
-export interface GetMapOptions extends GetMapUrlOptions {}
 export interface WmsClient {
   getVersion(): string;
 
@@ -19,12 +14,9 @@ export interface WmsClient {
     params?: CapabilitiesRequestParams
   ): Promise<UnifiedCapabilitiesResponse>;
 
-  getMap(
-    params: MapRequestParams,
-    options?: GetMapOptions
-  ): Promise<ArrayBuffer>;
+  getMap(params: MapRequestParams): Promise<ArrayBuffer>;
 
-  getMapUrl(params: MapRequestParams, options?: GetMapUrlOptions): string;
+  getMapUrl(params: MapRequestParams): string;
 
   getCustomQueryParams(): { [key: string]: unknown };
 

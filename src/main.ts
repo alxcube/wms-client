@@ -50,7 +50,7 @@ const getMapParams: MapRequestParams = {
   exceptionsFormat: "INIMAGE",
 };
 
-const mapImage = await client.getMap(getMapParams, { flipAxes: true });
+const mapImage = await client.getMap(getMapParams);
 const blob = new Blob([mapImage]);
 const reader = new FileReader();
 reader.onload = () => {

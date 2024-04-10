@@ -2,10 +2,7 @@ import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
 import type { MapRequestParams } from "../MapRequestParams";
 import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
 import type { VersionCompatibilityChecker } from "./version-compatibility-checker/VersionCompatibilityChecker";
-import type {
-  TransformMapRequestParamsOptions,
-  WmsVersionAdapter,
-} from "./WmsVersionAdapter";
+import type { WmsVersionAdapter } from "./WmsVersionAdapter";
 
 export interface WmsCapabilitiesResponseDataExtractor {
   extract(response: Document): UnifiedCapabilitiesResponse;
@@ -16,10 +13,7 @@ export interface WmsCapabilitiesRequestParamsTransformer {
 }
 
 export interface WmsMapRequestParamsTransformer {
-  transform(
-    params: MapRequestParams,
-    options?: TransformMapRequestParamsOptions
-  ): object;
+  transform(params: MapRequestParams): object;
 }
 
 export class BaseWmsVersionAdapter implements WmsVersionAdapter {
@@ -43,11 +37,8 @@ export class BaseWmsVersionAdapter implements WmsVersionAdapter {
     return this.capabilitiesRequestParamsTransformer.transform(params);
   }
 
-  transformMapRequestParams(
-    params: MapRequestParams,
-    options: TransformMapRequestParamsOptions = {}
-  ): object {
-    return this.mapRequestParamsTransformer.transform(params, options);
+  transformMapRequestParams(params: MapRequestParams): object {
+    return this.mapRequestParamsTransformer.transform(params);
   }
   isCompatible(wmsVersion: string): boolean {
     return this.versionCompatibilityChecker.isCompatible(wmsVersion);
