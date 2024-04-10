@@ -3,7 +3,7 @@ import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { LayersExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayersExtractorFactory";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
-import { wmsXmlNamespace } from "../../../../../src/version-adapter/wmsXmlNamespace";
+import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
 describe("LayersExtractorFactory class", () => {

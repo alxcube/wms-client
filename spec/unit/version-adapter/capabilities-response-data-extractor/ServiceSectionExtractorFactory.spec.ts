@@ -3,7 +3,7 @@ import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../src/service-container/constant";
 import { ServiceSectionExtractorFactory } from "../../../../src/version-adapter/capabilities-response-data-extractor/ServiceSectionExtractorFactory";
 import { xlinkXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
-import { wmsXmlNamespace } from "../../../../src/version-adapter/wmsXmlNamespace";
+import { wmsXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../testContainer";
 // eslint-disable-next-line import/no-unresolved
 import xml_1_1 from "../../../fixtures/capabilities_1_1_1.xml?raw";

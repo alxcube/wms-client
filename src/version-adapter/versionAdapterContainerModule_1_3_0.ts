@@ -25,7 +25,7 @@ import { xlinkXmlNamespace } from "./capabilities-response-data-extractor/xlinkX
 import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
 import { RangeVersionCompatibilityChecker } from "./version-compatibility-checker/RangeVersionCompatibilityChecker";
-import { wmsXmlNamespace } from "./wmsXmlNamespace";
+import { wmsXmlNamespace } from "./capabilities-response-data-extractor/wmsXmlNamespace";
 
 export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
