@@ -23,15 +23,6 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
     testContainer.backup();
     testContainer.registerClass(GenericCapabilitiesResponseDataExtractor, [
       {
-        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
-        name: "1.1.1",
-      },
-      {
-        service:
-          "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>",
-        name: "1.1.1",
-      },
-      {
         service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
         name: "1.1.1",
       },
@@ -47,15 +38,6 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
     testContainer.registerClass(
       GenericCapabilitiesResponseDataExtractor,
       [
-        {
-          service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
-          name: "1.3.0",
-        },
-        {
-          service:
-            "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>",
-          name: "1.3.0",
-        },
         {
           service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
           name: "1.3.0",

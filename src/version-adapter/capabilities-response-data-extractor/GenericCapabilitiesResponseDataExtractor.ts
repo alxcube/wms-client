@@ -1,5 +1,6 @@
 import {
   createObjectMapper,
+  map,
   type SingleNodeDataExtractorFn,
 } from "@alxcube/xml-mapper";
 import xpath from "xpath";
@@ -11,12 +12,6 @@ export class GenericCapabilitiesResponseDataExtractor
   implements WmsCapabilitiesResponseDataExtractor
 {
   constructor(
-    private readonly versionExtractorFactory: XmlDataExtractor<
-      UnifiedCapabilitiesResponse["version"]
-    >,
-    private readonly updateSequenceExtractorFactory: XmlDataExtractor<
-      UnifiedCapabilitiesResponse["updateSequence"]
-    >,
     private readonly serviceSectionExtractorFactory: XmlDataExtractor<
       UnifiedCapabilitiesResponse["service"]
     >,
@@ -34,8 +29,8 @@ export class GenericCapabilitiesResponseDataExtractor
 
   private buildDataExtractor(): SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse> {
     return createObjectMapper<UnifiedCapabilitiesResponse>({
-      version: this.versionExtractorFactory,
-      updateSequence: this.updateSequenceExtractorFactory,
+      version: map().toNode("/*/@version").mandatory().asString(),
+      updateSequence: map().toNode("/*/@updatesequence").asString(),
       service: this.serviceSectionExtractorFactory,
       capability: this.capabilitiesSectionExtractorFactory,
     });

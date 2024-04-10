@@ -21,8 +21,6 @@ import { LayerResourceUrlsExtractorFactory } from "./capabilities-response-data-
 import { LayersExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayersExtractorFactory";
 import { LayerStylesExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerStylesExtractorFactory";
 import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
-import { UpdateSequenceExtractorFactory } from "./capabilities-response-data-extractor/UpdateSequenceExtractorFactory";
-import { VersionExtractorFactory } from "./capabilities-response-data-extractor/VersionExtractorFactory";
 import { xlinkXmlNamespace } from "./capabilities-response-data-extractor/xlinkXmlNamespace";
 import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
@@ -68,22 +66,6 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
       "XmlDataExtractor<Keyword[]>",
       KeywordsExtractorFactory,
       [constant(namespace)],
-      { name }
-    );
-
-    // Version extractor v1.3.0
-    container.implement(
-      "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
-      VersionExtractorFactory,
-      [constant(rootNodeName)],
-      { name }
-    );
-
-    // UpdateSequence extractor v1.3.0
-    container.implement(
-      "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>",
-      UpdateSequenceExtractorFactory,
-      [constant(rootNodeName)],
       { name }
     );
 
@@ -256,15 +238,6 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
       "WmsCapabilitiesResponseDataExtractor",
       GenericCapabilitiesResponseDataExtractor,
       [
-        {
-          service: "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>",
-          name,
-        },
-        {
-          service:
-            "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>",
-          name,
-        },
         {
           service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
           name,

@@ -31,12 +31,6 @@ export interface TypesMap extends ServicesMap {
   WmsVersionAdapterResolver: WmsVersionAdapterResolver;
 
   //
-  "XmlDataExtractor<UnifiedCapabilitiesResponse[version]>": XmlDataExtractor<
-    UnifiedCapabilitiesResponse["version"]
-  >;
-  "XmlDataExtractor<UnifiedCapabilitiesResponse[updateSequence]>": XmlDataExtractor<
-    UnifiedCapabilitiesResponse["updateSequence"]
-  >;
   "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>": XmlDataExtractor<
     UnifiedCapabilitiesResponse["service"]
   >;
