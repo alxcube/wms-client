@@ -6,7 +6,7 @@ import {
 import { withNamespace } from "../../../utils/withNamespace";
 import type { LayerStyle } from "../../../wms-data-types/LayerStyle";
 
-export class LayerStylesExtractorFactory
+export class StylesExtractor
   implements SingleNodeDataExtractorFnFactory<LayerStyle[] | undefined>
 {
   constructor(private readonly ns: string) {}

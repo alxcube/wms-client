@@ -8,7 +8,7 @@ import type { Keyword } from "../../../wms-data-types/Keyword";
 import type { Layer } from "../../../wms-data-types/Layer";
 import type { XmlDataExtractor } from "../XmlDataExtractor";
 
-export class LayersExtractorFactory
+export class LayersExtractor
   implements SingleNodeDataExtractorFnFactory<Layer[]>
 {
   constructor(

@@ -4,20 +4,24 @@ import {
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
 import { withNamespace } from "../../../utils/withNamespace";
-import type { AuthorityUrl } from "../../../wms-data-types/AuthorityUrl";
+import type { MetadataUrl } from "../../../wms-data-types/MetadataUrl";
 
-export class LayerAuthorityUrlsExtractorFactory
-  implements SingleNodeDataExtractorFnFactory<AuthorityUrl[] | undefined>
+export class MetadataUrlsExtractor
+  implements SingleNodeDataExtractorFnFactory<MetadataUrl[] | undefined>
 {
   constructor(private readonly ns: string) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
-    AuthorityUrl[] | undefined
+    MetadataUrl[] | undefined
   > {
     return map()
-      .toNodesArray(withNamespace("AuthorityURL", this.ns))
+      .toNodesArray(withNamespace("MetadataURL", this.ns))
       .asArray()
       .ofObjects({
-        name: map().toNode("@name").mandatory().asString(),
+        type: map().toNode("@type").mandatory().asString(),
+        format: map()
+          .toNode(withNamespace("Format", this.ns))
+          .mandatory()
+          .asString(),
         url: map()
           .toNode(`${withNamespace("OnlineResource", this.ns)}/@xlink:href`)
           .mandatory()

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../src/service-container/constant";
-import { CapabilitiesSectionExtractorFactory } from "../../../../src/version-adapter/capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
+import { CapabilitiesSectionExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/CapabilitiesSectionExtractor";
 import { xlinkXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../testContainer";
@@ -10,9 +10,9 @@ import xml_1_1 from "../../../fixtures/capabilities_1_1_1.xml?raw";
 // eslint-disable-next-line import/no-unresolved
 import xml_1_3 from "../../../fixtures/capabilities_1_3_0.xml?raw";
 
-describe("CapabilitiesSectionExtractorFactory class", () => {
-  let factory_1_1: CapabilitiesSectionExtractorFactory;
-  let factory_1_3: CapabilitiesSectionExtractorFactory;
+describe("CapabilitiesSectionExtractor class", () => {
+  let factory_1_1: CapabilitiesSectionExtractor;
+  let factory_1_3: CapabilitiesSectionExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let doc_1_1: Document;
@@ -21,7 +21,7 @@ describe("CapabilitiesSectionExtractorFactory class", () => {
   beforeEach(() => {
     testContainer.backup();
     testContainer.registerClass(
-      CapabilitiesSectionExtractorFactory,
+      CapabilitiesSectionExtractor,
       [
         { service: "XmlDataExtractor<Layer[]>", name: "1.1.1" },
         { service: "XmlDataExtractor<ExceptionFormat[]>", name: "1.1.1" },
@@ -31,7 +31,7 @@ describe("CapabilitiesSectionExtractorFactory class", () => {
       { name: "1.1.1" }
     );
     testContainer.registerClass(
-      CapabilitiesSectionExtractorFactory,
+      CapabilitiesSectionExtractor,
       [
         { service: "XmlDataExtractor<Layer[]>", name: "1.3.0" },
         { service: "XmlDataExtractor<ExceptionFormat[]>", name: "1.3.0" },
@@ -41,14 +41,8 @@ describe("CapabilitiesSectionExtractorFactory class", () => {
       { name: "1.3.0" }
     );
 
-    factory_1_1 = testContainer.resolve(
-      CapabilitiesSectionExtractorFactory,
-      "1.1.1"
-    );
-    factory_1_3 = testContainer.resolve(
-      CapabilitiesSectionExtractorFactory,
-      "1.3.0"
-    );
+    factory_1_1 = testContainer.resolve(CapabilitiesSectionExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(CapabilitiesSectionExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

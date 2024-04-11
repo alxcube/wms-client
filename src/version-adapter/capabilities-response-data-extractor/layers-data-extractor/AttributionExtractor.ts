@@ -5,7 +5,7 @@ import {
 } from "@alxcube/xml-mapper";
 import type { Attribution } from "../../../wms-data-types/Attribution";
 
-export class LayerAttributionExtractorFactory
+export class AttributionExtractor
   implements SingleNodeDataExtractorFnFactory<Attribution | undefined>
 {
   constructor(private readonly ns: string) {}

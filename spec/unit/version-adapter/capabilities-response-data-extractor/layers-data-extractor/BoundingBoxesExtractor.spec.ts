@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayerBoundingBoxesExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerBoundingBoxesExtractorFactory";
+import { BoundingBoxesExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/BoundingBoxesExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerBoundingBoxesExtractorFactory class", () => {
+describe("BoundingBoxesExtractor class", () => {
   const xml_1_1 = `<Root>
   <BoundingBox SRS="EPSG:4326" minx="-71.63" miny="41.75" maxx="-70.78" maxy="42.90" resx="0.01" resy="0.01"/>
   <BoundingBox SRS="EPSG:26986" minx="189000" miny="834000" maxx="285000" maxy="962000" resx="1" resy="1" />
@@ -16,8 +16,8 @@ describe("LayerBoundingBoxesExtractorFactory class", () => {
   <BoundingBox CRS="EPSG:26986" minx="189000" miny="834000" maxx="285000" maxy="962000" resx="1" resy="1" />
 </Root>`;
 
-  let factory_1_1: LayerBoundingBoxesExtractorFactory;
-  let factory_1_3: LayerBoundingBoxesExtractorFactory;
+  let factory_1_1: BoundingBoxesExtractor;
+  let factory_1_3: BoundingBoxesExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let boundingBoxesContainer_1_1: Element;
@@ -27,24 +27,18 @@ describe("LayerBoundingBoxesExtractorFactory class", () => {
     testContainer.backup();
 
     testContainer.registerClass(
-      LayerBoundingBoxesExtractorFactory,
+      BoundingBoxesExtractor,
       [constant("SRS"), constant("")],
       { name: "1.1.1" }
     );
     testContainer.registerClass(
-      LayerBoundingBoxesExtractorFactory,
+      BoundingBoxesExtractor,
       [constant("CRS"), constant("wms")],
       { name: "1.3.0" }
     );
 
-    factory_1_1 = testContainer.resolve(
-      LayerBoundingBoxesExtractorFactory,
-      "1.1.1"
-    );
-    factory_1_3 = testContainer.resolve(
-      LayerBoundingBoxesExtractorFactory,
-      "1.3.0"
-    );
+    factory_1_1 = testContainer.resolve(BoundingBoxesExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(BoundingBoxesExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
 

@@ -6,7 +6,7 @@ import {
 import { withNamespace } from "../../../utils/withNamespace";
 import type { Identifier } from "../../../wms-data-types/Identifier";
 
-export class LayerIdentifiersExtractorFactory
+export class IdentifiersExtractor
   implements SingleNodeDataExtractorFnFactory<Identifier[] | undefined>
 {
   constructor(private readonly ns: string) {}

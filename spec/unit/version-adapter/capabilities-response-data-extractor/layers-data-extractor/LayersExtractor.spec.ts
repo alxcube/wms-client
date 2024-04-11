@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayersExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayersExtractorFactory";
+import { LayersExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayersExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayersExtractorFactory class", () => {
+describe("LayersExtractor class", () => {
   const xml_1_1 = `<Root>
 <Layer>
     <Title>Acme Corp. Map Server</Title>
@@ -262,8 +262,8 @@ describe("LayersExtractorFactory class", () => {
   </Layer>
 </Root>`;
 
-  let factory_1_1: LayersExtractorFactory;
-  let factory_1_3: LayersExtractorFactory;
+  let factory_1_1: LayersExtractor;
+  let factory_1_3: LayersExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let contextNode_1_1: Element;
@@ -273,7 +273,7 @@ describe("LayersExtractorFactory class", () => {
     testContainer.backup();
 
     testContainer.registerClass(
-      LayersExtractorFactory,
+      LayersExtractor,
       [
         { service: "XmlDataExtractor<Keyword[]>", name: "1.1.1" },
         { service: "XmlDataExtractor<Layer[crs]>", name: "1.1.1" },
@@ -292,7 +292,7 @@ describe("LayersExtractorFactory class", () => {
       { name: "1.1.1" }
     );
     testContainer.registerClass(
-      LayersExtractorFactory,
+      LayersExtractor,
       [
         { service: "XmlDataExtractor<Keyword[]>", name: "1.3.0" },
         { service: "XmlDataExtractor<Layer[crs]>", name: "1.3.0" },
@@ -311,8 +311,8 @@ describe("LayersExtractorFactory class", () => {
       { name: "1.3.0" }
     );
 
-    factory_1_1 = testContainer.resolve(LayersExtractorFactory, "1.1.1");
-    factory_1_3 = testContainer.resolve(LayersExtractorFactory, "1.3.0");
+    factory_1_1 = testContainer.resolve(LayersExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(LayersExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

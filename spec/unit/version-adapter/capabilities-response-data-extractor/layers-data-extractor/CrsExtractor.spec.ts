@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayerCrsExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerCrsExtractorFactory";
+import { CrsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/CrsExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerCrsExtractorFactory class", () => {
+describe("CrsExtractor class", () => {
   const xml_1_1 = `<Root>
 <SRS>CRS:1 CRS:84</SRS>
 <SRS>EPSG:3857</SRS>
@@ -18,8 +18,8 @@ describe("LayerCrsExtractorFactory class", () => {
 <CRS>EPSG:3857</CRS>
 </Root>`;
 
-  let factory_1_1: LayerCrsExtractorFactory;
-  let factory_1_3: LayerCrsExtractorFactory;
+  let factory_1_1: CrsExtractor;
+  let factory_1_3: CrsExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let crsContainer_1_1: Element;
@@ -28,19 +28,15 @@ describe("LayerCrsExtractorFactory class", () => {
   beforeEach(() => {
     testContainer.backup();
 
-    testContainer.registerClass(LayerCrsExtractorFactory, [constant("SRS")], {
+    testContainer.registerClass(CrsExtractor, [constant("SRS")], {
       name: "1.1.1",
     });
-    testContainer.registerClass(
-      LayerCrsExtractorFactory,
-      [constant("wms:CRS")],
-      {
-        name: "1.3.0",
-      }
-    );
+    testContainer.registerClass(CrsExtractor, [constant("wms:CRS")], {
+      name: "1.3.0",
+    });
 
-    factory_1_1 = testContainer.resolve(LayerCrsExtractorFactory, "1.1.1");
-    factory_1_3 = testContainer.resolve(LayerCrsExtractorFactory, "1.3.0");
+    factory_1_1 = testContainer.resolve(CrsExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(CrsExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
 

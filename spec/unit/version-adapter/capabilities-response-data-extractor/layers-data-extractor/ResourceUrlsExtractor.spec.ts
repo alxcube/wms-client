@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayerResourceUrlsExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerResourceUrlsExtractorFactory";
+import { ResourceUrlsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/ResourceUrlsExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerResourceUrlsExtractorFactory class", () => {
+describe("ResourceUrlsExtractor class", () => {
   const xmlContent = `
 <FeatureListURL>
   <Format>application/xml</Format>
@@ -28,10 +28,10 @@ describe("LayerResourceUrlsExtractorFactory class", () => {
   const xml_1_1 = `<Root>${xmlContent}</Root>`;
   const xml_1_3 = `<Root xmlns="${wmsXmlNamespace}">${xmlContent}</Root>`;
 
-  let dataUrlsExtractorFactory_1_1: LayerResourceUrlsExtractorFactory;
-  let featureListUrlsExtractorFactory_1_1: LayerResourceUrlsExtractorFactory;
-  let dataUrlsExtractorFactory_1_3: LayerResourceUrlsExtractorFactory;
-  let featureListUrlsExtractorFactory_1_3: LayerResourceUrlsExtractorFactory;
+  let dataUrlsExtractorFactory_1_1: ResourceUrlsExtractor;
+  let featureListUrlsExtractorFactory_1_1: ResourceUrlsExtractor;
+  let dataUrlsExtractorFactory_1_3: ResourceUrlsExtractor;
+  let featureListUrlsExtractorFactory_1_3: ResourceUrlsExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let contextNode_1_1: Element;
@@ -41,40 +41,40 @@ describe("LayerResourceUrlsExtractorFactory class", () => {
     testContainer.backup();
 
     testContainer.registerClass(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       [constant("DataURL"), constant("")],
       { name: "data-url-1.1.1" }
     );
     testContainer.registerClass(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       [constant("FeatureListURL"), constant("")],
       { name: "feature-list-url-1.1.1" }
     );
     testContainer.registerClass(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       [constant("DataURL"), constant("wms")],
       { name: "data-url-1.3.0" }
     );
     testContainer.registerClass(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       [constant("FeatureListURL"), constant("wms")],
       { name: "feature-list-url-1.3.0" }
     );
 
     dataUrlsExtractorFactory_1_1 = testContainer.resolve(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       "data-url-1.1.1"
     );
     dataUrlsExtractorFactory_1_3 = testContainer.resolve(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       "data-url-1.3.0"
     );
     featureListUrlsExtractorFactory_1_1 = testContainer.resolve(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       "feature-list-url-1.1.1"
     );
     featureListUrlsExtractorFactory_1_3 = testContainer.resolve(
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       "feature-list-url-1.3.0"
     );
 

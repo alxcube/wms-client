@@ -12,7 +12,7 @@ import type {
 import type { Keyword } from "../../wms-data-types/Keyword";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
-export class ServiceSectionExtractorFactory
+export class ServiceSectionExtractor
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["service"]>
 {

@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
-import { LayerDimensionsExtractorFactory_1_1 } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerDimensionsExtractorFactory_1_1";
+import { DimensionsExtractor_1_1 } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/DimensionsExtractor_1_1";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerDimensionsExtractorFactory_1_1 class", () => {
+describe("DimensionsExtractor_1_1 class", () => {
   const xml = `
 <Layer>
     <Dimension name="time" units="TIME_UNITS" />
@@ -18,7 +18,7 @@ describe("LayerDimensionsExtractorFactory_1_1 class", () => {
     </Layer>
 </Layer>`;
 
-  let factory: LayerDimensionsExtractorFactory_1_1;
+  let factory: DimensionsExtractor_1_1;
   let xmlParser: DOMParser;
   let rootLayerNode: Element;
   let nestedLayerNode1: Element;
@@ -27,9 +27,9 @@ describe("LayerDimensionsExtractorFactory_1_1 class", () => {
 
   beforeEach(() => {
     testContainer.backup();
-    testContainer.registerClass(LayerDimensionsExtractorFactory_1_1, []);
+    testContainer.registerClass(DimensionsExtractor_1_1, []);
 
-    factory = testContainer.resolve(LayerDimensionsExtractorFactory_1_1);
+    factory = testContainer.resolve(DimensionsExtractor_1_1);
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.select;
     const doc = xmlParser.parseFromString(xml, "text/xml");

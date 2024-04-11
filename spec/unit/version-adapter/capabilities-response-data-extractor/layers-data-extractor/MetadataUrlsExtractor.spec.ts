@@ -2,12 +2,12 @@ import type { DOMParser } from "@xmldom/xmldom";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayerMetadataUrlsExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerMetadataUrlsExtractorFactory";
+import { MetadataUrlsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/MetadataUrlsExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerMetadataUrlsExtractorFactory class", () => {
+describe("MetadataUrlsExtractor class", () => {
   const metadataUrlsContent = `
 <MetadataURL type="FGDC">
   <Format>text/plain</Format>
@@ -19,8 +19,8 @@ describe("LayerMetadataUrlsExtractorFactory class", () => {
 </MetadataURL>`;
   const xml_1_1 = `<Root>${metadataUrlsContent}</Root>`;
   const xml_1_3 = `<Root xmlns="${wmsXmlNamespace}">${metadataUrlsContent}</Root>`;
-  let factory_1_1: LayerMetadataUrlsExtractorFactory;
-  let factory_1_3: LayerMetadataUrlsExtractorFactory;
+  let factory_1_1: MetadataUrlsExtractor;
+  let factory_1_3: MetadataUrlsExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let container_1_1: Element;
@@ -29,25 +29,15 @@ describe("LayerMetadataUrlsExtractorFactory class", () => {
   beforeEach(() => {
     testContainer.backup();
 
-    testContainer.registerClass(
-      LayerMetadataUrlsExtractorFactory,
-      [constant("")],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      LayerMetadataUrlsExtractorFactory,
-      [constant("wms")],
-      { name: "1.3.0" }
-    );
+    testContainer.registerClass(MetadataUrlsExtractor, [constant("")], {
+      name: "1.1.1",
+    });
+    testContainer.registerClass(MetadataUrlsExtractor, [constant("wms")], {
+      name: "1.3.0",
+    });
 
-    factory_1_1 = testContainer.resolve(
-      LayerMetadataUrlsExtractorFactory,
-      "1.1.1"
-    );
-    factory_1_3 = testContainer.resolve(
-      LayerMetadataUrlsExtractorFactory,
-      "1.3.0"
-    );
+    factory_1_1 = testContainer.resolve(MetadataUrlsExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(MetadataUrlsExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

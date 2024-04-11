@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayerAuthorityUrlsExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerAuthorityUrlsExtractorFactory";
+import { AuthorityUrlsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/AuthorityUrlsExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerAuthorityUrlsExtractorFactory class", () => {
+describe("AuthorityUrlsExtractor class", () => {
   const autoriryUrlsXmlContent = `
 <AuthorityURL name="DIF_ID">
   <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html" />
@@ -18,8 +18,8 @@ describe("LayerAuthorityUrlsExtractorFactory class", () => {
 
   const authorityUrlsXml_1_1 = `<Root>${autoriryUrlsXmlContent}</Root>`;
   const authorityUrlsXml_1_3 = `<Root xmlns="http://www.opengis.net/wms">${autoriryUrlsXmlContent}</Root>`;
-  let factory_1_1: LayerAuthorityUrlsExtractorFactory;
-  let factory_1_3: LayerAuthorityUrlsExtractorFactory;
+  let factory_1_1: AuthorityUrlsExtractor;
+  let factory_1_3: AuthorityUrlsExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let authorityUrlsContainer_1_1: Element;
@@ -28,25 +28,15 @@ describe("LayerAuthorityUrlsExtractorFactory class", () => {
   beforeEach(() => {
     testContainer.backup();
 
-    testContainer.registerClass(
-      LayerAuthorityUrlsExtractorFactory,
-      [constant("")],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      LayerAuthorityUrlsExtractorFactory,
-      [constant("wms")],
-      { name: "1.3.0" }
-    );
+    testContainer.registerClass(AuthorityUrlsExtractor, [constant("")], {
+      name: "1.1.1",
+    });
+    testContainer.registerClass(AuthorityUrlsExtractor, [constant("wms")], {
+      name: "1.3.0",
+    });
 
-    factory_1_1 = testContainer.resolve(
-      LayerAuthorityUrlsExtractorFactory,
-      "1.1.1"
-    );
-    factory_1_3 = testContainer.resolve(
-      LayerAuthorityUrlsExtractorFactory,
-      "1.3.0"
-    );
+    factory_1_1 = testContainer.resolve(AuthorityUrlsExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(AuthorityUrlsExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

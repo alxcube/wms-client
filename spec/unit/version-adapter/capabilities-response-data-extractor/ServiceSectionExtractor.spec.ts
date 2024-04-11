@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../src/service-container/constant";
-import { ServiceSectionExtractorFactory } from "../../../../src/version-adapter/capabilities-response-data-extractor/ServiceSectionExtractorFactory";
+import { ServiceSectionExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/ServiceSectionExtractor";
 import { xlinkXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../testContainer";
@@ -10,9 +10,9 @@ import xml_1_1 from "../../../fixtures/capabilities_1_1_1.xml?raw";
 // eslint-disable-next-line import/no-unresolved
 import xml_1_3 from "../../../fixtures/capabilities_1_3_0.xml?raw";
 
-describe("ServiceSectionExtractorFactory class", () => {
-  let factory_1_1: ServiceSectionExtractorFactory;
-  let factory_1_3: ServiceSectionExtractorFactory;
+describe("ServiceSectionExtractor class", () => {
+  let factory_1_1: ServiceSectionExtractor;
+  let factory_1_3: ServiceSectionExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let doc_1_1: Document;
@@ -21,7 +21,7 @@ describe("ServiceSectionExtractorFactory class", () => {
   beforeEach(() => {
     testContainer.backup();
     testContainer.registerClass(
-      ServiceSectionExtractorFactory,
+      ServiceSectionExtractor,
       [
         { service: "XmlDataExtractor<Keyword[]>", name: "1.1.1" },
         constant("WMT_MS_Capabilities"),
@@ -30,7 +30,7 @@ describe("ServiceSectionExtractorFactory class", () => {
       { name: "1.1.1" }
     );
     testContainer.registerClass(
-      ServiceSectionExtractorFactory,
+      ServiceSectionExtractor,
       [
         { service: "XmlDataExtractor<Keyword[]>", name: "1.3.0" },
         constant("wms:WMS_Capabilities"),
@@ -39,14 +39,8 @@ describe("ServiceSectionExtractorFactory class", () => {
       { name: "1.3.0" }
     );
 
-    factory_1_1 = testContainer.resolve(
-      ServiceSectionExtractorFactory,
-      "1.1.1"
-    );
-    factory_1_3 = testContainer.resolve(
-      ServiceSectionExtractorFactory,
-      "1.3.0"
-    );
+    factory_1_1 = testContainer.resolve(ServiceSectionExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(ServiceSectionExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

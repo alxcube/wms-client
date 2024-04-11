@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayerStylesExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerStylesExtractorFactory";
+import { StylesExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/StylesExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerStylesExtractorFactory class", () => {
+describe("StylesExtractor class", () => {
   const xmlContent = `
 <Style>
   <Name>USGS</Name>
@@ -33,8 +33,8 @@ describe("LayerStylesExtractorFactory class", () => {
 
   const xml_1_1 = `<Root>${xmlContent}</Root>`;
   const xml_1_3 = `<Root xmlns="${wmsXmlNamespace}">${xmlContent}</Root>`;
-  let factory_1_1: LayerStylesExtractorFactory;
-  let factory_1_3: LayerStylesExtractorFactory;
+  let factory_1_1: StylesExtractor;
+  let factory_1_3: StylesExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let contextNode_1_1: Element;
@@ -43,17 +43,15 @@ describe("LayerStylesExtractorFactory class", () => {
   beforeEach(() => {
     testContainer.backup();
 
-    testContainer.registerClass(LayerStylesExtractorFactory, [constant("")], {
+    testContainer.registerClass(StylesExtractor, [constant("")], {
       name: "1.1.1",
     });
-    testContainer.registerClass(
-      LayerStylesExtractorFactory,
-      [constant("wms")],
-      { name: "1.3.0" }
-    );
+    testContainer.registerClass(StylesExtractor, [constant("wms")], {
+      name: "1.3.0",
+    });
 
-    factory_1_1 = testContainer.resolve(LayerStylesExtractorFactory, "1.1.1");
-    factory_1_3 = testContainer.resolve(LayerStylesExtractorFactory, "1.3.0");
+    factory_1_1 = testContainer.resolve(StylesExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(StylesExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

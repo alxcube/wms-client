@@ -2,12 +2,12 @@ import type { DOMParser } from "@xmldom/xmldom";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
-import { LayerAttributionExtractorFactory } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayerAttributionExtractorFactory";
+import { AttributionExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/AttributionExtractor";
 import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../../testContainer";
 
-describe("LayerAttributionExtractorFactory class", () => {
+describe("AttributionExtractor class", () => {
   const attributionContent = `<Attribution>
         <Title>Attribution Title</Title>
         <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://example.com" />
@@ -20,8 +20,8 @@ describe("LayerAttributionExtractorFactory class", () => {
   const attributionXml_1_1 = `<Root>${attributionContent}</Root>`;
   const attributionXml_1_3 = `<Root xmlns="http://www.opengis.net/wms">${attributionContent}</Root>`;
 
-  let factory_1_1: LayerAttributionExtractorFactory;
-  let factory_1_3: LayerAttributionExtractorFactory;
+  let factory_1_1: AttributionExtractor;
+  let factory_1_3: AttributionExtractor;
   let select: XPathSelect;
   let xmlParser: DOMParser;
   let attributionContainer_1_1: Element;
@@ -29,25 +29,15 @@ describe("LayerAttributionExtractorFactory class", () => {
 
   beforeEach(() => {
     testContainer.backup();
-    testContainer.registerClass(
-      LayerAttributionExtractorFactory,
-      [constant("")],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      LayerAttributionExtractorFactory,
-      [constant("wms")],
-      { name: "1.3.0" }
-    );
+    testContainer.registerClass(AttributionExtractor, [constant("")], {
+      name: "1.1.1",
+    });
+    testContainer.registerClass(AttributionExtractor, [constant("wms")], {
+      name: "1.3.0",
+    });
 
-    factory_1_1 = testContainer.resolve(
-      LayerAttributionExtractorFactory,
-      "1.1.1"
-    );
-    factory_1_3 = testContainer.resolve(
-      LayerAttributionExtractorFactory,
-      "1.3.0"
-    );
+    factory_1_1 = testContainer.resolve(AttributionExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(AttributionExtractor, "1.3.0");
     select = xpath.useNamespaces({
       xlink: xlinkXmlNamespace,
       wms: wmsXmlNamespace,

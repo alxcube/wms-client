@@ -5,7 +5,7 @@ import {
 } from "@alxcube/xml-mapper";
 import type { Layer } from "../../../wms-data-types/Layer";
 
-export class LayerCrsExtractorFactory
+export class CrsExtractor
   implements SingleNodeDataExtractorFnFactory<Layer["crs"]>
 {
   constructor(private readonly crsNodeName: string) {}

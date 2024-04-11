@@ -11,7 +11,7 @@ import type {
 import type { Layer } from "../../wms-data-types/Layer";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
-export class CapabilitiesSectionExtractorFactory
+export class CapabilitiesSectionExtractor
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["capability"]>
 {

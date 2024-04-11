@@ -6,7 +6,7 @@ import {
 import { withNamespace } from "../../../utils/withNamespace";
 import type { BoundingBox } from "../../../wms-data-types/BoundingBox";
 
-export class LayerBoundingBoxesExtractorFactory
+export class BoundingBoxesExtractor
   implements SingleNodeDataExtractorFnFactory<BoundingBox[] | undefined>
 {
   constructor(

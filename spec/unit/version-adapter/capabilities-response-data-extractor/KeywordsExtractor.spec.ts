@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../src/service-container/constant";
-import { KeywordsExtractorFactory } from "../../../../src/version-adapter/capabilities-response-data-extractor/KeywordsExtractorFactory";
+import { KeywordsExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/KeywordsExtractor";
 import { xlinkXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
 import { wmsXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
 import { testContainer } from "../../../testContainer";
 
-describe("KeywordsExtractorFactory class", () => {
+describe("KeywordsExtractor class", () => {
   const xmlContent = `
 <KeywordList>
     <Keyword vocabulary="test">keyword 1</Keyword>
@@ -16,8 +16,8 @@ describe("KeywordsExtractorFactory class", () => {
   const xml_1_1 = `<Root>${xmlContent}</Root>`;
   const xml_1_3 = `<Root xmlns="${wmsXmlNamespace}">${xmlContent}</Root>`;
 
-  let factory_1_1: KeywordsExtractorFactory;
-  let factory_1_3: KeywordsExtractorFactory;
+  let factory_1_1: KeywordsExtractor;
+  let factory_1_3: KeywordsExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let contextNode_1_1: Element;
@@ -25,15 +25,15 @@ describe("KeywordsExtractorFactory class", () => {
 
   beforeEach(() => {
     testContainer.backup();
-    testContainer.registerClass(KeywordsExtractorFactory, [constant("")], {
+    testContainer.registerClass(KeywordsExtractor, [constant("")], {
       name: "1.1.1",
     });
-    testContainer.registerClass(KeywordsExtractorFactory, [constant("wms")], {
+    testContainer.registerClass(KeywordsExtractor, [constant("wms")], {
       name: "1.3.0",
     });
 
-    factory_1_1 = testContainer.resolve(KeywordsExtractorFactory, "1.1.1");
-    factory_1_3 = testContainer.resolve(KeywordsExtractorFactory, "1.3.0");
+    factory_1_1 = testContainer.resolve(KeywordsExtractor, "1.1.1");
+    factory_1_3 = testContainer.resolve(KeywordsExtractor, "1.3.0");
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

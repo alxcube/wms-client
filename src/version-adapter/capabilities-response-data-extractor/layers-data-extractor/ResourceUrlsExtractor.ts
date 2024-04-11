@@ -6,7 +6,7 @@ import {
 import { withNamespace } from "../../../utils/withNamespace";
 import type { ResourceUrl } from "../../../wms-data-types/ResourceUrl";
 
-export class LayerResourceUrlsExtractorFactory
+export class ResourceUrlsExtractor
   implements SingleNodeDataExtractorFnFactory<ResourceUrl[] | undefined>
 {
   constructor(

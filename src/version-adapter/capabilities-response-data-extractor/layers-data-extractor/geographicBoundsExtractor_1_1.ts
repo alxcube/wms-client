@@ -1,7 +1,7 @@
 import { map, type SingleNodeDataExtractorFn } from "@alxcube/xml-mapper";
 import type { GeographicBoundingBox } from "../../../wms-data-types/GeographicBoundingBox";
 
-export const layerGeographicBoundsExtractor_1_1: SingleNodeDataExtractorFn<
+export const geographicBoundsExtractor_1_1: SingleNodeDataExtractorFn<
   GeographicBoundingBox | undefined
 > = map()
   .toNode("LatLonBoundingBox")

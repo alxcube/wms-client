@@ -6,7 +6,7 @@ import {
 import { trim } from "../../utils/trim";
 import type { Keyword } from "../../wms-data-types/Keyword";
 
-export class KeywordsExtractorFactory
+export class KeywordsExtractor
   implements SingleNodeDataExtractorFnFactory<Keyword[] | undefined>
 {
   constructor(private readonly ns: string) {}

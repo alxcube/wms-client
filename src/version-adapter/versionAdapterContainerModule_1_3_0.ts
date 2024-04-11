@@ -9,18 +9,18 @@ import type {
 import type { TypesMap } from "../TypesMap";
 import { GenericCapabilitiesRequestParamsTransformer } from "./capabilities-request-params-transformer/GenericCapabilitiesRequestParamsTransformer";
 import { GenericCapabilitiesResponseDataExtractor } from "./capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
-import { CapabilitiesSectionExtractorFactory } from "./capabilities-response-data-extractor/CapabilitiesSectionExtractorFactory";
-import { KeywordsExtractorFactory } from "./capabilities-response-data-extractor/KeywordsExtractorFactory";
-import { LayerAttributionExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerAttributionExtractorFactory";
-import { LayerAuthorityUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerAuthorityUrlsExtractorFactory";
-import { LayerBoundingBoxesExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerBoundingBoxesExtractorFactory";
-import { LayerCrsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerCrsExtractorFactory";
-import { LayerIdentifiersExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerIdentifiersExtractorFactory";
-import { LayerMetadataUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerMetadataUrlsExtractorFactory";
-import { LayerResourceUrlsExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerResourceUrlsExtractorFactory";
-import { LayersExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayersExtractorFactory";
-import { LayerStylesExtractorFactory } from "./capabilities-response-data-extractor/layers-data-extractor/LayerStylesExtractorFactory";
-import { ServiceSectionExtractorFactory } from "./capabilities-response-data-extractor/ServiceSectionExtractorFactory";
+import { CapabilitiesSectionExtractor } from "./capabilities-response-data-extractor/CapabilitiesSectionExtractor";
+import { KeywordsExtractor } from "./capabilities-response-data-extractor/KeywordsExtractor";
+import { AttributionExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/AttributionExtractor";
+import { AuthorityUrlsExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/AuthorityUrlsExtractor";
+import { BoundingBoxesExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/BoundingBoxesExtractor";
+import { CrsExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/CrsExtractor";
+import { IdentifiersExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/IdentifiersExtractor";
+import { MetadataUrlsExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/MetadataUrlsExtractor";
+import { ResourceUrlsExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/ResourceUrlsExtractor";
+import { LayersExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/LayersExtractor";
+import { StylesExtractor } from "./capabilities-response-data-extractor/layers-data-extractor/StylesExtractor";
+import { ServiceSectionExtractor } from "./capabilities-response-data-extractor/ServiceSectionExtractor";
 import { xlinkXmlNamespace } from "./capabilities-response-data-extractor/xlinkXmlNamespace";
 import { GenericMapRequestParamsTransformer } from "./map-request-params-transformer/GenericMapRequestParamsTransformer";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
@@ -64,7 +64,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Keywords extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Keyword[]>",
-      KeywordsExtractorFactory,
+      KeywordsExtractor,
       [constant(namespace)],
       { name }
     );
@@ -72,7 +72,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Service section extractor v1.3.0
     container.implement(
       "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
-      ServiceSectionExtractorFactory,
+      ServiceSectionExtractor,
       [
         { service: "XmlDataExtractor<Keyword[]>", name },
         constant(rootNodeName),
@@ -84,7 +84,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer CRS extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[crs]>",
-      LayerCrsExtractorFactory,
+      CrsExtractor,
       [constant("wms:CRS")],
       { name }
     );
@@ -125,7 +125,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer bounding boxes extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[boundingBoxes]>",
-      LayerBoundingBoxesExtractorFactory,
+      BoundingBoxesExtractor,
       [constant("CRS"), constant("wms")],
       { name }
     );
@@ -133,7 +133,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer attribution extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[attribution]>",
-      LayerAttributionExtractorFactory,
+      AttributionExtractor,
       [constant("wms")],
       { name }
     );
@@ -141,7 +141,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer authority URLs extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[authorityUrls]>",
-      LayerAuthorityUrlsExtractorFactory,
+      AuthorityUrlsExtractor,
       [constant("wms")],
       { name }
     );
@@ -149,7 +149,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer identifiers extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[identifiers]>",
-      LayerIdentifiersExtractorFactory,
+      IdentifiersExtractor,
       [constant("wms")],
       { name }
     );
@@ -157,7 +157,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer metadata URLs extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[metadataUrls]>",
-      LayerMetadataUrlsExtractorFactory,
+      MetadataUrlsExtractor,
       [constant("wms")],
       { name }
     );
@@ -165,7 +165,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer data URLs extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[dataUrls]>",
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       [constant("DataURL"), constant("wms")],
       { name }
     );
@@ -173,7 +173,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer feature list URLs extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[featureListUrls]>",
-      LayerResourceUrlsExtractorFactory,
+      ResourceUrlsExtractor,
       [constant("FeatureListURL"), constant("wms")],
       { name }
     );
@@ -181,7 +181,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layer styles extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[styles]>",
-      LayerStylesExtractorFactory,
+      StylesExtractor,
       [constant("wms")],
       { name }
     );
@@ -189,7 +189,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Layers data extractor v1.3.0
     container.implement(
       "XmlDataExtractor<Layer[]>",
-      LayersExtractorFactory,
+      LayersExtractor,
       [
         { service: "XmlDataExtractor<Keyword[]>", name },
         { service: "XmlDataExtractor<Layer[crs]>", name },
@@ -224,7 +224,7 @@ export const versionAdapterContainerModule_1_3_0: ServiceModule<TypesMap> = {
     // Capability section extractor v1.3.0
     container.implement(
       "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>",
-      CapabilitiesSectionExtractorFactory,
+      CapabilitiesSectionExtractor,
       [
         { service: "XmlDataExtractor<Layer[]>", name },
         { service: "XmlDataExtractor<ExceptionFormat[]>", name },
