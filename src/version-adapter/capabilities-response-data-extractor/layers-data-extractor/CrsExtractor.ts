@@ -3,7 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import type { Layer } from "../../../wms-data-types/Layer";
+import type { Layer } from "../../../wms-data-types/get-capabilities-response/Layer";
 
 export class CrsExtractor
   implements SingleNodeDataExtractorFnFactory<Layer["crs"]>

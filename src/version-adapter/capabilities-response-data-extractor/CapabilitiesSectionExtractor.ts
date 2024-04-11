@@ -4,11 +4,9 @@ import {
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
 import type { ExceptionFormat } from "../../wms-data-types/ExceptionFormat";
-import type {
-  OperationType,
-  UnifiedCapabilitiesResponse,
-} from "../../client/UnifiedCapabilitiesResponse";
-import type { Layer } from "../../wms-data-types/Layer";
+import type { OperationType } from "../../wms-data-types/get-capabilities-response/OperationType";
+import type { UnifiedCapabilitiesResponse } from "../../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
+import type { Layer } from "../../wms-data-types/get-capabilities-response/Layer";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
 export class CapabilitiesSectionExtractor

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { MapRequestParams } from "../../../../src/client/MapRequestParams";
+
+import type { MapRequestParams } from "../../../../src/client/WmsClient";
 import { constant } from "../../../../src/service-container/constant";
 import { GenericMapRequestParamsTransformer } from "../../../../src/version-adapter/map-request-params-transformer/GenericMapRequestParamsTransformer";
 import { testContainer } from "../../../testContainer";

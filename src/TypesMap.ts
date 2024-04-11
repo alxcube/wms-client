@@ -3,7 +3,7 @@ import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
 import type { ExceptionFormat } from "./wms-data-types/ExceptionFormat";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { ServicesMap } from "./service-container/ServiceResolver";
-import type { UnifiedCapabilitiesResponse } from "./client/UnifiedCapabilitiesResponse";
+import type { UnifiedCapabilitiesResponse } from "./wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 import type {
   WmsCapabilitiesRequestParamsTransformer,
   WmsCapabilitiesResponseDataExtractor,
@@ -14,8 +14,8 @@ import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
 import type { WmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
 import type { XmlDataExtractor } from "./version-adapter/capabilities-response-data-extractor/XmlDataExtractor";
 import type { VersionComparator } from "./version-comparator/VersionComparator";
-import type { Keyword } from "./wms-data-types/Keyword";
-import type { Layer } from "./wms-data-types/Layer";
+import type { Keyword } from "./wms-data-types/get-capabilities-response/Keyword";
+import type { Layer } from "./wms-data-types/get-capabilities-response/Layer";
 import type { WmsClientFactory } from "./client/WmsClientFactory";
 import type { WmsNegotiator } from "./negotiator/WmsNegotiator";
 import type { XmlResponseVersionExtractor } from "./xml-response-version-extractor/XmlResponseVersionExtractor";

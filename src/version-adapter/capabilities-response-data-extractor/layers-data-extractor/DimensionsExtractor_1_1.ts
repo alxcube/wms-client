@@ -4,8 +4,8 @@ import {
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
 import type { XPathSelect } from "xpath";
-import type { Dimension } from "../../../wms-data-types/Dimension";
-import type { Layer } from "../../../wms-data-types/Layer";
+import type { Dimension } from "../../../wms-data-types/get-capabilities-response/Dimension";
+import type { Layer } from "../../../wms-data-types/get-capabilities-response/Layer";
 
 interface ExtentElementData {
   default?: string;

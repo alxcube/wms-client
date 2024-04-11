@@ -4,7 +4,7 @@ import {
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
 import { withNamespace } from "../../../utils/withNamespace";
-import type { AuthorityUrl } from "../../../wms-data-types/AuthorityUrl";
+import type { AuthorityUrl } from "../../../wms-data-types/get-capabilities-response/AuthorityUrl";
 
 export class AuthorityUrlsExtractor
   implements SingleNodeDataExtractorFnFactory<AuthorityUrl[] | undefined>

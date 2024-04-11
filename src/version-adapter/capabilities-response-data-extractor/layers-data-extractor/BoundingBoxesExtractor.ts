@@ -4,7 +4,7 @@ import {
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
 import { withNamespace } from "../../../utils/withNamespace";
-import type { BoundingBox } from "../../../wms-data-types/BoundingBox";
+import type { BoundingBox } from "../../../wms-data-types/get-capabilities-response/BoundingBox";
 
 export class BoundingBoxesExtractor
   implements SingleNodeDataExtractorFnFactory<BoundingBox[] | undefined>

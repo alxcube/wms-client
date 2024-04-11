@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
-import { BaseWmsClient } from "../../src/client/BaseWmsClient";
-import { BaseWmsClientFactory } from "../../src/client/BaseWmsClientFactory";
-import { testContainer } from "../testContainer";
+import { BaseWmsClient } from "../../../src/client/BaseWmsClient";
+import { BaseWmsClientFactory } from "../../../src/client/BaseWmsClientFactory";
+import { testContainer } from "../../testContainer";
 
 describe("BaseWmsClientFactory class", () => {
   let factory: BaseWmsClientFactory;

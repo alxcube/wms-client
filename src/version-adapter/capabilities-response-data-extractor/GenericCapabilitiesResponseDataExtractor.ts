@@ -4,7 +4,7 @@ import {
   type SingleNodeDataExtractorFn,
 } from "@alxcube/xml-mapper";
 import xpath from "xpath";
-import type { UnifiedCapabilitiesResponse } from "../../client/UnifiedCapabilitiesResponse";
+import type { UnifiedCapabilitiesResponse } from "../../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdapter";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 

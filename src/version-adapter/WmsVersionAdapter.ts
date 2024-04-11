@@ -1,6 +1,8 @@
-import type { CapabilitiesRequestParams } from "../client/CapabilitiesRequestParams";
-import type { MapRequestParams } from "../client/MapRequestParams";
-import type { UnifiedCapabilitiesResponse } from "../client/UnifiedCapabilitiesResponse";
+import type {
+  CapabilitiesRequestParams,
+  MapRequestParams,
+} from "../client/WmsClient";
+import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 
 export interface WmsVersionAdapter {
   readonly version: string;

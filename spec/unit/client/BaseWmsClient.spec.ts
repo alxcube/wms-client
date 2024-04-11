@@ -1,15 +1,15 @@
 import axios, { type AxiosInstance } from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { BaseWmsClient } from "../../src/client/BaseWmsClient";
-import { BaseWmsClientFactory } from "../../src/client/BaseWmsClientFactory";
-import { WmsException } from "../../src/error/WmsException";
-import { WmsExceptionReport } from "../../src/error/WmsExceptionReport";
+import { BaseWmsClient } from "../../../src/client/BaseWmsClient";
+import { BaseWmsClientFactory } from "../../../src/client/BaseWmsClientFactory";
+import { WmsException } from "../../../src/error/WmsException";
+import { WmsExceptionReport } from "../../../src/error/WmsExceptionReport";
 // eslint-disable-next-line import/no-unresolved
-import capabilitiesXml_1_3_0 from "../fixtures/capabilities_1_3_0.xml?raw";
+import capabilitiesXml_1_3_0 from "../../fixtures/capabilities_1_3_0.xml?raw";
 // eslint-disable-next-line import/no-unresolved
-import exceptionsXml_1_3_0 from "../fixtures/exceptions_1_3_0.xml?raw";
-import { testContainer } from "../testContainer";
+import exceptionsXml_1_3_0 from "../../fixtures/exceptions_1_3_0.xml?raw";
+import { testContainer } from "../../testContainer";
 
 describe("BaseWmsClient class", () => {
   let factory: BaseWmsClientFactory;

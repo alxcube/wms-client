@@ -1,4 +1,4 @@
-import type { Layer } from "../wms-data-types/Layer";
+import type { Layer } from "../wms-data-types/get-capabilities-response/Layer";
 
 export function inheritLayerData(layer: Layer, parentLayer: Layer): Layer {
   if (parentLayer.styles) {

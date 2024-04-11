@@ -3,13 +3,11 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import type {
-  ContactAddress,
-  ContactInformation,
-  ContactPerson,
-  UnifiedCapabilitiesResponse,
-} from "../../client/UnifiedCapabilitiesResponse";
-import type { Keyword } from "../../wms-data-types/Keyword";
+import type { ContactAddress } from "../../wms-data-types/get-capabilities-response/ContactAddress";
+import type { ContactInformation } from "../../wms-data-types/get-capabilities-response/ContactInformation";
+import type { ContactPerson } from "../../wms-data-types/get-capabilities-response/ContactPerson";
+import type { UnifiedCapabilitiesResponse } from "../../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
+import type { Keyword } from "../../wms-data-types/get-capabilities-response/Keyword";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
 export class ServiceSectionExtractor

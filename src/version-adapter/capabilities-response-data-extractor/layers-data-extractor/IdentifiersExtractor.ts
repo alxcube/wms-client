@@ -4,7 +4,7 @@ import {
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
 import { withNamespace } from "../../../utils/withNamespace";
-import type { Identifier } from "../../../wms-data-types/Identifier";
+import type { Identifier } from "../../../wms-data-types/get-capabilities-response/Identifier";
 
 export class IdentifiersExtractor
   implements SingleNodeDataExtractorFnFactory<Identifier[] | undefined>

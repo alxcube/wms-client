@@ -1,10 +1,37 @@
 import type { AxiosInstance } from "axios";
-import type { CapabilitiesRequestParams } from "./CapabilitiesRequestParams";
-import type { MapRequestParams } from "./MapRequestParams";
-import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
+import type { ExceptionFormat } from "../wms-data-types/ExceptionFormat";
+import type { RequestBoundingBox } from "../wms-data-types/get-capabilities-response/RequestBoundingBox";
+import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 
 export interface WmsClientOptions {
   query?: { [key: string]: unknown };
+}
+
+export interface CapabilitiesRequestParams {
+  updateSequence?: number | string;
+
+  [key: string]: number | string | undefined;
+}
+
+export interface LayerWithStyle {
+  layer: string;
+  style?: string;
+}
+
+export interface MapRequestParams {
+  layers: LayerWithStyle[];
+  crs: string;
+  bounds: RequestBoundingBox;
+  width: number;
+  height: number;
+  format: string;
+  transparent?: boolean;
+  bgColor?: string;
+  exceptionsFormat?: ExceptionFormat | string;
+  time?: number | string;
+  elevation?: number | string;
+
+  [key: string]: unknown;
 }
 
 export interface WmsClient {
