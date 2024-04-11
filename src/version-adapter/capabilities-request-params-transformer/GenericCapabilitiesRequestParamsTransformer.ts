@@ -1,8 +1,9 @@
 import type { CapabilitiesRequestParams } from "../../client/WmsClient";
-import type { WmsCapabilitiesRequestParamsTransformer } from "../BaseWmsVersionAdapter";
+
+import type { CapabilitiesRequestParamsTransformer } from "./CapabilitiesRequestParamsTransformer";
 
 export class GenericCapabilitiesRequestParamsTransformer
-  implements WmsCapabilitiesRequestParamsTransformer
+  implements CapabilitiesRequestParamsTransformer
 {
   constructor(private readonly version: string) {}
   transform(params: CapabilitiesRequestParams): object {

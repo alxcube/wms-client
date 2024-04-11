@@ -1,14 +1,12 @@
 import type { ExceptionReportExtractor } from "./error/ExceptionReportExtractor";
 import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
+import type { CapabilitiesRequestParamsTransformer } from "./version-adapter/capabilities-request-params-transformer/CapabilitiesRequestParamsTransformer";
+import type { CapabilitiesResponseDataExtractor } from "./version-adapter/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
+import type { MapRequestParamsTransformer } from "./version-adapter/map-request-params-transformer/MapRequestParamsTransformer";
 import type { ExceptionFormat } from "./wms-data-types/ExceptionFormat";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { ServicesMap } from "./service-container/ServiceResolver";
 import type { UnifiedCapabilitiesResponse } from "./wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
-import type {
-  WmsCapabilitiesRequestParamsTransformer,
-  WmsCapabilitiesResponseDataExtractor,
-  WmsMapRequestParamsTransformer,
-} from "./version-adapter/BaseWmsVersionAdapter";
 import type { VersionCompatibilityChecker } from "./version-adapter/version-compatibility-checker/VersionCompatibilityChecker";
 import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
 import type { WmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
@@ -25,9 +23,9 @@ export interface TypesMap extends ServicesMap {
   QueryParamsSerializer: QueryParamsSerializer;
   WmsVersionAdapter: WmsVersionAdapter;
   "WmsVersionAdapter[]": WmsVersionAdapter[];
-  WmsCapabilitiesRequestParamsTransformer: WmsCapabilitiesRequestParamsTransformer;
-  WmsCapabilitiesResponseDataExtractor: WmsCapabilitiesResponseDataExtractor;
-  WmsMapRequestParamsTransformer: WmsMapRequestParamsTransformer;
+  CapabilitiesRequestParamsTransformer: CapabilitiesRequestParamsTransformer;
+  CapabilitiesResponseDataExtractor: CapabilitiesResponseDataExtractor;
+  MapRequestParamsTransformer: MapRequestParamsTransformer;
   WmsVersionAdapterResolver: WmsVersionAdapterResolver;
 
   //

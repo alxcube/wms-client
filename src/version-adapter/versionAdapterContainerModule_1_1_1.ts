@@ -45,9 +45,9 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
       BaseWmsVersionAdapter,
       [
         constant("1.1.1"),
-        { service: "WmsCapabilitiesRequestParamsTransformer", name },
-        { service: "WmsCapabilitiesResponseDataExtractor", name },
-        { service: "WmsMapRequestParamsTransformer", name },
+        { service: "CapabilitiesRequestParamsTransformer", name },
+        { service: "CapabilitiesResponseDataExtractor", name },
+        { service: "MapRequestParamsTransformer", name },
         { service: "VersionCompatibilityChecker", name },
       ],
       { name }
@@ -55,7 +55,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
 
     // GetCapabilities request params transformer v1.1.1
     container.implement(
-      "WmsCapabilitiesRequestParamsTransformer",
+      "CapabilitiesRequestParamsTransformer",
       GenericCapabilitiesRequestParamsTransformer,
       [constant(name)],
       { name }
@@ -230,7 +230,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
 
     // Capabilities response extractor v1.1.1
     container.implement(
-      "WmsCapabilitiesResponseDataExtractor",
+      "CapabilitiesResponseDataExtractor",
       GenericCapabilitiesResponseDataExtractor,
       [
         {
@@ -249,7 +249,7 @@ export const versionAdapterContainerModule_1_1_1: ServiceModule<TypesMap> = {
     );
 
     container.implement(
-      "WmsMapRequestParamsTransformer",
+      "MapRequestParamsTransformer",
       GenericMapRequestParamsTransformer,
       ["VersionComparator", constant("1.1.1")],
       { name }

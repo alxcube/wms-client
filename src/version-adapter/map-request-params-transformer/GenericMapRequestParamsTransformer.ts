@@ -1,10 +1,11 @@
 import type { MapRequestParams } from "../../client/WmsClient";
 import type { ExceptionFormat } from "../../wms-data-types/ExceptionFormat";
 import type { VersionComparator } from "../../version-comparator/VersionComparator";
-import type { WmsMapRequestParamsTransformer } from "../BaseWmsVersionAdapter";
+
+import type { MapRequestParamsTransformer } from "./MapRequestParamsTransformer";
 
 export class GenericMapRequestParamsTransformer
-  implements WmsMapRequestParamsTransformer
+  implements MapRequestParamsTransformer
 {
   constructor(
     private readonly versionComparator: VersionComparator,

@@ -22,9 +22,9 @@ describe("BaseWmsVersionAdapter class", () => {
       BaseWmsVersionAdapter,
       [
         constant("1.1.1"),
-        { service: "WmsCapabilitiesRequestParamsTransformer", name: "1.1.1" },
-        { service: "WmsCapabilitiesResponseDataExtractor", name: "1.1.1" },
-        { service: "WmsMapRequestParamsTransformer", name: "1.1.1" },
+        { service: "CapabilitiesRequestParamsTransformer", name: "1.1.1" },
+        { service: "CapabilitiesResponseDataExtractor", name: "1.1.1" },
+        { service: "MapRequestParamsTransformer", name: "1.1.1" },
         { service: "VersionCompatibilityChecker", name: "1.1.1" },
       ],
       { name: "1.1.1" }
@@ -34,9 +34,9 @@ describe("BaseWmsVersionAdapter class", () => {
       BaseWmsVersionAdapter,
       [
         constant("1.3.0"),
-        { service: "WmsCapabilitiesRequestParamsTransformer", name: "1.3.0" },
-        { service: "WmsCapabilitiesResponseDataExtractor", name: "1.3.0" },
-        { service: "WmsMapRequestParamsTransformer", name: "1.3.0" },
+        { service: "CapabilitiesRequestParamsTransformer", name: "1.3.0" },
+        { service: "CapabilitiesResponseDataExtractor", name: "1.3.0" },
+        { service: "MapRequestParamsTransformer", name: "1.3.0" },
         { service: "VersionCompatibilityChecker", name: "1.3.0" },
       ],
       { name: "1.3.0" }

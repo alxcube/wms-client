@@ -3,27 +3,18 @@ import type {
   MapRequestParams,
 } from "../client/WmsClient";
 import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
+import type { CapabilitiesRequestParamsTransformer } from "./capabilities-request-params-transformer/CapabilitiesRequestParamsTransformer";
+import type { CapabilitiesResponseDataExtractor } from "./capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
+import type { MapRequestParamsTransformer } from "./map-request-params-transformer/MapRequestParamsTransformer";
 import type { VersionCompatibilityChecker } from "./version-compatibility-checker/VersionCompatibilityChecker";
 import type { WmsVersionAdapter } from "./WmsVersionAdapter";
-
-export interface WmsCapabilitiesResponseDataExtractor {
-  extract(response: Document): UnifiedCapabilitiesResponse;
-}
-
-export interface WmsCapabilitiesRequestParamsTransformer {
-  transform(params: CapabilitiesRequestParams): object;
-}
-
-export interface WmsMapRequestParamsTransformer {
-  transform(params: MapRequestParams): object;
-}
 
 export class BaseWmsVersionAdapter implements WmsVersionAdapter {
   constructor(
     readonly version: string,
-    private readonly capabilitiesRequestParamsTransformer: WmsCapabilitiesRequestParamsTransformer,
-    private readonly capabilitiesResponseDataExtractor: WmsCapabilitiesResponseDataExtractor,
-    private readonly mapRequestParamsTransformer: WmsMapRequestParamsTransformer,
+    private readonly capabilitiesRequestParamsTransformer: CapabilitiesRequestParamsTransformer,
+    private readonly capabilitiesResponseDataExtractor: CapabilitiesResponseDataExtractor,
+    private readonly mapRequestParamsTransformer: MapRequestParamsTransformer,
     private readonly versionCompatibilityChecker: VersionCompatibilityChecker
   ) {}
 

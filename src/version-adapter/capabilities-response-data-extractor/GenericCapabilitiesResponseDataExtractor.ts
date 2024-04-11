@@ -5,11 +5,12 @@ import {
 } from "@alxcube/xml-mapper";
 import xpath from "xpath";
 import type { UnifiedCapabilitiesResponse } from "../../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
-import type { WmsCapabilitiesResponseDataExtractor } from "../BaseWmsVersionAdapter";
+
+import type { CapabilitiesResponseDataExtractor } from "./CapabilitiesResponseDataExtractor";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
 export class GenericCapabilitiesResponseDataExtractor
-  implements WmsCapabilitiesResponseDataExtractor
+  implements CapabilitiesResponseDataExtractor
 {
   constructor(
     private readonly serviceSectionExtractorFactory: XmlDataExtractor<
