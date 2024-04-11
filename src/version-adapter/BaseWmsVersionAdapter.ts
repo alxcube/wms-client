@@ -1,6 +1,6 @@
-import type { CapabilitiesRequestParams } from "../CapabilitiesRequestParams";
-import type { MapRequestParams } from "../MapRequestParams";
-import type { UnifiedCapabilitiesResponse } from "../UnifiedCapabilitiesResponse";
+import type { CapabilitiesRequestParams } from "../client/CapabilitiesRequestParams";
+import type { MapRequestParams } from "../client/MapRequestParams";
+import type { UnifiedCapabilitiesResponse } from "../client/UnifiedCapabilitiesResponse";
 import type { VersionCompatibilityChecker } from "./version-compatibility-checker/VersionCompatibilityChecker";
 import type { WmsVersionAdapter } from "./WmsVersionAdapter";
 

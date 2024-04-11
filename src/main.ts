@@ -1,4 +1,4 @@
-import type { MapRequestParams } from "./MapRequestParams";
+import type { MapRequestParams } from "./client/MapRequestParams";
 import { negotiate } from "./negotiate";
 
 //const client = await negotiate("https://wms.gebco.net/mapserv");

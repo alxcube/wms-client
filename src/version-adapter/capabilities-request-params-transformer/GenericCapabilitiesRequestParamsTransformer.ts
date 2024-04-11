@@ -1,4 +1,4 @@
-import type { CapabilitiesRequestParams } from "../../CapabilitiesRequestParams";
+import type { CapabilitiesRequestParams } from "../../client/CapabilitiesRequestParams";
 import type { WmsCapabilitiesRequestParamsTransformer } from "../BaseWmsVersionAdapter";
 
 export class GenericCapabilitiesRequestParamsTransformer

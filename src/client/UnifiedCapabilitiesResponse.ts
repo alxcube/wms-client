@@ -1,6 +1,6 @@
-import type { ExceptionFormat } from "./ExceptionFormat";
-import type { Keyword } from "./wms-data-types/Keyword";
-import type { Layer } from "./wms-data-types/Layer";
+import type { ExceptionFormat } from "../wms-data-types/ExceptionFormat";
+import type { Keyword } from "../wms-data-types/Keyword";
+import type { Layer } from "../wms-data-types/Layer";
 
 export interface UnifiedCapabilitiesResponse {
   version: string;

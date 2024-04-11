@@ -1,5 +1,5 @@
-import type { ExceptionFormat } from "./ExceptionFormat";
-import type { RequestBoundingBox } from "./wms-data-types/RequestBoundingBox";
+import type { ExceptionFormat } from "../wms-data-types/ExceptionFormat";
+import type { RequestBoundingBox } from "../wms-data-types/RequestBoundingBox";
 
 export interface LayerWithStyle {
   layer: string;

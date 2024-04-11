@@ -1,6 +1,6 @@
 import { map } from "@alxcube/xml-mapper";
 import { GenericExceptionReportExtractor } from "../error/GenericExceptionReportExtractor";
-import type { ExceptionFormat } from "../ExceptionFormat";
+import type { ExceptionFormat } from "../wms-data-types/ExceptionFormat";
 import { constant } from "../service-container/constant";
 import type {
   ServiceContainer,

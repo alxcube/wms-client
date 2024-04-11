@@ -1,6 +1,6 @@
-import { BaseWmsClientFactory } from "./BaseWmsClientFactory";
-import { BaseWmsNegotiator } from "./BaseWmsNegotiator";
-import { BaseXmlResponseVersionExtractor } from "./BaseXmlResponseVersionExtractor";
+import { BaseWmsClientFactory } from "./client/BaseWmsClientFactory";
+import { BaseWmsNegotiator } from "./negotiator/BaseWmsNegotiator";
+import { BaseXmlResponseVersionExtractor } from "./xml-response-version-extractor/BaseXmlResponseVersionExtractor";
 import { BaseExceptionXmlChecker } from "./error/BaseExceptionXmlChecker";
 import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryParamsSerializer";
 import { Container } from "./service-container/Container";

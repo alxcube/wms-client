@@ -1,11 +1,11 @@
 import { type AxiosInstance, type AxiosResponse, isAxiosError } from "axios";
 import type { CapabilitiesRequestParams } from "./CapabilitiesRequestParams";
-import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
+import type { ExceptionXmlChecker } from "../error/ExceptionXmlChecker";
 import type { MapRequestParams } from "./MapRequestParams";
-import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
+import type { QueryParamsSerializer } from "../query-params-serializer/QueryParamsSerializer";
 import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
-import { inheritLayersData } from "./utils/inheritLayersData";
-import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
+import { inheritLayersData } from "../utils/inheritLayersData";
+import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
 import type { WmsClient, WmsClientOptions } from "./WmsClient";
 export class BaseWmsClient implements WmsClient {
   constructor(

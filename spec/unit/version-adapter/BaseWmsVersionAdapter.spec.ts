@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { MapRequestParams } from "../../../src/MapRequestParams";
+import type { MapRequestParams } from "../../../src/client/MapRequestParams";
 import { constant } from "../../../src/service-container/constant";
 import { BaseWmsVersionAdapter } from "../../../src/version-adapter/BaseWmsVersionAdapter";
 import { testContainer } from "../../testContainer";

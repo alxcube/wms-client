@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
-import { BaseWmsClient } from "../../src/BaseWmsClient";
-import { BaseWmsClientFactory } from "../../src/BaseWmsClientFactory";
+import { BaseWmsClient } from "../../src/client/BaseWmsClient";
+import { BaseWmsClientFactory } from "../../src/client/BaseWmsClientFactory";
 import { testContainer } from "../testContainer";
 
 describe("BaseWmsClientFactory class", () => {

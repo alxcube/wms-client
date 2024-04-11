@@ -1,8 +1,8 @@
 import axios, { type AxiosInstance } from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { BaseWmsClient } from "../../src/BaseWmsClient";
-import { BaseWmsClientFactory } from "../../src/BaseWmsClientFactory";
+import { BaseWmsClient } from "../../src/client/BaseWmsClient";
+import { BaseWmsClientFactory } from "../../src/client/BaseWmsClientFactory";
 import { WmsException } from "../../src/error/WmsException";
 import { WmsExceptionReport } from "../../src/error/WmsExceptionReport";
 // eslint-disable-next-line import/no-unresolved

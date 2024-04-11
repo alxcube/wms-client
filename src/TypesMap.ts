@@ -1,9 +1,9 @@
 import type { ExceptionReportExtractor } from "./error/ExceptionReportExtractor";
 import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
-import type { ExceptionFormat } from "./ExceptionFormat";
+import type { ExceptionFormat } from "./wms-data-types/ExceptionFormat";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
 import type { ServicesMap } from "./service-container/ServiceResolver";
-import type { UnifiedCapabilitiesResponse } from "./UnifiedCapabilitiesResponse";
+import type { UnifiedCapabilitiesResponse } from "./client/UnifiedCapabilitiesResponse";
 import type {
   WmsCapabilitiesRequestParamsTransformer,
   WmsCapabilitiesResponseDataExtractor,
@@ -16,9 +16,9 @@ import type { XmlDataExtractor } from "./version-adapter/capabilities-response-d
 import type { VersionComparator } from "./version-comparator/VersionComparator";
 import type { Keyword } from "./wms-data-types/Keyword";
 import type { Layer } from "./wms-data-types/Layer";
-import type { WmsClientFactory } from "./WmsClientFactory";
-import type { WmsNegotiator } from "./WmsNegotiator";
-import type { XmlResponseVersionExtractor } from "./XmlResponseVersionExtractor";
+import type { WmsClientFactory } from "./client/WmsClientFactory";
+import type { WmsNegotiator } from "./negotiator/WmsNegotiator";
+import type { XmlResponseVersionExtractor } from "./xml-response-version-extractor/XmlResponseVersionExtractor";
 
 export interface TypesMap extends ServicesMap {
   WmsClientFactory: WmsClientFactory;

@@ -3,7 +3,7 @@ import xpath from "xpath";
 import { trim } from "../utils/trim";
 import { withNamespace } from "../utils/withNamespace";
 import type { VersionComparator } from "../version-comparator/VersionComparator";
-import type { XmlResponseVersionExtractor } from "../XmlResponseVersionExtractor";
+import type { XmlResponseVersionExtractor } from "../xml-response-version-extractor/XmlResponseVersionExtractor";
 import type {
   ExceptionReportEntry,
   ExceptionReportExtractor,

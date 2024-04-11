@@ -1,10 +1,10 @@
 import axios from "axios";
-import type { WmsVersionAdapter } from "./version-adapter/WmsVersionAdapter";
-import type { VersionComparator } from "./version-comparator/VersionComparator";
-import type { WmsClient } from "./WmsClient";
-import type { WmsClientFactory } from "./WmsClientFactory";
+import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
+import type { VersionComparator } from "../version-comparator/VersionComparator";
+import type { WmsClient } from "../client/WmsClient";
+import type { WmsClientFactory } from "../client/WmsClientFactory";
 import type { WmsNegotiator, WmsNegotiatorOptions } from "./WmsNegotiator";
-import type { XmlResponseVersionExtractor } from "./XmlResponseVersionExtractor";
+import type { XmlResponseVersionExtractor } from "../xml-response-version-extractor/XmlResponseVersionExtractor";
 
 export class BaseWmsNegotiator implements WmsNegotiator {
   constructor(

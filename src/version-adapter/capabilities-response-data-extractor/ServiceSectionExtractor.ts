@@ -8,7 +8,7 @@ import type {
   ContactInformation,
   ContactPerson,
   UnifiedCapabilitiesResponse,
-} from "../../UnifiedCapabilitiesResponse";
+} from "../../client/UnifiedCapabilitiesResponse";
 import type { Keyword } from "../../wms-data-types/Keyword";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 

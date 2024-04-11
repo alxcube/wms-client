@@ -1,5 +1,5 @@
-import type { ExceptionFormat } from "../../ExceptionFormat";
-import type { MapRequestParams } from "../../MapRequestParams";
+import type { ExceptionFormat } from "../../wms-data-types/ExceptionFormat";
+import type { MapRequestParams } from "../../client/MapRequestParams";
 import type { VersionComparator } from "../../version-comparator/VersionComparator";
 import type { WmsMapRequestParamsTransformer } from "../BaseWmsVersionAdapter";
 
