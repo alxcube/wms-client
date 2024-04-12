@@ -6,10 +6,12 @@ import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryPa
 import { Container } from "./service-container/Container";
 import type { TypesMap } from "./TypesMap";
 import { BaseWmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
-import { versionAdapterContainerModule_1_1_1 } from "./version-adapter/versionAdapterContainerModule_1_1_1";
-import { versionAdapterContainerModule_1_3_0 } from "./version-adapter/versionAdapterContainerModule_1_3_0";
+import { containerModule_1_1_1 as versionAdapterModule_1_1_1 } from "./version-adapter/containerModule_1_1_1";
+import { containerModule_1_3_0 as versionAdapterModule_1_3_0 } from "./version-adapter/containerModule_1_3_0";
 import { BaseVersionComparator } from "./version-comparator/BaseVersionComparator";
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
+import { containerModule_1_1_1 as exceptionModule_1_1_1 } from "./error/containerModule_1_1_1";
+import { containerModule_1_3_0 as exceptionModule_1_3_0 } from "./error/containerModule_1_3_0";
 
 export const serviceContainer = new Container<TypesMap>();
 
@@ -65,5 +67,7 @@ serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
   "WmsClientFactory",
 ]);
 
-serviceContainer.registerModule(versionAdapterContainerModule_1_1_1);
-serviceContainer.registerModule(versionAdapterContainerModule_1_3_0);
+serviceContainer.registerModule(versionAdapterModule_1_1_1);
+serviceContainer.registerModule(versionAdapterModule_1_3_0);
+serviceContainer.registerModule(exceptionModule_1_1_1);
+serviceContainer.registerModule(exceptionModule_1_3_0);

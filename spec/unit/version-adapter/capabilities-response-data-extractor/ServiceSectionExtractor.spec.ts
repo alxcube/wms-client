@@ -33,7 +33,7 @@ describe("ServiceSectionExtractor class", () => {
       ServiceSectionExtractor,
       [
         { service: "XmlDataExtractor<Keyword[]>", name: "1.3.0" },
-        constant("wms:WMS_Capabilities"),
+        constant("WMS_Capabilities"),
         constant("wms"),
       ],
       { name: "1.3.0" }

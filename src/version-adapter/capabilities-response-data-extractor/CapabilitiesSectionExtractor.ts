@@ -3,6 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
+import { withNamespace } from "../../utils/withNamespace";
 import type { ExceptionFormat } from "../../wms-data-types/ExceptionFormat";
 import type { OperationType } from "../../wms-data-types/get-capabilities-response/OperationType";
 import type { UnifiedCapabilitiesResponse } from "../../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
@@ -23,7 +24,9 @@ export class CapabilitiesSectionExtractor
     UnifiedCapabilitiesResponse["capability"]
   > {
     return map()
-      .toNode(`/${this.rootNodeName}/${this.withNamespace("Capability")}`)
+      .toNode(
+        `/${withNamespace(this.rootNodeName, this.ns)}/${this.withNamespace("Capability")}`
+      )
       .mandatory()
       .asObject({
         request: map()
