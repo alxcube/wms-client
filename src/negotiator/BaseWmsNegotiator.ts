@@ -1,8 +1,10 @@
-import axios, { type AxiosInstance } from "axios";
+import axios, { type AxiosInstance, type AxiosResponse } from "axios";
+import type { RequestErrorHandler } from "../client/RequestErrorHandler";
 import type { WmsVersionAdapterResolver } from "../version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
 import type { WmsClient } from "../client/WmsClient";
 import type { WmsClientFactory } from "../client/WmsClientFactory";
 import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
+import type { WmsXmlParser } from "../wms-xml-parser/WmsXmlParser";
 import type { WmsNegotiator, WmsNegotiatorOptions } from "./WmsNegotiator";
 import type { XmlResponseVersionExtractor } from "../xml-response-version-extractor/XmlResponseVersionExtractor";
 
@@ -13,10 +15,11 @@ interface NegotiationOutcome {
 
 export class BaseWmsNegotiator implements WmsNegotiator {
   constructor(
-    private readonly xmlParser: DOMParser,
+    private readonly wmsXmlParser: WmsXmlParser,
     private readonly xmlResponseVersionExtractor: XmlResponseVersionExtractor,
     private readonly wmsClientFactory: WmsClientFactory,
-    private readonly versionAdapterResolver: WmsVersionAdapterResolver
+    private readonly versionAdapterResolver: WmsVersionAdapterResolver,
+    private readonly requestErrorHandler: RequestErrorHandler
   ) {}
   async negotiate(
     wmsUrl: string,
@@ -68,11 +71,17 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     httpClient: AxiosInstance
   ): Promise<Document> {
     const params = wmsAdapter.transformCapabilitiesRequestParams({});
-    const response = await httpClient.get<string>(wmsUrl, {
-      params,
-      responseType: "text",
-    });
-    return this.xmlParser.parseFromString(response.data, "text/xml");
+    let response: AxiosResponse<string>;
+    try {
+      response = await httpClient.get<string>(wmsUrl, {
+        params,
+        responseType: "text",
+      });
+    } catch (e) {
+      this.requestErrorHandler.handleRequestError(e);
+    }
+
+    return this.wmsXmlParser.parse(response.data);
   }
 
   private getCompatibleAdapter(

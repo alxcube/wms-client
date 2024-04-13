@@ -64,10 +64,11 @@ serviceContainer.implement("ExceptionXmlChecker", BaseExceptionXmlChecker, [
 ]);
 
 serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
-  "DOMParser",
+  "WmsXmlParser",
   "XmlResponseVersionExtractor",
   "WmsClientFactory",
   "WmsVersionAdapterResolver",
+  "RequestErrorHandler",
 ]);
 
 serviceContainer.registerModule(versionAdapterModule_1_1_1);
