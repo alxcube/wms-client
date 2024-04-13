@@ -4,6 +4,7 @@ import type { WmsVersionAdapterResolver } from "../version-adapter/version-adapt
 import type { WmsClient } from "../client/WmsClient";
 import type { WmsClientFactory } from "../client/WmsClientFactory";
 import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
+import type { VersionComparator } from "../version-comparator/VersionComparator";
 import type { WmsXmlParser } from "../wms-xml-parser/WmsXmlParser";
 import type { WmsNegotiator, WmsNegotiatorOptions } from "./WmsNegotiator";
 import type { XmlResponseVersionExtractor } from "../xml-response-version-extractor/XmlResponseVersionExtractor";
@@ -19,7 +20,8 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     private readonly xmlResponseVersionExtractor: XmlResponseVersionExtractor,
     private readonly wmsClientFactory: WmsClientFactory,
     private readonly versionAdapterResolver: WmsVersionAdapterResolver,
-    private readonly requestErrorHandler: RequestErrorHandler
+    private readonly requestErrorHandler: RequestErrorHandler,
+    private readonly versionComparator: VersionComparator
   ) {}
   async negotiate(
     wmsUrl: string,
@@ -57,7 +59,11 @@ export class BaseWmsNegotiator implements WmsNegotiator {
       if (compatibleAdapter) {
         return { adapter: compatibleAdapter, responseDoc };
       }
-      adapter = this.versionAdapterResolver.findLower(serverVersion);
+      adapter = this.versionAdapterResolver.findLower(
+        this.versionComparator.is(serverVersion, "<", adapter.version)
+          ? serverVersion
+          : adapter.version
+      );
     }
 
     throw new RangeError(
