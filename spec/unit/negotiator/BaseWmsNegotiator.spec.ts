@@ -9,6 +9,8 @@ import capabilitiesXml_1_1_0 from "../../fixtures/capabilities_1_1_0.xml?raw";
 import capabilitiesXml_1_1_1 from "../../fixtures/capabilities_1_1_1.xml?raw";
 // eslint-disable-next-line import/no-unresolved
 import capabilitiesXml_1_3_0 from "../../fixtures/capabilities_1_3_0.xml?raw";
+// eslint-disable-next-line import/no-unresolved
+import exceptionXml_1_3_0 from "../../fixtures/exceptions_1_3_0.xml?raw";
 
 describe("BaseWmsNegotiator class", () => {
   let negotiator: BaseWmsNegotiator;
@@ -74,6 +76,22 @@ describe("BaseWmsNegotiator class", () => {
       expect(() =>
         negotiator.negotiate(wmsUrl, { httpClient: axiosInstance })
       ).rejects.toThrow(RangeError);
+    });
+
+    it("should continue negotiation with lower version, when server responds with WMS exception", async () => {
+      let respondedWithError = false;
+      axiosMockAdapter.onGet().reply(() => {
+        if (respondedWithError) {
+          return [200, capabilitiesXml_1_1_1];
+        } else {
+          respondedWithError = true;
+          return [200, exceptionXml_1_3_0];
+        }
+      });
+      const client = await negotiator.negotiate(wmsUrl, {
+        httpClient: axiosInstance,
+      });
+      expect(client.getVersion()).toBe("1.1.1");
     });
 
     test("multiple steps negotiation", async () => {

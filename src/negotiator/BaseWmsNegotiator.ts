@@ -1,5 +1,7 @@
 import axios, { type AxiosInstance, type AxiosResponse } from "axios";
 import type { RequestErrorHandler } from "../client/RequestErrorHandler";
+import { WmsException } from "../error/WmsException";
+import { WmsExceptionReport } from "../error/WmsExceptionReport";
 import type { WmsVersionAdapterResolver } from "../version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
 import type { WmsClient } from "../client/WmsClient";
 import type { WmsClientFactory } from "../client/WmsClientFactory";
@@ -44,11 +46,22 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     const serverVersions: string[] = [];
 
     while (adapter) {
-      const responseDoc = await this.getWmsServerCapabilities(
-        wmsUrl,
-        adapter,
-        httpClient
-      );
+      let responseDoc: Document;
+      try {
+        responseDoc = await this.getWmsServerCapabilities(
+          wmsUrl,
+          adapter,
+          httpClient
+        );
+      } catch (e) {
+        if (e instanceof WmsException || e instanceof WmsExceptionReport) {
+          adapter = this.versionAdapterResolver.findLower(adapter.version);
+          continue;
+        } else {
+          throw e;
+        }
+      }
+
       const serverVersion =
         this.xmlResponseVersionExtractor.extractVersion(responseDoc);
       serverVersions.push(serverVersion);
