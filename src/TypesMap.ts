@@ -16,6 +16,7 @@ import type { Keyword } from "./wms-data-types/get-capabilities-response/Keyword
 import type { Layer } from "./wms-data-types/get-capabilities-response/Layer";
 import type { WmsClientFactory } from "./client/WmsClientFactory";
 import type { WmsNegotiator } from "./negotiator/WmsNegotiator";
+import type { WmsXmlParser } from "./wms-xml-parser/WmsXmlParser";
 import type { XmlResponseVersionExtractor } from "./xml-response-version-extractor/XmlResponseVersionExtractor";
 
 export interface TypesMap extends ServicesMap {
@@ -78,4 +79,5 @@ export interface TypesMap extends ServicesMap {
   DOMParser: DOMParser;
   XMLSerializer: XMLSerializer;
   VersionCompatibilityChecker: VersionCompatibilityChecker;
+  WmsXmlParser: WmsXmlParser;
 }

@@ -1,5 +1,6 @@
 import { BaseWmsClientFactory } from "./client/BaseWmsClientFactory";
 import { BaseWmsNegotiator } from "./negotiator/BaseWmsNegotiator";
+import { BaseWmsXmlParser } from "./wms-xml-parser/BaseWmsXmlParser";
 import { BaseXmlResponseVersionExtractor } from "./xml-response-version-extractor/BaseXmlResponseVersionExtractor";
 import { BaseExceptionXmlChecker } from "./error/BaseExceptionXmlChecker";
 import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryParamsSerializer";
@@ -39,7 +40,7 @@ serviceContainer.registerFactory("WmsVersionAdapter[]", (context) =>
 serviceContainer.implement(
   "WmsVersionAdapterResolver",
   BaseWmsVersionAdapterResolver,
-  ["WmsVersionAdapter[]"]
+  ["WmsVersionAdapter[]", "VersionComparator"]
 );
 
 serviceContainer.implement(
@@ -60,14 +61,18 @@ serviceContainer.implement("ExceptionXmlChecker", BaseExceptionXmlChecker, [
 ]);
 
 serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
-  "WmsVersionAdapter[]",
-  "VersionComparator",
   "DOMParser",
   "XmlResponseVersionExtractor",
   "WmsClientFactory",
+  "WmsVersionAdapterResolver",
 ]);
 
 serviceContainer.registerModule(versionAdapterModule_1_1_1);
 serviceContainer.registerModule(versionAdapterModule_1_3_0);
 serviceContainer.registerModule(exceptionModule_1_1_1);
 serviceContainer.registerModule(exceptionModule_1_3_0);
+
+serviceContainer.implement("WmsXmlParser", BaseWmsXmlParser, [
+  "DOMParser",
+  "ExceptionXmlChecker",
+]);

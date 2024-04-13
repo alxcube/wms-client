@@ -1,108 +1,84 @@
-import axios from "axios";
-import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
-import type { VersionComparator } from "../version-comparator/VersionComparator";
+import axios, { type AxiosInstance } from "axios";
+import type { WmsVersionAdapterResolver } from "../version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
 import type { WmsClient } from "../client/WmsClient";
 import type { WmsClientFactory } from "../client/WmsClientFactory";
+import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
 import type { WmsNegotiator, WmsNegotiatorOptions } from "./WmsNegotiator";
 import type { XmlResponseVersionExtractor } from "../xml-response-version-extractor/XmlResponseVersionExtractor";
 
+interface NegotiationOutcome {
+  adapter: WmsVersionAdapter;
+  responseDoc: Document;
+}
+
 export class BaseWmsNegotiator implements WmsNegotiator {
   constructor(
-    private readonly adaptersPool: WmsVersionAdapter[],
-    private readonly versionComparator: VersionComparator,
     private readonly xmlParser: DOMParser,
     private readonly xmlResponseVersionExtractor: XmlResponseVersionExtractor,
-    private readonly wmsClientFactory: WmsClientFactory
+    private readonly wmsClientFactory: WmsClientFactory,
+    private readonly versionAdapterResolver: WmsVersionAdapterResolver
   ) {}
   async negotiate(
     wmsUrl: string,
     options: WmsNegotiatorOptions = {}
   ): Promise<WmsClient> {
     const { httpClient = axios.create() } = options;
-    let negotiatedVersion: string | undefined;
-    let adapter = this.getHighestVersionAdapter();
-
-    while (!negotiatedVersion) {
-      const params = adapter.transformCapabilitiesRequestParams({});
-      const response = await httpClient.get<string>(wmsUrl, {
-        params,
-        responseType: "text",
-      });
-      // todo check for errors
-      const responseDoc = this.xmlParser.parseFromString(
-        response.data,
-        "text/xml"
-      );
-      const version =
-        this.xmlResponseVersionExtractor.extractVersion(responseDoc);
-
-      if (version === adapter.version) {
-        negotiatedVersion = version;
-        break;
-      }
-
-      const exactAdapter = this.getExactVersionAdapter(version);
-      if (exactAdapter) {
-        negotiatedVersion = adapter.version;
-        break;
-      }
-
-      const compatibleAdapter = this.getCompatibleVersionAdapter(version);
-      if (compatibleAdapter) {
-        negotiatedVersion = compatibleAdapter.version;
-        break;
-      }
-
-      adapter = this.getLowerVersionAdapter(version);
-    }
+    const { adapter } = await this.getNegotiationOutcome(wmsUrl, httpClient);
 
     // Use same http client in wms client
     options.httpClient = httpClient;
-    return this.wmsClientFactory.create(wmsUrl, negotiatedVersion, options);
+    return this.wmsClientFactory.create(wmsUrl, adapter.version, options);
   }
 
-  private getHighestVersionAdapter(): WmsVersionAdapter {
-    if (!this.adaptersPool.length) {
-      throw new RangeError(`Version adapters pool is empty.`);
-    }
-    return this.adaptersPool
-      .slice()
-      .sort((adapter1, adapter2) =>
-        this.versionComparator.compare(adapter1.version, adapter2.version)
-      )
-      .pop()!;
-  }
+  private async getNegotiationOutcome(
+    wmsUrl: string,
+    httpClient: AxiosInstance
+  ): Promise<NegotiationOutcome> {
+    let adapter: WmsVersionAdapter | undefined =
+      this.versionAdapterResolver.getHighest();
+    const serverVersions: string[] = [];
 
-  private getExactVersionAdapter(
-    version: string
-  ): WmsVersionAdapter | undefined {
-    return this.adaptersPool.find((adapter) => adapter.version === version);
-  }
-
-  private getCompatibleVersionAdapter(
-    version: string
-  ): WmsVersionAdapter | undefined {
-    for (const adapter of this.adaptersPool) {
-      if (adapter.isCompatible(version)) {
-        return adapter;
+    while (adapter) {
+      const responseDoc = await this.getWmsServerCapabilities(
+        wmsUrl,
+        adapter,
+        httpClient
+      );
+      const serverVersion =
+        this.xmlResponseVersionExtractor.extractVersion(responseDoc);
+      serverVersions.push(serverVersion);
+      if (serverVersion === adapter.version) {
+        return { adapter: adapter, responseDoc };
       }
+      const compatibleAdapter = this.getCompatibleAdapter(serverVersion);
+      if (compatibleAdapter) {
+        return { adapter: compatibleAdapter, responseDoc };
+      }
+      adapter = this.versionAdapterResolver.findLower(serverVersion);
     }
+
+    throw new RangeError(
+      `Could not find compatible WMS version adapter for following versions: ${serverVersions.map((v) => `"${v}"`).join(", ")}`
+    );
   }
 
-  private getLowerVersionAdapter(version: string): WmsVersionAdapter {
-    const sortedByDescAdapters = this.adaptersPool
-      .slice()
-      .sort((adapter1, adapter2) =>
-        this.versionComparator.compare(adapter2.version, adapter1.version)
-      );
-    const lowerVersionAdapter = sortedByDescAdapters.find((adapter) =>
-      this.versionComparator.is(adapter.version, "<", version)
-    );
-    if (!lowerVersionAdapter) {
-      throw new RangeError(
-        `Can't find adapter with version lower, than "${version}"`
-      );
-    }
-    return lowerVersionAdapter;
+  private async getWmsServerCapabilities(
+    wmsUrl: string,
+    wmsAdapter: WmsVersionAdapter,
+    httpClient: AxiosInstance
+  ): Promise<Document> {
+    const params = wmsAdapter.transformCapabilitiesRequestParams({});
+    const response = await httpClient.get<string>(wmsUrl, {
+      params,
+      responseType: "text",
+    });
+    return this.xmlParser.parseFromString(response.data, "text/xml");
+  }
+
+  private getCompatibleAdapter(
+    wmsVersion: string
+  ): WmsVersionAdapter | undefined {
+    const adapter = this.versionAdapterResolver.find(wmsVersion);
+    return adapter || this.versionAdapterResolver.findCompatible(wmsVersion);
   }
 }
