@@ -24,7 +24,9 @@ describe("BaseWmsClient class", () => {
     testContainer.registerClass(BaseWmsClientFactory, [
       "WmsVersionAdapterResolver",
       "QueryParamsSerializer",
-      "ExceptionXmlChecker",
+      "WmsXmlParser",
+      "RequestErrorHandler",
+      "TextDecoder",
     ]);
     factory = testContainer.resolve(BaseWmsClientFactory);
     httpClient = axios.create();

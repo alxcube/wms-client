@@ -1,3 +1,4 @@
+import type { RequestErrorHandler } from "./client/RequestErrorHandler";
 import type { ExceptionReportExtractor } from "./error/ExceptionReportExtractor";
 import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
 import type { CapabilitiesRequestParamsTransformer } from "./version-adapter/capabilities-request-params-transformer/CapabilitiesRequestParamsTransformer";
@@ -80,4 +81,6 @@ export interface TypesMap extends ServicesMap {
   XMLSerializer: XMLSerializer;
   VersionCompatibilityChecker: VersionCompatibilityChecker;
   WmsXmlParser: WmsXmlParser;
+  TextDecoder: TextDecoder;
+  RequestErrorHandler: RequestErrorHandler;
 }

@@ -1,3 +1,4 @@
+import { BaseRequestErrorHandler } from "./client/BaseRequestErrorHandler";
 import { BaseWmsClientFactory } from "./client/BaseWmsClientFactory";
 import { BaseWmsNegotiator } from "./negotiator/BaseWmsNegotiator";
 import { BaseWmsXmlParser } from "./wms-xml-parser/BaseWmsXmlParser";
@@ -22,7 +23,9 @@ serviceContainer.implement("DOMParser", DOMParser, [] as any);
 serviceContainer.implement("WmsClientFactory", BaseWmsClientFactory, [
   "WmsVersionAdapterResolver",
   "QueryParamsSerializer",
-  "ExceptionXmlChecker",
+  "WmsXmlParser",
+  "RequestErrorHandler",
+  "TextDecoder",
 ]);
 
 serviceContainer.implement(
@@ -75,4 +78,11 @@ serviceContainer.registerModule(exceptionModule_1_3_0);
 serviceContainer.implement("WmsXmlParser", BaseWmsXmlParser, [
   "DOMParser",
   "ExceptionXmlChecker",
+]);
+
+serviceContainer.implement("TextDecoder", TextDecoder, []);
+
+serviceContainer.implement("RequestErrorHandler", BaseRequestErrorHandler, [
+  "TextDecoder",
+  "WmsXmlParser",
 ]);
