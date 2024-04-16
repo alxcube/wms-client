@@ -5,6 +5,7 @@ import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabili
 
 export interface WmsClientOptions {
   query?: { [key: string]: unknown };
+  mapRequestUrl?: string;
 }
 
 export interface CapabilitiesRequestParams {
@@ -37,11 +38,17 @@ export interface MapRequestParams {
 export interface WmsClient {
   getVersion(): string;
 
+  getWmsUrl(): string;
+
   getCapabilities(
     params?: CapabilitiesRequestParams
   ): Promise<UnifiedCapabilitiesResponse>;
 
   getMap(params: MapRequestParams): Promise<ArrayBuffer>;
+
+  getMapRequestUrl(): string;
+
+  setMapRequestUrl(url: string): void;
 
   getMapUrl(params: MapRequestParams): string;
 

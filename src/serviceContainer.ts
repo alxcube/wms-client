@@ -70,6 +70,7 @@ serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
   "WmsVersionAdapterResolver",
   "RequestErrorHandler",
   "VersionComparator",
+  "QueryParamsSerializer",
 ]);
 
 serviceContainer.registerModule(versionAdapterModule_1_1_1);

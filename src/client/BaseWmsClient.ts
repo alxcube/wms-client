@@ -1,5 +1,6 @@
 import { type AxiosInstance, type AxiosResponse } from "axios";
 import type { QueryParamsSerializer } from "../query-params-serializer/QueryParamsSerializer";
+import { mergeSearchParams } from "../utils/mergeSearchParams";
 import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 import { inheritLayersData } from "../utils/inheritLayersData";
 import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
@@ -12,6 +13,7 @@ import type {
   WmsClientOptions,
 } from "./WmsClient";
 export class BaseWmsClient implements WmsClient {
+  private mapRequestUrl: string;
   constructor(
     private readonly httpClient: AxiosInstance,
     private readonly queryParamsSerializer: QueryParamsSerializer,
@@ -21,10 +23,16 @@ export class BaseWmsClient implements WmsClient {
     private readonly textDecoder: TextDecoder,
     private readonly wmsUrl: string,
     private readonly options: WmsClientOptions = {}
-  ) {}
+  ) {
+    this.mapRequestUrl = options.mapRequestUrl || wmsUrl;
+  }
 
   getVersion(): string {
     return this.versionAdapter.version;
+  }
+
+  getWmsUrl(): string {
+    return this.wmsUrl;
   }
 
   async getCapabilities(
@@ -34,11 +42,10 @@ export class BaseWmsClient implements WmsClient {
       ...this.getCustomQueryParams(),
       ...this.versionAdapter.transformCapabilitiesRequestParams(params),
     };
-
+    const url = this.prepareUrl(this.wmsUrl, requestParams);
     let response: AxiosResponse<string>;
     try {
-      response = await this.httpClient.get(this.wmsUrl, {
-        params: requestParams,
+      response = await this.httpClient.get(url.toString(), {
         responseType: "text",
       });
     } catch (e) {
@@ -70,20 +77,20 @@ export class BaseWmsClient implements WmsClient {
     return response.data;
   }
 
+  getMapRequestUrl(): string {
+    return this.mapRequestUrl;
+  }
+
+  setMapRequestUrl(url: string) {
+    this.mapRequestUrl = url;
+  }
+
   getMapUrl(params: MapRequestParams): string {
     const requestParams = {
       ...this.getCustomQueryParams(),
       ...this.versionAdapter.transformMapRequestParams(params),
     };
-    const query = this.queryParamsSerializer.serialize(requestParams);
-
-    if (this.wmsUrl.indexOf("?") !== -1) {
-      return this.wmsUrl.endsWith("?")
-        ? `${this.wmsUrl}${query}`
-        : `${this.wmsUrl}&${query}`;
-    }
-
-    return `${this.wmsUrl}?${query}`;
+    return this.prepareUrl(this.mapRequestUrl, requestParams);
   }
 
   getCustomQueryParams(): { [p: string]: unknown } {
@@ -116,5 +123,10 @@ export class BaseWmsClient implements WmsClient {
 
   private isXmlResponse(response: AxiosResponse): boolean {
     return /(?:\b|_)xml(?:\b|_)/.test(response.headers["content-type"]);
+  }
+
+  private prepareUrl(baseUrl: string, query: object): string {
+    const serializedParams = this.queryParamsSerializer.serialize(query);
+    return mergeSearchParams(baseUrl, serializedParams);
   }
 }

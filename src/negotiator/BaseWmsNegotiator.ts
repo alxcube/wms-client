@@ -2,6 +2,8 @@ import axios, { type AxiosInstance, type AxiosResponse } from "axios";
 import type { RequestErrorHandler } from "../client/RequestErrorHandler";
 import { WmsException } from "../error/WmsException";
 import { WmsExceptionReport } from "../error/WmsExceptionReport";
+import type { QueryParamsSerializer } from "../query-params-serializer/QueryParamsSerializer";
+import { mergeSearchParams } from "../utils/mergeSearchParams";
 import type { WmsVersionAdapterResolver } from "../version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
 import type { WmsClient } from "../client/WmsClient";
 import type { WmsClientFactory } from "../client/WmsClientFactory";
@@ -23,23 +25,37 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     private readonly wmsClientFactory: WmsClientFactory,
     private readonly versionAdapterResolver: WmsVersionAdapterResolver,
     private readonly requestErrorHandler: RequestErrorHandler,
-    private readonly versionComparator: VersionComparator
+    private readonly versionComparator: VersionComparator,
+    private readonly queryParamsSerializer: QueryParamsSerializer
   ) {}
   async negotiate(
     wmsUrl: string,
     options: WmsNegotiatorOptions = {}
   ): Promise<WmsClient> {
     const { httpClient = axios.create() } = options;
-    const { adapter } = await this.getNegotiationOutcome(wmsUrl, httpClient);
+    const { adapter, responseDoc } = await this.getNegotiationOutcome(
+      wmsUrl,
+      httpClient,
+      options.query
+    );
+    const capabilities = adapter.extractCapabilitiesResponseData(responseDoc);
 
-    // Use same http client in wms client
-    options.httpClient = httpClient;
-    return this.wmsClientFactory.create(wmsUrl, adapter.version, options);
+    const factoryOptions = {
+      ...options,
+      httpClient, // Use same http client in wms client
+      mapRequestUrl: capabilities?.capability?.request?.getMap?.httpGetUrl,
+    };
+    return this.wmsClientFactory.create(
+      wmsUrl,
+      adapter.version,
+      factoryOptions
+    );
   }
 
   private async getNegotiationOutcome(
     wmsUrl: string,
-    httpClient: AxiosInstance
+    httpClient: AxiosInstance,
+    customQuery: object = {}
   ): Promise<NegotiationOutcome> {
     let adapter: WmsVersionAdapter | undefined =
       this.versionAdapterResolver.getHighest();
@@ -51,7 +67,8 @@ export class BaseWmsNegotiator implements WmsNegotiator {
         responseDoc = await this.getWmsServerCapabilities(
           wmsUrl,
           adapter,
-          httpClient
+          httpClient,
+          customQuery
         );
       } catch (e) {
         if (e instanceof WmsException || e instanceof WmsExceptionReport) {
@@ -87,13 +104,17 @@ export class BaseWmsNegotiator implements WmsNegotiator {
   private async getWmsServerCapabilities(
     wmsUrl: string,
     wmsAdapter: WmsVersionAdapter,
-    httpClient: AxiosInstance
+    httpClient: AxiosInstance,
+    customQuery: object = {}
   ): Promise<Document> {
-    const params = wmsAdapter.transformCapabilitiesRequestParams({});
+    const params = wmsAdapter.transformCapabilitiesRequestParams({
+      ...customQuery,
+    });
+    const serializedParams = this.queryParamsSerializer.serialize(params);
+    const url = mergeSearchParams(wmsUrl, serializedParams);
     let response: AxiosResponse<string>;
     try {
-      response = await httpClient.get<string>(wmsUrl, {
-        params,
+      response = await httpClient.get<string>(url, {
         responseType: "text",
       });
     } catch (e) {

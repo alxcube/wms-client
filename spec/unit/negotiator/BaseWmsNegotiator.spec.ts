@@ -27,6 +27,7 @@ describe("BaseWmsNegotiator class", () => {
       "WmsVersionAdapterResolver",
       "RequestErrorHandler",
       "VersionComparator",
+      "QueryParamsSerializer",
     ]);
     negotiator = testContainer.resolve(BaseWmsNegotiator);
     axiosInstance = axios.create();
@@ -121,5 +122,13 @@ describe("BaseWmsNegotiator class", () => {
       });
       expect(client.getVersion()).toBe("1.1.1");
     });
+  });
+
+  it("should set client's map request url from capabilities response", async () => {
+    axiosMockAdapter.onGet().reply(200, capabilitiesXml_1_3_0);
+    const client = await negotiator.negotiate(wmsUrl, {
+      httpClient: axiosInstance,
+    });
+    expect(client.getMapRequestUrl()).toBe("http://hostname/path?");
   });
 });
