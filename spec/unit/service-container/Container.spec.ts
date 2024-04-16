@@ -976,4 +976,19 @@ describe("Container class", () => {
       expect(container.has(DummyService)).toBe(true);
     });
   });
+
+  describe("instantiate() method", () => {
+    it("should create instance of given class", () => {
+      expect(container.instantiate(DummyService, [])).toBeInstanceOf(
+        DummyService
+      );
+    });
+
+    it("should create instance of class with dependencies", () => {
+      container.implement("DummyService", DummyService, []);
+      expect(
+        container.instantiate(DummyDependent, ["DummyService", "DummyService"])
+      ).toBeInstanceOf(DummyDependent);
+    });
+  });
 });

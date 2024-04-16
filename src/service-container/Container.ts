@@ -269,6 +269,21 @@ export class Container<TServicesMap extends ServicesMap>
     return registrations.map(({ name }) => name);
   }
 
+  instantiate<
+    ConstructorType extends Constructor<object>,
+    DepsTuple extends DependenciesTuple<
+      TServicesMap,
+      ConstructorParameters<ConstructorType>
+    >,
+  >(
+    constructor: ConstructorType,
+    deps: DepsTuple
+  ): InstanceType<ConstructorType> {
+    const factory = this.createFactoryForConstructor(constructor, deps);
+    const context = new Context(this.getMergedRegistry());
+    return factory(context);
+  }
+
   /**
    * Unregisters service from own registry.
    *

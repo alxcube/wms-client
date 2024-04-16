@@ -221,4 +221,15 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
    * @param cascade
    */
   restore(cascade?: boolean): void;
+
+  instantiate<
+    ConstructorType extends Constructor<object>,
+    DepsTuple extends DependenciesTuple<
+      TServicesMap,
+      ConstructorParameters<ConstructorType>
+    >,
+  >(
+    constructor: ConstructorType,
+    deps: DepsTuple
+  ): InstanceType<ConstructorType>;
 }
