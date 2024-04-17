@@ -898,21 +898,23 @@ describe("Container class", () => {
     });
   });
 
-  describe("registerClass() method", () => {
+  describe("registerClassConfig() method", () => {
     it("should register class constructor with automatic factory creation", () => {
       expect(container.has(DummyService)).toBe(false);
-      container.registerClass(DummyService, []);
+      container.registerClassConfig(DummyService, []);
       expect(container.has(DummyService)).toBe(true);
       expect(container.resolve(DummyService)).toBeInstanceOf(DummyService);
     });
 
     it("should register class constructor with dependencies", () => {
-      container.registerClass(DummyDependent, [
+      container.registerClassConfig(DummyDependent, [
         DummyService,
         { service: DummyService, name: "alt" },
       ]);
-      container.registerClass(DummyService, [], { lifecycle: "singleton" });
-      container.registerClass(DummyService, [], {
+      container.registerClassConfig(DummyService, [], {
+        lifecycle: "singleton",
+      });
+      container.registerClassConfig(DummyService, [], {
         name: "alt",
         lifecycle: "singleton",
       });
@@ -924,7 +926,7 @@ describe("Container class", () => {
 
     it("should register class constructor with constant dependencies", () => {
       const dummyService = new DummyService();
-      container.registerClass(DummyDependent, [
+      container.registerClassConfig(DummyDependent, [
         { constant: dummyService },
         { constant: dummyService },
       ]);
@@ -967,7 +969,7 @@ describe("Container class", () => {
     it("should call module's register() method, and return function that unregisters module", () => {
       const module: ServiceModule<TestServicesMap> = {
         register(container: ServiceContainer<TestServicesMap>): void {
-          container.registerClass(DummyService, []);
+          container.registerClassConfig(DummyService, []);
         },
       };
 

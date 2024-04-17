@@ -113,7 +113,7 @@ export class Container<TServicesMap extends ServicesMap>
     this.registerConstantOrFactory(key, factory, true, options);
   }
 
-  registerClass<
+  registerClassConfig<
     ConstructorType extends Constructor<object>,
     DepsTuple extends DependenciesTuple<
       TServicesMap,

@@ -140,7 +140,7 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     options?: ServiceFactoryRegistrationOptions
   ): void;
 
-  registerClass<
+  registerClassConfig<
     ConstructorType extends Constructor<object>,
     DepsTuple extends DependenciesTuple<
       TServicesMap,
