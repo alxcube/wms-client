@@ -1,5 +1,5 @@
 import axios, { type AxiosError, isAxiosError } from "axios";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { BaseRequestErrorHandler } from "../../../src/client/BaseRequestErrorHandler";
 import { WmsException } from "../../../src/error/WmsException";
 import { WmsExceptionReport } from "../../../src/error/WmsExceptionReport";
@@ -28,16 +28,10 @@ describe("BaseRequestErrorHandler class", () => {
   let handler: BaseRequestErrorHandler;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(BaseRequestErrorHandler, [
+    handler = testContainer.instantiate(BaseRequestErrorHandler, [
       "TextDecoder",
       "WmsXmlParser",
     ]);
-    handler = testContainer.resolve(BaseRequestErrorHandler);
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("handleRequestError() method", () => {

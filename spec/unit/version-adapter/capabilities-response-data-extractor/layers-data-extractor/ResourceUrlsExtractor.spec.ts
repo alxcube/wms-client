@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { ResourceUrlsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/ResourceUrlsExtractor";
@@ -38,44 +38,21 @@ describe("ResourceUrlsExtractor class", () => {
   let contextNode_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(
+    dataUrlsExtractorFactory_1_1 = testContainer.instantiate(
       ResourceUrlsExtractor,
-      [constant("DataURL"), constant("")],
-      { name: "data-url-1.1.1" }
+      [constant("DataURL"), constant("")]
     );
-    testContainer.registerClass(
+    dataUrlsExtractorFactory_1_3 = testContainer.instantiate(
       ResourceUrlsExtractor,
-      [constant("FeatureListURL"), constant("")],
-      { name: "feature-list-url-1.1.1" }
+      [constant("DataURL"), constant("wms")]
     );
-    testContainer.registerClass(
+    featureListUrlsExtractorFactory_1_1 = testContainer.instantiate(
       ResourceUrlsExtractor,
-      [constant("DataURL"), constant("wms")],
-      { name: "data-url-1.3.0" }
+      [constant("FeatureListURL"), constant("")]
     );
-    testContainer.registerClass(
+    featureListUrlsExtractorFactory_1_3 = testContainer.instantiate(
       ResourceUrlsExtractor,
-      [constant("FeatureListURL"), constant("wms")],
-      { name: "feature-list-url-1.3.0" }
-    );
-
-    dataUrlsExtractorFactory_1_1 = testContainer.resolve(
-      ResourceUrlsExtractor,
-      "data-url-1.1.1"
-    );
-    dataUrlsExtractorFactory_1_3 = testContainer.resolve(
-      ResourceUrlsExtractor,
-      "data-url-1.3.0"
-    );
-    featureListUrlsExtractorFactory_1_1 = testContainer.resolve(
-      ResourceUrlsExtractor,
-      "feature-list-url-1.1.1"
-    );
-    featureListUrlsExtractorFactory_1_3 = testContainer.resolve(
-      ResourceUrlsExtractor,
-      "feature-list-url-1.3.0"
+      [constant("FeatureListURL"), constant("wms")]
     );
 
     xmlParser = testContainer.resolve("DOMParser");
@@ -94,10 +71,6 @@ describe("ResourceUrlsExtractor class", () => {
       xmlParser.parseFromString(xml_1_3, "text/xml"),
       true
     ) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

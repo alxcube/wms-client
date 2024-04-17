@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { isDocumentNode } from "xpath";
 import { WmsException } from "../../../src/error/WmsException";
 import { WmsExceptionReport } from "../../../src/error/WmsExceptionReport";
@@ -17,16 +17,10 @@ describe("BaseWmsXmlParser class", () => {
   let parser: BaseWmsXmlParser;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(BaseWmsXmlParser, [
+    parser = testContainer.instantiate(BaseWmsXmlParser, [
       "DOMParser",
       "ExceptionXmlChecker",
     ]);
-    parser = testContainer.resolve(BaseWmsXmlParser);
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("parse() method", () => {

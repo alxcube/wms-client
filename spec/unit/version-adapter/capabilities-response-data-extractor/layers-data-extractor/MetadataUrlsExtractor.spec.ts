@@ -1,5 +1,5 @@
 import type { DOMParser } from "@xmldom/xmldom";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { MetadataUrlsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/MetadataUrlsExtractor";
@@ -27,17 +27,12 @@ describe("MetadataUrlsExtractor class", () => {
   let container_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(MetadataUrlsExtractor, [constant("")], {
-      name: "1.1.1",
-    });
-    testContainer.registerClass(MetadataUrlsExtractor, [constant("wms")], {
-      name: "1.3.0",
-    });
-
-    factory_1_1 = testContainer.resolve(MetadataUrlsExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(MetadataUrlsExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(MetadataUrlsExtractor, [
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(MetadataUrlsExtractor, [
+      constant("wms"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({
@@ -55,10 +50,6 @@ describe("MetadataUrlsExtractor class", () => {
       xmlParser.parseFromString(xml_1_3, "text/xml"),
       true
     ) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

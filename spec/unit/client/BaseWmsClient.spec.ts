@@ -38,15 +38,13 @@ describe("BaseWmsClient class", () => {
   };
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(BaseWmsClientFactory, [
+    factory = testContainer.instantiate(BaseWmsClientFactory, [
       "WmsVersionAdapterResolver",
       "QueryParamsSerializer",
       "WmsXmlParser",
       "RequestErrorHandler",
       "TextDecoder",
     ]);
-    factory = testContainer.resolve(BaseWmsClientFactory);
     httpClient = axios.create();
     axiosMock = new MockAdapter(httpClient);
     client_1_1 = factory.create(wmsUrl, "1.1.1");
@@ -57,7 +55,6 @@ describe("BaseWmsClient class", () => {
   });
 
   afterEach(() => {
-    testContainer.restore();
     axiosMock.restore();
   });
 

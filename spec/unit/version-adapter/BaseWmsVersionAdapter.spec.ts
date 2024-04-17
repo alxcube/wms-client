@@ -1,5 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-
+import { beforeEach, describe, expect, it } from "vitest";
 import type { MapRequestParams } from "../../../src/client/WmsClient";
 import { constant } from "../../../src/service-container/constant";
 import { BaseWmsVersionAdapter } from "../../../src/version-adapter/BaseWmsVersionAdapter";
@@ -16,38 +15,20 @@ describe("BaseWmsVersionAdapter class", () => {
   let adapter_1_3: BaseWmsVersionAdapter;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(
-      BaseWmsVersionAdapter,
-      [
-        constant("1.1.1"),
-        { service: "CapabilitiesRequestParamsTransformer", name: "1.1.1" },
-        { service: "CapabilitiesResponseDataExtractor", name: "1.1.1" },
-        { service: "MapRequestParamsTransformer", name: "1.1.1" },
-        { service: "VersionCompatibilityChecker", name: "1.1.1" },
-      ],
-      { name: "1.1.1" }
-    );
-
-    testContainer.registerClass(
-      BaseWmsVersionAdapter,
-      [
-        constant("1.3.0"),
-        { service: "CapabilitiesRequestParamsTransformer", name: "1.3.0" },
-        { service: "CapabilitiesResponseDataExtractor", name: "1.3.0" },
-        { service: "MapRequestParamsTransformer", name: "1.3.0" },
-        { service: "VersionCompatibilityChecker", name: "1.3.0" },
-      ],
-      { name: "1.3.0" }
-    );
-
-    adapter_1_1 = testContainer.resolve(BaseWmsVersionAdapter, "1.1.1");
-    adapter_1_3 = testContainer.resolve(BaseWmsVersionAdapter, "1.3.0");
-  });
-
-  afterEach(() => {
-    testContainer.restore();
+    adapter_1_1 = testContainer.instantiate(BaseWmsVersionAdapter, [
+      constant("1.1.1"),
+      { service: "CapabilitiesRequestParamsTransformer", name: "1.1.1" },
+      { service: "CapabilitiesResponseDataExtractor", name: "1.1.1" },
+      { service: "MapRequestParamsTransformer", name: "1.1.1" },
+      { service: "VersionCompatibilityChecker", name: "1.1.1" },
+    ]);
+    adapter_1_3 = testContainer.instantiate(BaseWmsVersionAdapter, [
+      constant("1.3.0"),
+      { service: "CapabilitiesRequestParamsTransformer", name: "1.3.0" },
+      { service: "CapabilitiesResponseDataExtractor", name: "1.3.0" },
+      { service: "MapRequestParamsTransformer", name: "1.3.0" },
+      { service: "VersionCompatibilityChecker", name: "1.3.0" },
+    ]);
   });
 
   describe("transformCapabilitiesRequestParams() method", () => {

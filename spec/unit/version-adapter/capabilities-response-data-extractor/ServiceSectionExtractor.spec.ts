@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../src/service-container/constant";
 import { ServiceSectionExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/ServiceSectionExtractor";
@@ -19,28 +19,16 @@ describe("ServiceSectionExtractor class", () => {
   let doc_1_3: Document;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(
-      ServiceSectionExtractor,
-      [
-        { service: "XmlDataExtractor<Keyword[]>", name: "1.1.1" },
-        constant("WMT_MS_Capabilities"),
-        constant(""),
-      ],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      ServiceSectionExtractor,
-      [
-        { service: "XmlDataExtractor<Keyword[]>", name: "1.3.0" },
-        constant("WMS_Capabilities"),
-        constant("wms"),
-      ],
-      { name: "1.3.0" }
-    );
-
-    factory_1_1 = testContainer.resolve(ServiceSectionExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(ServiceSectionExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(ServiceSectionExtractor, [
+      { service: "XmlDataExtractor<Keyword[]>", name: "1.1.1" },
+      constant("WMT_MS_Capabilities"),
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(ServiceSectionExtractor, [
+      { service: "XmlDataExtractor<Keyword[]>", name: "1.3.0" },
+      constant("WMS_Capabilities"),
+      constant("wms"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({
@@ -50,10 +38,6 @@ describe("ServiceSectionExtractor class", () => {
 
     doc_1_1 = xmlParser.parseFromString(xml_1_1, "text/xml");
     doc_1_3 = xmlParser.parseFromString(xml_1_3, "text/xml");
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

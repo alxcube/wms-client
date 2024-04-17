@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { BoundingBoxesExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/BoundingBoxesExtractor";
@@ -24,21 +24,14 @@ describe("BoundingBoxesExtractor class", () => {
   let boundingBoxesContainer_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(
-      BoundingBoxesExtractor,
-      [constant("SRS"), constant("")],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      BoundingBoxesExtractor,
-      [constant("CRS"), constant("wms")],
-      { name: "1.3.0" }
-    );
-
-    factory_1_1 = testContainer.resolve(BoundingBoxesExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(BoundingBoxesExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(BoundingBoxesExtractor, [
+      constant("SRS"),
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(BoundingBoxesExtractor, [
+      constant("CRS"),
+      constant("wms"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
 
@@ -57,10 +50,6 @@ describe("BoundingBoxesExtractor class", () => {
       xmlParser.parseFromString(xml_1_3, "text/xml"),
       true
     ) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

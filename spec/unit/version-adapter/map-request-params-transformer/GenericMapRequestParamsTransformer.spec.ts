@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import type { MapRequestParams } from "../../../../src/client/WmsClient";
 import { constant } from "../../../../src/service-container/constant";
@@ -27,30 +27,14 @@ describe("GenericMapRequestParamsTransformer class", () => {
   };
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(
+    transformer_1_1 = testContainer.instantiate(
       GenericMapRequestParamsTransformer,
-      ["VersionComparator", constant("1.1.1")],
-      { name: "1.1.1" }
+      ["VersionComparator", constant("1.1.1")]
     );
-    testContainer.registerClass(
+    transformer_1_3 = testContainer.instantiate(
       GenericMapRequestParamsTransformer,
-      ["VersionComparator", constant("1.3.0")],
-      { name: "1.3.0" }
+      ["VersionComparator", constant("1.3.0")]
     );
-
-    transformer_1_1 = testContainer.resolve(
-      GenericMapRequestParamsTransformer,
-      "1.1.1"
-    );
-    transformer_1_3 = testContainer.resolve(
-      GenericMapRequestParamsTransformer,
-      "1.3.0"
-    );
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("transform() method", () => {

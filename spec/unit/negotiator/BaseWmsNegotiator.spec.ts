@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from "axios";
-import { afterEach, beforeEach, describe, expect, it, test } from "vitest";
+import { beforeEach, describe, expect, it, test } from "vitest";
 import { BaseWmsNegotiator } from "../../../src/negotiator/BaseWmsNegotiator";
 import { testContainer } from "../../testContainer";
 import MockAdapter from "axios-mock-adapter";
@@ -19,8 +19,7 @@ describe("BaseWmsNegotiator class", () => {
   const wmsUrl = "https://wms-example.com";
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(BaseWmsNegotiator, [
+    negotiator = testContainer.instantiate(BaseWmsNegotiator, [
       "WmsXmlParser",
       "XmlResponseVersionExtractor",
       "WmsClientFactory",
@@ -29,13 +28,8 @@ describe("BaseWmsNegotiator class", () => {
       "VersionComparator",
       "QueryParamsSerializer",
     ]);
-    negotiator = testContainer.resolve(BaseWmsNegotiator);
     axiosInstance = axios.create();
     axiosMockAdapter = new MockAdapter(axiosInstance);
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("negotiate() method", () => {

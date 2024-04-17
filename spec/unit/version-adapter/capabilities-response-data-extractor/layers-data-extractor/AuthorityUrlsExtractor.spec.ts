@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { AuthorityUrlsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/AuthorityUrlsExtractor";
@@ -26,17 +26,12 @@ describe("AuthorityUrlsExtractor class", () => {
   let authorityUrlsContainer_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(AuthorityUrlsExtractor, [constant("")], {
-      name: "1.1.1",
-    });
-    testContainer.registerClass(AuthorityUrlsExtractor, [constant("wms")], {
-      name: "1.3.0",
-    });
-
-    factory_1_1 = testContainer.resolve(AuthorityUrlsExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(AuthorityUrlsExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(AuthorityUrlsExtractor, [
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(AuthorityUrlsExtractor, [
+      constant("wms"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({
@@ -54,10 +49,6 @@ describe("AuthorityUrlsExtractor class", () => {
       xmlParser.parseFromString(authorityUrlsXml_1_3, "text/xml"),
       true
     ) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

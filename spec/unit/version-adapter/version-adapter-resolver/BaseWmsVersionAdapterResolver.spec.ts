@@ -1,14 +1,15 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { serviceContainer } from "../../../../src/serviceContainer";
-import type { BaseWmsVersionAdapterResolver } from "../../../../src/version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
+import { BaseWmsVersionAdapterResolver } from "../../../../src/version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
 
 describe("BaseWmsVersionAdapterResolver class", () => {
   let resolver: BaseWmsVersionAdapterResolver;
 
   beforeEach(() => {
-    resolver = serviceContainer.resolve(
-      "WmsVersionAdapterResolver"
-    ) as BaseWmsVersionAdapterResolver;
+    resolver = serviceContainer.instantiate(BaseWmsVersionAdapterResolver, [
+      "WmsVersionAdapter[]",
+      "VersionComparator",
+    ]);
   });
 
   describe("resolve() method", () => {

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { constant } from "../../../../src/service-container/constant";
 import { RangeVersionCompatibilityChecker } from "../../../../src/version-adapter/version-compatibility-checker/RangeVersionCompatibilityChecker";
 import { testContainer } from "../../../testContainer";
@@ -8,31 +8,16 @@ describe("RangeVersionCompatibilityChecker class", () => {
   let checker_1_3: RangeVersionCompatibilityChecker;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(
-      RangeVersionCompatibilityChecker,
-      ["VersionComparator", constant("1.1"), constant("1.2")],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      RangeVersionCompatibilityChecker,
-      ["VersionComparator", constant("1.3"), constant("1.4")],
-      { name: "1.3.0" }
-    );
-
-    checker_1_1 = testContainer.resolve(
-      RangeVersionCompatibilityChecker,
-      "1.1.1"
-    );
-    checker_1_3 = testContainer.resolve(
-      RangeVersionCompatibilityChecker,
-      "1.3.0"
-    );
-  });
-
-  afterEach(() => {
-    testContainer.restore();
+    checker_1_1 = testContainer.instantiate(RangeVersionCompatibilityChecker, [
+      "VersionComparator",
+      constant("1.1"),
+      constant("1.2"),
+    ]);
+    checker_1_3 = testContainer.instantiate(RangeVersionCompatibilityChecker, [
+      "VersionComparator",
+      constant("1.3"),
+      constant("1.4"),
+    ]);
   });
 
   describe("isCompatible() method", () => {

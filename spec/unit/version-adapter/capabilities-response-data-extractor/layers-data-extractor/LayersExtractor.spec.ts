@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { LayersExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/LayersExtractor";
@@ -270,49 +270,36 @@ describe("LayersExtractor class", () => {
   let contextNode_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(
-      LayersExtractor,
-      [
-        { service: "XmlDataExtractor<Keyword[]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[crs]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[dimensions]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[attribution]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[featureListUrls]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<Layer[styles]>", name: "1.1.1" },
-        constant(""),
-      ],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      LayersExtractor,
-      [
-        { service: "XmlDataExtractor<Keyword[]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[crs]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[dimensions]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[attribution]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[featureListUrls]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<Layer[styles]>", name: "1.3.0" },
-        constant("wms"),
-      ],
-      { name: "1.3.0" }
-    );
-
-    factory_1_1 = testContainer.resolve(LayersExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(LayersExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(LayersExtractor, [
+      { service: "XmlDataExtractor<Keyword[]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[crs]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[dimensions]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[attribution]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[featureListUrls]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[styles]>", name: "1.1.1" },
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(LayersExtractor, [
+      { service: "XmlDataExtractor<Keyword[]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[crs]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[dimensions]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[attribution]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[featureListUrls]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<Layer[styles]>", name: "1.3.0" },
+      constant("wms"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({
@@ -331,10 +318,6 @@ describe("LayersExtractor class", () => {
       xmlParser.parseFromString(xml_1_3, "text/xml"),
       true
     ) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

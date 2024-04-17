@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { constant } from "../../../../src/service-container/constant";
 import { GenericCapabilitiesRequestParamsTransformer } from "../../../../src/version-adapter/capabilities-request-params-transformer/GenericCapabilitiesRequestParamsTransformer";
 import { testContainer } from "../../../testContainer";
@@ -8,31 +8,14 @@ describe("GenericCapabilitiesRequestParamsTransformer class", () => {
   let transformer_1_3_0: GenericCapabilitiesRequestParamsTransformer;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(
+    transformer_1_1_1 = testContainer.instantiate(
       GenericCapabilitiesRequestParamsTransformer,
-      [constant("1.1.1")],
-      { name: "1.1.1" }
+      [constant("1.1.1")]
     );
-    testContainer.registerClass(
+    transformer_1_3_0 = testContainer.instantiate(
       GenericCapabilitiesRequestParamsTransformer,
-      [constant("1.3.0")],
-      { name: "1.3.0" }
+      [constant("1.3.0")]
     );
-
-    transformer_1_1_1 = testContainer.resolve(
-      GenericCapabilitiesRequestParamsTransformer,
-      "1.1.1"
-    );
-    transformer_1_3_0 = testContainer.resolve(
-      GenericCapabilitiesRequestParamsTransformer,
-      "1.3.0"
-    );
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("transform() method", () => {

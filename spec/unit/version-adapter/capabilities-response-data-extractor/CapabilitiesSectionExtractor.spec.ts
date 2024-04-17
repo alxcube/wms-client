@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../src/service-container/constant";
 import { CapabilitiesSectionExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/CapabilitiesSectionExtractor";
@@ -19,30 +19,18 @@ describe("CapabilitiesSectionExtractor class", () => {
   let doc_1_3: Document;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(
-      CapabilitiesSectionExtractor,
-      [
-        { service: "XmlDataExtractor<Layer[]>", name: "1.1.1" },
-        { service: "XmlDataExtractor<ExceptionFormat[]>", name: "1.1.1" },
-        constant("WMT_MS_Capabilities"),
-        constant(""),
-      ],
-      { name: "1.1.1" }
-    );
-    testContainer.registerClass(
-      CapabilitiesSectionExtractor,
-      [
-        { service: "XmlDataExtractor<Layer[]>", name: "1.3.0" },
-        { service: "XmlDataExtractor<ExceptionFormat[]>", name: "1.3.0" },
-        constant("WMS_Capabilities"),
-        constant("wms"),
-      ],
-      { name: "1.3.0" }
-    );
-
-    factory_1_1 = testContainer.resolve(CapabilitiesSectionExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(CapabilitiesSectionExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(CapabilitiesSectionExtractor, [
+      { service: "XmlDataExtractor<Layer[]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<ExceptionFormat[]>", name: "1.1.1" },
+      constant("WMT_MS_Capabilities"),
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(CapabilitiesSectionExtractor, [
+      { service: "XmlDataExtractor<Layer[]>", name: "1.3.0" },
+      { service: "XmlDataExtractor<ExceptionFormat[]>", name: "1.3.0" },
+      constant("WMS_Capabilities"),
+      constant("wms"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({
@@ -52,10 +40,6 @@ describe("CapabilitiesSectionExtractor class", () => {
 
     doc_1_1 = xmlParser.parseFromString(xml_1_1, "text/xml");
     doc_1_3 = xmlParser.parseFromString(xml_1_3, "text/xml");
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

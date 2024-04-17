@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { GenericExceptionReportExtractor } from "../../../src/error/GenericExceptionReportExtractor";
 import { constant } from "../../../src/service-container/constant";
 import { testContainer } from "../../testContainer";
@@ -19,8 +19,7 @@ describe("GenericExceptionReportExtractor class", () => {
   let extractor_1_3_0: GenericExceptionReportExtractor;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(
+    extractor_1_1_1 = testContainer.instantiate(
       GenericExceptionReportExtractor,
       [
         "XmlResponseVersionExtractor",
@@ -28,10 +27,9 @@ describe("GenericExceptionReportExtractor class", () => {
         constant("1.1"),
         constant("1.2"),
         constant(""),
-      ],
-      { name: "1.1" }
+      ]
     );
-    testContainer.registerClass(
+    extractor_1_3_0 = testContainer.instantiate(
       GenericExceptionReportExtractor,
       [
         "XmlResponseVersionExtractor",
@@ -39,17 +37,7 @@ describe("GenericExceptionReportExtractor class", () => {
         constant("1.3"),
         constant("1.4"),
         constant("ogc"),
-      ],
-      { name: "1.3" }
-    );
-
-    extractor_1_1_1 = testContainer.resolve(
-      GenericExceptionReportExtractor,
-      "1.1"
-    );
-    extractor_1_3_0 = testContainer.resolve(
-      GenericExceptionReportExtractor,
-      "1.3"
+      ]
     );
 
     xmlParser = testContainer.resolve("DOMParser");
@@ -66,10 +54,6 @@ describe("GenericExceptionReportExtractor class", () => {
       exceptionXml_1_3_0,
       "text/xml"
     );
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("extractExceptionReport() method", () => {

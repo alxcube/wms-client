@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { BaseExceptionXmlChecker } from "../../../src/error/BaseExceptionXmlChecker";
 import { WmsException } from "../../../src/error/WmsException";
 import { WmsExceptionCode } from "../../../src/error/WmsExceptionCode";
@@ -38,14 +38,11 @@ describe("BaseExceptionXmlChecker class", () => {
   let singleExceptionDoc_1_3_0: Document;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(BaseExceptionXmlChecker, [
+    xmlParser = testContainer.resolve("DOMParser");
+    checker = testContainer.instantiate(BaseExceptionXmlChecker, [
       "ExceptionReportExtractor[]",
       "XMLSerializer",
     ]);
-
-    xmlParser = testContainer.resolve("DOMParser");
-    checker = testContainer.resolve(BaseExceptionXmlChecker);
 
     exceptionDoc_1_1_0 = xmlParser.parseFromString(
       exceptionXml_1_1_0,
@@ -67,10 +64,6 @@ describe("BaseExceptionXmlChecker class", () => {
       singleExceptionReportXml_1_3_0,
       "text/xml"
     );
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("check() method", () => {

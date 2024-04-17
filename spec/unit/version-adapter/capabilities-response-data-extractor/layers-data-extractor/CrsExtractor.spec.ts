@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { CrsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/CrsExtractor";
@@ -26,17 +26,10 @@ describe("CrsExtractor class", () => {
   let crsContainer_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(CrsExtractor, [constant("SRS")], {
-      name: "1.1.1",
-    });
-    testContainer.registerClass(CrsExtractor, [constant("wms:CRS")], {
-      name: "1.3.0",
-    });
-
-    factory_1_1 = testContainer.resolve(CrsExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(CrsExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(CrsExtractor, [constant("SRS")]);
+    factory_1_3 = testContainer.instantiate(CrsExtractor, [
+      constant("wms:CRS"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
 
@@ -55,10 +48,6 @@ describe("CrsExtractor class", () => {
       xmlParser.parseFromString(xml_1_3, "text/xml"),
       true
     ) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { constant } from "../../../../src/service-container/constant";
 import type { UnifiedCapabilitiesResponse } from "../../../../src/wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 import { GenericCapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
@@ -20,22 +20,36 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
   let extractor_1_3_0: GenericCapabilitiesResponseDataExtractor;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(GenericCapabilitiesResponseDataExtractor, [
-      {
-        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
-        name: "1.1.1",
-      },
-      {
-        service: "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>",
-        name: "1.1.1",
-      },
-      constant({
-        xlink: "http://www.w3.org/1999/xlink",
-      }),
-    ]);
-
-    testContainer.registerClass(
+    xmlParser = new DOMParser();
+    capabilitiesResponseDocument_1_1_1 = xmlParser.parseFromString(
+      capabilities_1_1_1,
+      "text/xml"
+    );
+    capabilitiesResponseDocument_1_1_0 = xmlParser.parseFromString(
+      capabilities_1_1_0,
+      "text/xml"
+    );
+    capabilitiesResponseDocument_1_3_0 = xmlParser.parseFromString(
+      capabilities_1_3_0,
+      "text/xml"
+    );
+    extractor_1_1_1 = testContainer.instantiate(
+      GenericCapabilitiesResponseDataExtractor,
+      [
+        {
+          service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
+          name: "1.1.1",
+        },
+        {
+          service: "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>",
+          name: "1.1.1",
+        },
+        constant({
+          xlink: "http://www.w3.org/1999/xlink",
+        }),
+      ]
+    );
+    extractor_1_3_0 = testContainer.instantiate(
       GenericCapabilitiesResponseDataExtractor,
       [
         {
@@ -50,34 +64,8 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
           xlink: "http://www.w3.org/1999/xlink",
           wms: "http://www.opengis.net/wms",
         }),
-      ],
-      { name: "1.3.0" }
+      ]
     );
-
-    xmlParser = new DOMParser();
-    capabilitiesResponseDocument_1_1_1 = xmlParser.parseFromString(
-      capabilities_1_1_1,
-      "text/xml"
-    );
-    capabilitiesResponseDocument_1_1_0 = xmlParser.parseFromString(
-      capabilities_1_1_0,
-      "text/xml"
-    );
-    capabilitiesResponseDocument_1_3_0 = xmlParser.parseFromString(
-      capabilities_1_3_0,
-      "text/xml"
-    );
-    extractor_1_1_1 = testContainer.resolve(
-      GenericCapabilitiesResponseDataExtractor
-    );
-    extractor_1_3_0 = testContainer.resolve(
-      GenericCapabilitiesResponseDataExtractor,
-      "1.3.0"
-    );
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("extractVersion() method", () => {

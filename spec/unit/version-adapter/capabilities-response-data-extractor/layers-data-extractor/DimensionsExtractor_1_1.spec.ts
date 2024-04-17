@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { DimensionsExtractor_1_1 } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/DimensionsExtractor_1_1";
 import { testContainer } from "../../../../testContainer";
@@ -26,20 +26,13 @@ describe("DimensionsExtractor_1_1 class", () => {
   let select: XPathSelect;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(DimensionsExtractor_1_1, []);
-
-    factory = testContainer.resolve(DimensionsExtractor_1_1);
+    factory = testContainer.instantiate(DimensionsExtractor_1_1, []);
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.select;
     const doc = xmlParser.parseFromString(xml, "text/xml");
     rootLayerNode = select("/Layer", doc, true) as Element;
     nestedLayerNode1 = select("/Layer/Layer[1]", doc, true) as Element;
     nestedLayerNode2 = select("/Layer/Layer[2]", doc, true) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

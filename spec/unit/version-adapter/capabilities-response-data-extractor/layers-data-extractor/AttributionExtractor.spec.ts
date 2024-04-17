@@ -1,5 +1,5 @@
 import type { DOMParser } from "@xmldom/xmldom";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import { constant } from "../../../../../src/service-container/constant";
 import { AttributionExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/AttributionExtractor";
@@ -28,16 +28,12 @@ describe("AttributionExtractor class", () => {
   let attributionContainer_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-    testContainer.registerClass(AttributionExtractor, [constant("")], {
-      name: "1.1.1",
-    });
-    testContainer.registerClass(AttributionExtractor, [constant("wms")], {
-      name: "1.3.0",
-    });
-
-    factory_1_1 = testContainer.resolve(AttributionExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(AttributionExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(AttributionExtractor, [
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(AttributionExtractor, [
+      constant("wms"),
+    ]);
     select = xpath.useNamespaces({
       xlink: xlinkXmlNamespace,
       wms: wmsXmlNamespace,
@@ -62,10 +58,6 @@ describe("AttributionExtractor class", () => {
       attributionDoc_1_3,
       true
     ) as Element;
-  });
-
-  afterEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {

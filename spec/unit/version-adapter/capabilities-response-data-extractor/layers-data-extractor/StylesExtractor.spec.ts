@@ -41,17 +41,8 @@ describe("StylesExtractor class", () => {
   let contextNode_1_3: Element;
 
   beforeEach(() => {
-    testContainer.backup();
-
-    testContainer.registerClass(StylesExtractor, [constant("")], {
-      name: "1.1.1",
-    });
-    testContainer.registerClass(StylesExtractor, [constant("wms")], {
-      name: "1.3.0",
-    });
-
-    factory_1_1 = testContainer.resolve(StylesExtractor, "1.1.1");
-    factory_1_3 = testContainer.resolve(StylesExtractor, "1.3.0");
+    factory_1_1 = testContainer.instantiate(StylesExtractor, [constant("")]);
+    factory_1_3 = testContainer.instantiate(StylesExtractor, [constant("wms")]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({
@@ -69,10 +60,6 @@ describe("StylesExtractor class", () => {
       xmlParser.parseFromString(xml_1_3, "text/xml"),
       true
     ) as Element;
-  });
-
-  beforeEach(() => {
-    testContainer.restore();
   });
 
   describe("createNodeDataExtractor() method", () => {
