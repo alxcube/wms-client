@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { MapRequestParams } from "../../../src/client/WmsClient";
+import type {
+  FeatureInfoRequestParamsWithCustom,
+  MapRequestParamsWithCustom,
+} from "../../../src/client/WmsClient";
 import { constant } from "../../../src/service-container/constant";
 import { BaseWmsVersionAdapter } from "../../../src/version-adapter/BaseWmsVersionAdapter";
 import { testContainer } from "../../testContainer";
@@ -20,6 +23,7 @@ describe("BaseWmsVersionAdapter class", () => {
       { service: "CapabilitiesRequestParamsTransformer", name: "1.1.1" },
       { service: "CapabilitiesResponseDataExtractor", name: "1.1.1" },
       { service: "MapRequestParamsTransformer", name: "1.1.1" },
+      { service: "FeatureInfoRequestParamsTransformer", name: "1.1.1" },
       { service: "VersionCompatibilityChecker", name: "1.1.1" },
     ]);
     adapter_1_3 = testContainer.instantiate(BaseWmsVersionAdapter, [
@@ -27,6 +31,7 @@ describe("BaseWmsVersionAdapter class", () => {
       { service: "CapabilitiesRequestParamsTransformer", name: "1.3.0" },
       { service: "CapabilitiesResponseDataExtractor", name: "1.3.0" },
       { service: "MapRequestParamsTransformer", name: "1.3.0" },
+      { service: "FeatureInfoRequestParamsTransformer", name: "1.3.0" },
       { service: "VersionCompatibilityChecker", name: "1.3.0" },
     ]);
   });
@@ -98,7 +103,7 @@ describe("BaseWmsVersionAdapter class", () => {
   });
 
   describe("transformMapRequestParams() method", () => {
-    const params: MapRequestParams = {
+    const params: MapRequestParamsWithCustom = {
       layers: [
         { layer: "layer1", style: "style1" },
         { layer: "layer2" },
@@ -149,6 +154,75 @@ describe("BaseWmsVersionAdapter class", () => {
         exceptions: "XML",
         transparent: "TRUE",
         bgcolor: "0xffffff",
+        customKey: "customValue",
+      });
+    });
+  });
+
+  describe("transformFeatureInfoRequestParams() method", () => {
+    const params: FeatureInfoRequestParamsWithCustom = {
+      layers: [
+        { layer: "layer1", style: "style1" },
+        { layer: "layer2" },
+        { layer: "layer3", style: "style3" },
+      ],
+      crs: "CRS:84",
+      bounds: { minX: -180, minY: -90, maxX: 180, maxY: 90 },
+      width: 200,
+      height: 100,
+      format: "image/png",
+      transparent: true,
+      bgColor: "0xffffff",
+      exceptionsFormat: "XML",
+      queryLayers: ["layer1", "layer2"],
+      infoFormat: "text/plain",
+      x: 1,
+      y: 2,
+      customKey: "customValue",
+    };
+
+    it("should transform FeatureInfoRequestParamsWithCustom into object, compatible with GetMap request params v1.1.x", () => {
+      expect(adapter_1_1.transformFeatureInfoRequestParams(params)).toEqual({
+        service: "WMS",
+        request: "GetFeatureInfo",
+        version: "1.1.1",
+        layers: "layer1,layer2,layer3",
+        styles: "style1,,style3",
+        srs: "CRS:84",
+        bbox: "-180,-90,180,90",
+        width: 200,
+        height: 100,
+        format: "image/png",
+        exceptions: "application/vnd.ogc.se_xml",
+        transparent: "TRUE",
+        bgcolor: "0xffffff",
+        query_layers: "layer1,layer2",
+        info_format: "text/plain",
+        x: "1",
+        y: "2",
+        customKey: "customValue",
+      });
+    });
+
+    it("should transform FeatureInfoRequestParamsWithCustom into object, compatible with GetMap request params v1.3.x", () => {
+      expect(adapter_1_3.transformFeatureInfoRequestParams(params)).toEqual({
+        service: "WMS",
+        request: "GetFeatureInfo",
+        version: "1.3.0",
+        layers: "layer1,layer2,layer3",
+        styles: "style1,,style3",
+        crs: "CRS:84",
+        bbox: "-180,-90,180,90",
+        width: 200,
+        height: 100,
+        format: "image/png",
+        exceptions: "XML",
+        transparent: "TRUE",
+        bgcolor: "0xffffff",
+        query_layers: "layer1,layer2",
+        info_format: "text/plain",
+        i: "1",
+        j: "2",
         customKey: "customValue",
       });
     });

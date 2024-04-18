@@ -125,4 +125,12 @@ describe("BaseWmsNegotiator class", () => {
     });
     expect(client.getMapRequestUrl()).toBe("http://hostname/path?");
   });
+
+  it("should set client's feature info request url from capabilities response", async () => {
+    axiosMockAdapter.onGet().reply(200, capabilitiesXml_1_3_0);
+    const client = await negotiator.negotiate(wmsUrl, {
+      httpClient: axiosInstance,
+    });
+    expect(client.getFeatureInfoRequestUrl()).toBe("http://hostname/path?");
+  });
 });

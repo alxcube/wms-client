@@ -6,6 +6,7 @@ import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabili
 export interface WmsClientOptions {
   query?: { [key: string]: unknown };
   mapRequestUrl?: string;
+  featureInfoRequestUrl?: string;
 }
 
 export interface CapabilitiesRequestParams {
@@ -31,7 +32,22 @@ export interface MapRequestParams {
   exceptionsFormat?: ExceptionFormat | string;
   time?: number | string;
   elevation?: number | string;
+}
 
+export interface MapRequestParamsWithCustom extends MapRequestParams {
+  [key: string]: unknown;
+}
+
+export interface FeatureInfoRequestParams extends MapRequestParams {
+  queryLayers: string[];
+  infoFormat: string;
+  x: number;
+  y: number;
+  featureCount?: number;
+}
+
+export interface FeatureInfoRequestParamsWithCustom
+  extends FeatureInfoRequestParams {
   [key: string]: unknown;
 }
 
@@ -44,15 +60,21 @@ export interface WmsClient {
     params?: CapabilitiesRequestParams
   ): Promise<UnifiedCapabilitiesResponse>;
 
-  getMap(params: MapRequestParams): Promise<ArrayBuffer>;
+  getMap(params: MapRequestParamsWithCustom): Promise<ArrayBuffer>;
 
   getMapRequestUrl(): string;
 
   setMapRequestUrl(url: string): void;
 
-  getMapUrl(params: MapRequestParams): string;
+  getMapUrl(params: MapRequestParamsWithCustom): string;
 
   getCustomQueryParams(): { [key: string]: unknown };
 
   getHttpClient(): AxiosInstance;
+
+  getFeatureInfo(params: FeatureInfoRequestParamsWithCustom): Promise<string>;
+
+  getFeatureInfoRequestUrl(): string;
+
+  setFeatureInfoRequestUrl(url: string): void;
 }

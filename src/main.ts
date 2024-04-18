@@ -1,4 +1,4 @@
-import type { MapRequestParams } from "./client/WmsClient";
+import type { MapRequestParamsWithCustom } from "./client/WmsClient";
 import { negotiate } from "./negotiate";
 
 //const client = await negotiate("https://wms.gebco.net/mapserv");
@@ -30,7 +30,7 @@ console.log(capabilities);
 //   exceptionsFormat: "INIMAGE",
 // };
 
-const getMapParams: MapRequestParams = {
+const getMapParams: MapRequestParamsWithCustom = {
   crs: "EPSG:3857",
   layers: [
     {

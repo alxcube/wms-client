@@ -1,6 +1,7 @@
 import type {
   CapabilitiesRequestParams,
-  MapRequestParams,
+  FeatureInfoRequestParamsWithCustom,
+  MapRequestParamsWithCustom,
 } from "../client/WmsClient";
 import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 
@@ -10,6 +11,9 @@ export interface WmsVersionAdapter {
   extractCapabilitiesResponseData(
     response: Document
   ): UnifiedCapabilitiesResponse;
-  transformMapRequestParams(params: MapRequestParams): object;
+  transformMapRequestParams(params: MapRequestParamsWithCustom): object;
+  transformFeatureInfoRequestParams(
+    params: FeatureInfoRequestParamsWithCustom
+  ): object;
   isCompatible(wmsVersion: string): boolean;
 }

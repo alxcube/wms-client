@@ -1,4 +1,7 @@
-import type { MapRequestParams } from "../../client/WmsClient";
+import type {
+  MapRequestParams,
+  MapRequestParamsWithCustom,
+} from "../../client/WmsClient";
 import type { ExceptionFormat } from "../../wms-data-types/ExceptionFormat";
 import type { VersionComparator } from "../../version-comparator/VersionComparator";
 
@@ -11,10 +14,10 @@ export class GenericMapRequestParamsTransformer
     private readonly versionComparator: VersionComparator,
     private readonly version: string
   ) {}
-  transform(params: MapRequestParams): object {
+  transform(params: MapRequestParamsWithCustom): object {
     const requestParams: { [key: string]: unknown } = {};
 
-    Object.keys(params).forEach((key: keyof MapRequestParams) => {
+    Object.keys(params).forEach((key: keyof MapRequestParamsWithCustom) => {
       switch (key) {
         case "layers":
           requestParams.layers = this.getLayersParam(params[key]);

@@ -8,12 +8,14 @@ import type { WmsXmlParser } from "../wms-xml-parser/WmsXmlParser";
 import type { RequestErrorHandler } from "./RequestErrorHandler";
 import type {
   CapabilitiesRequestParams,
-  MapRequestParams,
+  FeatureInfoRequestParamsWithCustom,
+  MapRequestParamsWithCustom,
   WmsClient,
   WmsClientOptions,
 } from "./WmsClient";
 export class BaseWmsClient implements WmsClient {
   private mapRequestUrl: string;
+  private featureInfoRequestUrl: string;
   constructor(
     private readonly httpClient: AxiosInstance,
     private readonly queryParamsSerializer: QueryParamsSerializer,
@@ -25,6 +27,7 @@ export class BaseWmsClient implements WmsClient {
     private readonly options: WmsClientOptions = {}
   ) {
     this.mapRequestUrl = options.mapRequestUrl || wmsUrl;
+    this.featureInfoRequestUrl = options.featureInfoRequestUrl || wmsUrl;
   }
 
   getVersion(): string {
@@ -61,7 +64,7 @@ export class BaseWmsClient implements WmsClient {
     return capabilities;
   }
 
-  async getMap(params: MapRequestParams): Promise<ArrayBuffer> {
+  async getMap(params: MapRequestParamsWithCustom): Promise<ArrayBuffer> {
     const url = this.getMapUrl(params);
     let response: AxiosResponse<ArrayBuffer>;
     try {
@@ -85,12 +88,44 @@ export class BaseWmsClient implements WmsClient {
     this.mapRequestUrl = url;
   }
 
-  getMapUrl(params: MapRequestParams): string {
+  getMapUrl(params: MapRequestParamsWithCustom): string {
     const requestParams = {
       ...this.getCustomQueryParams(),
       ...this.versionAdapter.transformMapRequestParams(params),
     };
     return this.prepareUrl(this.mapRequestUrl, requestParams);
+  }
+
+  async getFeatureInfo(
+    params: FeatureInfoRequestParamsWithCustom
+  ): Promise<string> {
+    const requestParams = {
+      ...this.getCustomQueryParams(),
+      ...this.versionAdapter.transformFeatureInfoRequestParams(params),
+    };
+    const url = this.prepareUrl(this.featureInfoRequestUrl, requestParams);
+    let response: AxiosResponse<string>;
+    try {
+      response = await this.httpClient.get<string>(url, {
+        responseType: "text",
+      });
+    } catch (e) {
+      this.requestErrorHandler.handleRequestError(e);
+    }
+
+    if (this.isXmlResponse(response)) {
+      // Parser will check error xml and throw if error xml is found
+      this.wmsXmlParser.parse(response.data);
+    }
+    return response.data;
+  }
+
+  getFeatureInfoRequestUrl(): string {
+    return this.featureInfoRequestUrl;
+  }
+
+  setFeatureInfoRequestUrl(url: string) {
+    this.featureInfoRequestUrl = url;
   }
 
   getCustomQueryParams(): { [p: string]: unknown } {

@@ -44,6 +44,8 @@ export class BaseWmsNegotiator implements WmsNegotiator {
       ...options,
       httpClient, // Use same http client in wms client
       mapRequestUrl: capabilities?.capability?.request?.getMap?.httpGetUrl,
+      featureInfoRequestUrl:
+        capabilities?.capability?.request?.getFeatureInfo?.httpGetUrl,
     };
     return this.wmsClientFactory.create(
       wmsUrl,

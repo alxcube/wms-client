@@ -9,6 +9,7 @@ import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
 import { containerModule_1_3 as capabilitiesRequestParamsTransformerModule } from "./capabilities-request-params-transformer/containerModule_1_3";
 import { containerModule_1_3 as mapRequestParamsTransformerModule } from "./map-request-params-transformer/containerModule_1_3";
 import { containerModule_1_3 as versionCompatibilityCheckerModule } from "./version-compatibility-checker/containerModule_1_3";
+import { containerModule_1_3 as featureInfoRequestParamsTransformerModule } from "./feature-info-request-params-transformer/containerModule_1_3";
 
 export const containerModule_1_3_0: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
@@ -22,6 +23,7 @@ export const containerModule_1_3_0: ServiceModule<TypesMap> = {
         { service: "CapabilitiesRequestParamsTransformer", name },
         { service: "CapabilitiesResponseDataExtractor", name },
         { service: "MapRequestParamsTransformer", name },
+        { service: "FeatureInfoRequestParamsTransformer", name },
         { service: "VersionCompatibilityChecker", name },
       ],
       { name }
@@ -35,6 +37,9 @@ export const containerModule_1_3_0: ServiceModule<TypesMap> = {
 
     // MapRequestParamsTransformer module
     container.registerModule(mapRequestParamsTransformerModule);
+
+    // FeatureInfoRequestParamsTransformer module
+    container.registerModule(featureInfoRequestParamsTransformerModule);
 
     // VersionCompatibilityChecker module
     container.registerModule(versionCompatibilityCheckerModule);

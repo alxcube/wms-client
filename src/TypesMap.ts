@@ -3,6 +3,7 @@ import type { ExceptionReportExtractor } from "./error/ExceptionReportExtractor"
 import type { ExceptionXmlChecker } from "./error/ExceptionXmlChecker";
 import type { CapabilitiesRequestParamsTransformer } from "./version-adapter/capabilities-request-params-transformer/CapabilitiesRequestParamsTransformer";
 import type { CapabilitiesResponseDataExtractor } from "./version-adapter/capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
+import type { FeatureInfoRequestParamsTransformer } from "./version-adapter/feature-info-request-params-transformer/FeatureInfoRequestParamsTransformer";
 import type { MapRequestParamsTransformer } from "./version-adapter/map-request-params-transformer/MapRequestParamsTransformer";
 import type { ExceptionFormat } from "./wms-data-types/ExceptionFormat";
 import type { QueryParamsSerializer } from "./query-params-serializer/QueryParamsSerializer";
@@ -83,4 +84,5 @@ export interface TypesMap extends ServicesMap {
   WmsXmlParser: WmsXmlParser;
   TextDecoder: TextDecoder;
   RequestErrorHandler: RequestErrorHandler;
+  FeatureInfoRequestParamsTransformer: FeatureInfoRequestParamsTransformer;
 }

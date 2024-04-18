@@ -3,7 +3,10 @@ import MockAdapter from "axios-mock-adapter";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseWmsClient } from "../../../src/client/BaseWmsClient";
 import { BaseWmsClientFactory } from "../../../src/client/BaseWmsClientFactory";
-import type { MapRequestParams } from "../../../src/client/WmsClient";
+import type {
+  FeatureInfoRequestParamsWithCustom,
+  MapRequestParamsWithCustom,
+} from "../../../src/client/WmsClient";
 import { WmsException } from "../../../src/error/WmsException";
 import { WmsExceptionReport } from "../../../src/error/WmsExceptionReport";
 // eslint-disable-next-line import/no-unresolved
@@ -20,7 +23,7 @@ describe("BaseWmsClient class", () => {
   let httpClient: AxiosInstance;
   let axiosMock: MockAdapter;
   const customQuery = { customString: "str", customNumber: 1 };
-  const mapRequestParams: MapRequestParams = {
+  const mapRequestParams: MapRequestParamsWithCustom = {
     layers: [
       { layer: "layer1", style: "style1" },
       { layer: "layer2" },
@@ -35,6 +38,13 @@ describe("BaseWmsClient class", () => {
     bgColor: "0xffffff",
     exceptionsFormat: "XML",
     customKey: "customValue",
+  };
+  const featureInfoRequestParams: FeatureInfoRequestParamsWithCustom = {
+    ...mapRequestParams,
+    queryLayers: ["layer1", "layer2"],
+    infoFormat: "text/plain",
+    x: 1,
+    y: 2,
   };
 
   beforeEach(() => {
@@ -222,6 +232,57 @@ describe("BaseWmsClient class", () => {
       expect(() => client_1_3.getMap(mapRequestParams)).rejects.toThrow(
         WmsException
       );
+    });
+  });
+
+  describe("getFeatureInfo() method", () => {
+    it("should return Promise of string", async () => {
+      const response = "<Root>Feature info</Root>";
+      axiosMock.onGet().reply(200, response, {
+        "content-type": "text/xml",
+      });
+      expect(await client_1_3.getFeatureInfo(featureInfoRequestParams)).toBe(
+        response
+      );
+    });
+
+    it("should reject with WmsExceptionReport, when response is exception XML with multiple exceptions", () => {
+      axiosMock
+        .onGet()
+        .reply(200, exceptionsXml_1_3_0, { "content-type": "text/xml" });
+      expect(() =>
+        client_1_3.getFeatureInfo(featureInfoRequestParams)
+      ).rejects.toThrow(WmsExceptionReport);
+    });
+
+    it("should reject with WmsException, when response is WMS exception XML with single message", () => {
+      // Use exception report v1.1.1 -- client should handle any known exception versions
+      const exceptionXml =
+        '<ServiceExceptionReport version="1.1.1">\n' +
+        "  <ServiceException>\n" +
+        "    Exception message\n" +
+        "  </ServiceException>" +
+        "</ServiceExceptionReport>";
+      axiosMock
+        .onGet()
+        .reply(200, exceptionXml, { "content-type": "text/xml" });
+      expect(() =>
+        client_1_3.getFeatureInfo(featureInfoRequestParams)
+      ).rejects.toThrow(WmsException);
+    });
+  });
+
+  describe("getFeatureInfoRequestUrl() method", () => {
+    it("should return GetFeatureInfo request url", () => {
+      expect(client_1_3.getFeatureInfoRequestUrl()).toBe(wmsUrl);
+    });
+  });
+
+  describe("setFeatureInfoRequestUrl() method", () => {
+    it("should set GetFeatureInfo request url", () => {
+      const url = "https://test.get-feature-info.url";
+      client_1_3.setFeatureInfoRequestUrl(url);
+      expect(client_1_3.getFeatureInfoRequestUrl()).toBe(url);
     });
   });
 });
