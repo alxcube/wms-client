@@ -63,6 +63,10 @@ describe("CapabilitiesSectionExtractor class", () => {
             ],
             httpGetUrl: "http://hostname:port/path",
           },
+          describeLayer: {
+            responseFormats: ["application/vnd.ogc.gml"],
+            httpGetUrl: "http://hostname:port/path",
+          },
         },
         exceptionFormats: ["XML", "INIMAGE", "BLANK"],
         layers: [

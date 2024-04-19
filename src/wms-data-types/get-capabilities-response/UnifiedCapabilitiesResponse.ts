@@ -24,6 +24,7 @@ export interface UnifiedCapabilitiesResponse {
       getCapabilities: OperationType;
       getMap: OperationType;
       getFeatureInfo?: OperationType;
+      describeLayer?: OperationType;
     };
     exceptionFormats: ExceptionFormat[];
     layers: Layer[];

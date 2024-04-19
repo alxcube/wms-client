@@ -40,6 +40,10 @@ export class CapabilitiesSectionExtractor
               "GetFeatureInfo",
               true
             ),
+            describeLayer: this.buildOperationTypeExtractor(
+              "DescribeLayer",
+              true
+            ),
           }),
         exceptionFormats: this.exceptionFormatsExtractor,
         layers: this.layersDataExtractor,

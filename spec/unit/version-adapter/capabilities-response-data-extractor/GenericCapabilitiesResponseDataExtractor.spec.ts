@@ -125,6 +125,10 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
               ],
               httpGetUrl: "http://hostname:port/path",
             },
+            describeLayer: {
+              responseFormats: ["application/vnd.ogc.gml"],
+              httpGetUrl: "http://hostname:port/path",
+            },
           },
           exceptionFormats: ["XML", "INIMAGE", "BLANK"],
           layers: [
@@ -411,6 +415,10 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
                 "text/plain",
                 "text/html",
               ],
+              httpGetUrl: "http://hostname:port/path",
+            },
+            describeLayer: {
+              responseFormats: ["application/vnd.ogc.gml"],
               httpGetUrl: "http://hostname:port/path",
             },
           },
