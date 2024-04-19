@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { constant } from "../../../../src/service-container/constant";
+import { serviceContainer } from "../../../../src/serviceContainer";
 import type { UnifiedCapabilitiesResponse } from "../../../../src/wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
 import { GenericCapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
 import { testContainer } from "../../../testContainer";
@@ -10,14 +11,18 @@ import capabilities_1_1_1 from "../../../fixtures/capabilities_1_1_1.xml?raw";
 import capabilities_1_1_0 from "../../../fixtures/capabilities_1_1_0.xml?raw";
 // eslint-disable-next-line import/no-unresolved
 import capabilities_1_3_0 from "../../../fixtures/capabilities_1_3_0.xml?raw";
+// eslint-disable-next-line import/no-unresolved
+import capabilities_1_0_0 from "../../../fixtures/capabilities_1_0_0.xml?raw";
 
 describe("GenericCapabilitiesResponseDataExtractor class", () => {
   let xmlParser: DOMParser;
   let capabilitiesResponseDocument_1_1_1: Document;
   let capabilitiesResponseDocument_1_1_0: Document;
   let capabilitiesResponseDocument_1_3_0: Document;
+  let capabilitiesResponseDocument_1_0_0: Document;
   let extractor_1_1_1: GenericCapabilitiesResponseDataExtractor;
   let extractor_1_3_0: GenericCapabilitiesResponseDataExtractor;
+  let extractor_1_0_0: GenericCapabilitiesResponseDataExtractor;
 
   beforeEach(() => {
     xmlParser = new DOMParser();
@@ -31,6 +36,10 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
     );
     capabilitiesResponseDocument_1_3_0 = xmlParser.parseFromString(
       capabilities_1_3_0,
+      "text/xml"
+    );
+    capabilitiesResponseDocument_1_0_0 = xmlParser.parseFromString(
+      capabilities_1_0_0,
       "text/xml"
     );
     extractor_1_1_1 = testContainer.instantiate(
@@ -66,10 +75,25 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
         }),
       ]
     );
+
+    extractor_1_0_0 = serviceContainer.instantiate(
+      GenericCapabilitiesResponseDataExtractor,
+      [
+        {
+          service: "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>",
+          name: "1.0.0",
+        },
+        {
+          service: "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>",
+          name: "1.0.0",
+        },
+        constant({}),
+      ]
+    );
   });
 
   describe("extractVersion() method", () => {
-    it("should extractVersion WMS GetCapabilities response from XML response v1.1.1 and return UnifiedCapabilitiesResponse", () => {
+    it("should extract WMS GetCapabilities response from XML response v1.1.1 and return UnifiedCapabilitiesResponse", () => {
       const response = extractor_1_1_1.extract(
         capabilitiesResponseDocument_1_1_1
       );
@@ -361,7 +385,7 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
       expect(response).toEqual(expected);
     });
 
-    it("should extractVersion WMS GetCapabilities response from XML response v1.1.0 and return UnifiedCapabilitiesResponse", () => {
+    it("should extract WMS GetCapabilities response from XML response v1.1.0 and return UnifiedCapabilitiesResponse", () => {
       const response = extractor_1_1_1.extract(
         capabilitiesResponseDocument_1_1_0
       );
@@ -652,7 +676,7 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
       expect(response).toEqual(expected);
     });
 
-    it("should extractVersion WMS GetCapabilities response from XML response v1.3.0 and return UnifiedCapabilitiesResponse", () => {
+    it("should extract WMS GetCapabilities response from XML response v1.3.0 and return UnifiedCapabilitiesResponse", () => {
       const response = extractor_1_3_0.extract(
         capabilitiesResponseDocument_1_3_0
       );
@@ -938,6 +962,189 @@ describe("GenericCapabilitiesResponseDataExtractor class", () => {
           ],
         },
       };
+      expect(response).toEqual(expected);
+    });
+
+    it("should extract WMS GetCapabilities response from XML response v1.0.0 and return UnifiedCapabilitiesResponse", () => {
+      const response = extractor_1_0_0.extract(
+        capabilitiesResponseDocument_1_0_0
+      );
+
+      const expected: UnifiedCapabilitiesResponse = {
+        version: "1.0.0",
+        updateSequence: "0",
+        service: {
+          title: "Acme Corp. Map Server",
+          description:
+            "WMT Map Server maintained by Acme Corporation.  Contact: webmaster@wmt.acme.com.  High-quality maps showing roadrunner nests and possible ambush locations.",
+          keywords: [
+            { value: "bird" },
+            { value: "roadrunner" },
+            { value: "ambush" },
+          ],
+          url: "http://hostname:port/path/",
+          fees: "none",
+          accessConstraints: "none",
+        },
+        capability: {
+          request: {
+            getCapabilities: {
+              responseFormats: ["WMS_XML"],
+              httpGetUrl: "http://hostname:port/path/mapserver.cgi",
+            },
+            getMap: {
+              responseFormats: ["SGI", "GIF", "JPEG", "PNG", "WebCGM", "SVG"],
+              httpGetUrl: "http://hostname:port/path/mapserver.cgi",
+            },
+            getFeatureInfo: {
+              responseFormats: ["MIME", "GML.1"],
+              httpGetUrl: "http://hostname:port/path/mapserver.cgi",
+            },
+          },
+          exceptionFormats: ["BLANK", "XML"],
+          layers: [
+            {
+              title: "Acme Corp. Map Server",
+              crs: ["EPSG:4326"],
+              layers: [
+                {
+                  queryable: false,
+                  name: "wmt_graticule",
+                  title: "Alignment test grid",
+                  description:
+                    "The WMT Graticule is a 10-degree grid suitable for testing alignment among Map Servers.",
+                  keywords: [{ value: "graticule" }, { value: "test" }],
+                  geographicBounds: {
+                    east: 180,
+                    north: 90,
+                    south: -90,
+                    west: -180,
+                  },
+                  styles: [
+                    {
+                      name: "on",
+                      title: "Show test grid",
+                      description:
+                        'The "on" style for the WMT Graticule causes that layer to be displayed.',
+                    },
+                    {
+                      name: "off",
+                      title: "Hide test grid",
+                      description:
+                        'The "off" style for the WMT Graticule causes that layer to be hidden even though it was requested from the Map Server.  Style=off is the same as not requesting the graticule at all.',
+                    },
+                  ],
+                },
+                {
+                  name: "ROADS_RIVERS",
+                  title: "Roads and Rivers",
+                  crs: ["EPSG:26986"],
+                  geographicBounds: {
+                    west: -71.634696,
+                    south: 41.754149,
+                    east: -70.789798,
+                    north: 42.908459,
+                  },
+                  boundingBoxes: [
+                    {
+                      crs: "EPSG:26986",
+                      minX: 189000,
+                      minY: 834000,
+                      maxX: 285000,
+                      maxY: 962000,
+                    },
+                  ],
+                  styles: [
+                    {
+                      name: "USGS Topo",
+                      title: "Topo map style",
+                      description:
+                        "Features are shown in a style like that used in USGS topographic maps.",
+                      styleUrl: { format: "", url: "" },
+                    },
+                  ],
+                  scaleHint: { min: 4000, max: 35000 },
+                  layers: [
+                    {
+                      queryable: true,
+                      name: "ROADS_1M",
+                      title: "Roads at 1:1M scale",
+                      description: "Roads at a scale of 1 to 1 million.",
+                      keywords: [
+                        { value: "road" },
+                        { value: "transportation" },
+                        { value: "atlas" },
+                      ],
+                      dataUrls: [
+                        { format: "", url: "http://www.opengis.org?roads.xml" },
+                      ],
+                      styles: [
+                        {
+                          name: "Rand McNally",
+                          title: "Road atlas style",
+                          description:
+                            "Roads are shown in a style like that used in a Rand McNally road atlas.",
+                        },
+                      ],
+                    },
+                    {
+                      queryable: true,
+                      name: "RIVERS_1M",
+                      title: "Rivers at 1:1M scale",
+                      description: "Rivers at a scale of 1 to 1 million.",
+                      keywords: [
+                        { value: "river" },
+                        { value: "canal" },
+                        { value: "water" },
+                      ],
+                      dataUrls: [
+                        {
+                          format: "",
+                          url: "http://www.opengis.org?rivers.xml",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  queryable: true,
+                  title: "Weather Data",
+                  crs: ["EPSG:4326"],
+                  geographicBounds: {
+                    west: -180,
+                    east: 180,
+                    south: -90,
+                    north: 90,
+                  },
+                  styles: [
+                    {
+                      name: "default",
+                      title: "Default style",
+                      description:
+                        "Weather Data are only available in a single default style.",
+                    },
+                  ],
+                  layers: [
+                    {
+                      name: "Clouds",
+                      title: "Forecast cloud cover",
+                    },
+                    {
+                      name: "Temperature",
+                      title: "Forecast temperature",
+                    },
+                    {
+                      name: "Pressure",
+                      title: "Forecast barometric pressure",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      };
+
       expect(response).toEqual(expected);
     });
   });

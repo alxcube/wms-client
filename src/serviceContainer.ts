@@ -8,6 +8,7 @@ import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryPa
 import { Container } from "./service-container/Container";
 import type { TypesMap } from "./TypesMap";
 import { BaseWmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
+import { containerModule_1_0_0 as versionAdapterModule_1_0_0 } from "./version-adapter/containerModule_1_0_0";
 import { containerModule_1_1_1 as versionAdapterModule_1_1_1 } from "./version-adapter/containerModule_1_1_1";
 import { containerModule_1_3_0 as versionAdapterModule_1_3_0 } from "./version-adapter/containerModule_1_3_0";
 import { BaseVersionComparator } from "./version-comparator/BaseVersionComparator";
@@ -73,6 +74,7 @@ serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
   "QueryParamsSerializer",
 ]);
 
+serviceContainer.registerModule(versionAdapterModule_1_0_0);
 serviceContainer.registerModule(versionAdapterModule_1_1_1);
 serviceContainer.registerModule(versionAdapterModule_1_3_0);
 serviceContainer.registerModule(exceptionModule_1_1_1);

@@ -41,8 +41,14 @@ describe("StylesExtractor class", () => {
   let contextNode_1_3: Element;
 
   beforeEach(() => {
-    factory_1_1 = testContainer.instantiate(StylesExtractor, [constant("")]);
-    factory_1_3 = testContainer.instantiate(StylesExtractor, [constant("wms")]);
+    factory_1_1 = testContainer.instantiate(StylesExtractor, [
+      { service: "XmlDataExtractor<Layer[styles][styleUrl]>", name: "1.1.1" },
+      constant(""),
+    ]);
+    factory_1_3 = testContainer.instantiate(StylesExtractor, [
+      { service: "XmlDataExtractor<Layer[styles][styleUrl]>", name: "1.3.0" },
+      constant("wms"),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({

@@ -15,6 +15,7 @@ import { LayersExtractor } from "./LayersExtractor";
 import { MetadataUrlsExtractor } from "./MetadataUrlsExtractor";
 import { ResourceUrlsExtractor } from "./ResourceUrlsExtractor";
 import { StylesExtractor } from "./StylesExtractor";
+import { StyleUrlExtractor_1_1 } from "./StyleUrlExtractor_1_1";
 
 export const containerModule_1_3: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
@@ -130,6 +131,17 @@ export const containerModule_1_3: ServiceModule<TypesMap> = {
     container.implement(
       "XmlDataExtractor<Layer[styles]>",
       StylesExtractor,
+      [
+        { service: "XmlDataExtractor<Layer[styles][styleUrl]>", name },
+        nameSpace,
+      ],
+      { name }
+    );
+
+    // Layer["styles"][number]["styleUrl"] extractor
+    container.implement(
+      "XmlDataExtractor<Layer[styles][styleUrl]>",
+      StyleUrlExtractor_1_1,
       [nameSpace],
       { name }
     );

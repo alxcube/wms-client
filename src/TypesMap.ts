@@ -71,6 +71,9 @@ export interface TypesMap extends ServicesMap {
   >;
   "XmlDataExtractor<Layer[styles]>": XmlDataExtractor<Layer["styles"]>;
   "XmlDataExtractor<ExceptionFormat[]>": XmlDataExtractor<ExceptionFormat[]>;
+  "XmlDataExtractor<Layer[styles][styleUrl]>": XmlDataExtractor<
+    NonNullable<Layer["styles"]>[number]["styleUrl"]
+  >;
 
   VersionComparator: VersionComparator;
   ExceptionXmlChecker: ExceptionXmlChecker;

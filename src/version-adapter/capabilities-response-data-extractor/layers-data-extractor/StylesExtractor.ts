@@ -5,11 +5,18 @@ import {
 } from "@alxcube/xml-mapper";
 import { withNamespace } from "../../../utils/withNamespace";
 import type { LayerStyle } from "../../../wms-data-types/get-capabilities-response/LayerStyle";
+import type { ResourceUrl } from "../../../wms-data-types/get-capabilities-response/ResourceUrl";
+import type { XmlDataExtractor } from "../XmlDataExtractor";
 
 export class StylesExtractor
   implements SingleNodeDataExtractorFnFactory<LayerStyle[] | undefined>
 {
-  constructor(private readonly ns: string) {}
+  constructor(
+    private readonly styleUrlExtractor: XmlDataExtractor<
+      ResourceUrl | undefined
+    >,
+    private readonly ns: string
+  ) {}
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     LayerStyle[] | undefined
   > {
@@ -55,18 +62,7 @@ export class StylesExtractor
               .mandatory()
               .asString(),
           }),
-        styleUrl: map()
-          .toNode(withNamespace("StyleURL", this.ns))
-          .asObject({
-            format: map()
-              .toNode(withNamespace("Format", this.ns))
-              .mandatory()
-              .asString(),
-            url: map()
-              .toNode(`${withNamespace("OnlineResource", this.ns)}/@xlink:href`)
-              .mandatory()
-              .asString(),
-          }),
+        styleUrl: this.styleUrlExtractor,
       })
       .createNodeDataExtractor();
   }
