@@ -7,6 +7,7 @@ import { testContainer } from "../../../testContainer";
 describe("GenericFeatureInfoRequestParamsTransformer class", () => {
   let transformer_1_1: GenericFeatureInfoRequestParamsTransformer;
   let transformer_1_3: GenericFeatureInfoRequestParamsTransformer;
+  let transformer_1_0: GenericFeatureInfoRequestParamsTransformer;
 
   const params: FeatureInfoRequestParamsWithCustom = {
     layers: [
@@ -45,6 +46,15 @@ describe("GenericFeatureInfoRequestParamsTransformer class", () => {
         { service: "MapRequestParamsTransformer", name: "1.3.0" },
         "VersionComparator",
         constant("1.3.0"),
+      ]
+    );
+
+    transformer_1_0 = testContainer.instantiate(
+      GenericFeatureInfoRequestParamsTransformer,
+      [
+        { service: "MapRequestParamsTransformer", name: "1.0.0" },
+        "VersionComparator",
+        constant("1.0.0"),
       ]
     );
   });
@@ -92,6 +102,29 @@ describe("GenericFeatureInfoRequestParamsTransformer class", () => {
         info_format: "text/plain",
         i: "1",
         j: "2",
+        customKey: "customValue",
+      });
+    });
+
+    it("should transform FeatureInfoRequestParamsWithCustom object to request params, compatible with WMS 1.0", () => {
+      expect(transformer_1_0.transform(params)).toEqual({
+        service: "WMS",
+        request: "feature_info",
+        wmtver: "1.0.0",
+        layers: "layer1,layer2,layer3",
+        styles: "style1,,style3",
+        srs: "CRS:84",
+        bbox: "-180,-90,180,90",
+        width: 200,
+        height: 100,
+        format: "image/png",
+        exceptions: "WMS_XML",
+        transparent: "TRUE",
+        bgcolor: "0xffffff",
+        query_layers: "layer1,layer2",
+        info_format: "text/plain",
+        x: "1",
+        y: "2",
         customKey: "customValue",
       });
     });

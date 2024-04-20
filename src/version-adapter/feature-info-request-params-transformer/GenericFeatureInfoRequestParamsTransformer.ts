@@ -15,8 +15,8 @@ export class GenericFeatureInfoRequestParamsTransformer
     const result = this.mapRequestParamsTransformer.transform(params) as {
       [key: string]: string;
     };
-    result.request = "GetFeatureInfo";
-    if (this.versionComparator.is(this.version, ">=", "1.3")) {
+    result.request = this.isV1_0() ? "feature_info" : "GetFeatureInfo";
+    if (this.isV1_3()) {
       result.i = String(params.x);
       result.j = String(params.y);
       if ("x" in result) {
@@ -34,5 +34,16 @@ export class GenericFeatureInfoRequestParamsTransformer
     delete result.infoFormat;
     result.info_format = params.infoFormat;
     return result;
+  }
+
+  private isV1_3(): boolean {
+    return this.versionComparator.is(this.version, ">=", "1.3");
+  }
+
+  private isV1_0(): boolean {
+    return (
+      this.versionComparator.is(this.version, ">=", "1") &&
+      this.versionComparator.is(this.version, "<", "1.1")
+    );
   }
 }
