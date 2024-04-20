@@ -62,7 +62,7 @@ describe("BaseWmsVersionAdapterResolver class", () => {
     });
 
     it("should return undefined, when there is no version lower", () => {
-      expect(resolver.findLower("1.1")).toBeUndefined();
+      expect(resolver.findLower("1.0")).toBeUndefined();
     });
   });
 

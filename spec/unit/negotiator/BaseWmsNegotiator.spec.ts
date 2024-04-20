@@ -65,8 +65,8 @@ describe("BaseWmsNegotiator class", () => {
       ).rejects.toThrow(RangeError);
     });
 
-    it("should reject with RangeError, when server responds with version lower than 1.1.0", () => {
-      const responseXml = `<WMS_Capabilities version="1.0.0"></WMS_Capabilities>`;
+    it("should reject with RangeError, when server responds with version lower than 1.0.0", () => {
+      const responseXml = `<WMS_Capabilities version="0.1.0"></WMS_Capabilities>`;
       axiosMockAdapter.onGet().reply(200, responseXml);
       expect(() =>
         negotiator.negotiate(wmsUrl, { httpClient: axiosInstance })
