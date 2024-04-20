@@ -8,6 +8,7 @@ import { testContainer } from "../../../testContainer";
 describe("GenericMapRequestParamsTransformer class", () => {
   let transformer_1_1: GenericMapRequestParamsTransformer;
   let transformer_1_3: GenericMapRequestParamsTransformer;
+  let transformer_1_0: GenericMapRequestParamsTransformer;
 
   const params: MapRequestParamsWithCustom = {
     layers: [
@@ -34,6 +35,10 @@ describe("GenericMapRequestParamsTransformer class", () => {
     transformer_1_3 = testContainer.instantiate(
       GenericMapRequestParamsTransformer,
       ["VersionComparator", constant("1.3.0")]
+    );
+    transformer_1_0 = testContainer.instantiate(
+      GenericMapRequestParamsTransformer,
+      ["VersionComparator", constant("1.0.0")]
     );
   });
 
@@ -70,6 +75,25 @@ describe("GenericMapRequestParamsTransformer class", () => {
         height: 100,
         format: "image/png",
         exceptions: "XML",
+        transparent: "TRUE",
+        bgcolor: "0xffffff",
+        customKey: "customValue",
+      });
+    });
+
+    it("should transform MapRequestParamsWithCustom object to request params, compatible with WMS 1.0", () => {
+      expect(transformer_1_0.transform(params)).toEqual({
+        service: "WMS",
+        request: "map",
+        wmtver: "1.0.0",
+        layers: "layer1,layer2,layer3",
+        styles: "style1,,style3",
+        srs: "CRS:84",
+        bbox: "-180,-90,180,90",
+        width: 200,
+        height: 100,
+        format: "image/png",
+        exceptions: "WMS_XML",
         transparent: "TRUE",
         bgcolor: "0xffffff",
         customKey: "customValue",

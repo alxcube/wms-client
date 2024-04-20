@@ -107,6 +107,9 @@ export class GenericMapRequestParamsTransformer
           return exceptionFormat;
       }
     }
+    if (this.isV1_0_x() && exceptionFormat === "XML") {
+      return "WMS_XML";
+    }
     return exceptionFormat;
   }
 }
