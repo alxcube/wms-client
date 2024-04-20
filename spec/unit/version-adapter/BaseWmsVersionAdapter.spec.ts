@@ -12,10 +12,13 @@ import capabilitiesXml_1_1_0 from "../../fixtures/capabilities_1_1_0.xml?raw";
 import capabilitiesXml_1_1_1 from "../../fixtures/capabilities_1_1_1.xml?raw";
 // eslint-disable-next-line import/no-unresolved
 import capabilitiesXml_1_3_0 from "../../fixtures/capabilities_1_3_0.xml?raw";
+// eslint-disable-next-line import/no-unresolved
+import capabilitiesXml_1_0_0 from "../../fixtures/capabilities_1_0_0.xml?raw";
 
 describe("BaseWmsVersionAdapter class", () => {
   let adapter_1_1: BaseWmsVersionAdapter;
   let adapter_1_3: BaseWmsVersionAdapter;
+  let adapter_1_0: BaseWmsVersionAdapter;
 
   beforeEach(() => {
     adapter_1_1 = testContainer.instantiate(BaseWmsVersionAdapter, [
@@ -34,6 +37,14 @@ describe("BaseWmsVersionAdapter class", () => {
       { service: "FeatureInfoRequestParamsTransformer", name: "1.3.0" },
       { service: "VersionCompatibilityChecker", name: "1.3.0" },
     ]);
+    adapter_1_0 = testContainer.instantiate(BaseWmsVersionAdapter, [
+      constant("1.0.0"),
+      { service: "CapabilitiesRequestParamsTransformer", name: "1.0.0" },
+      { service: "CapabilitiesResponseDataExtractor", name: "1.0.0" },
+      { service: "MapRequestParamsTransformer", name: "1.0.0" },
+      { service: "FeatureInfoRequestParamsTransformer", name: "1.0.0" },
+      { service: "VersionCompatibilityChecker", name: "1.0.0" },
+    ]);
   });
 
   describe("transformCapabilitiesRequestParams() method", () => {
@@ -49,6 +60,12 @@ describe("BaseWmsVersionAdapter class", () => {
         request: "GetCapabilities",
         version: "1.3.0",
       });
+
+      expect(adapter_1_0.transformCapabilitiesRequestParams({})).toEqual({
+        service: "WMS",
+        request: "capabilities",
+        wmtver: "1.0.0",
+      });
     });
   });
 
@@ -56,6 +73,7 @@ describe("BaseWmsVersionAdapter class", () => {
     let capabilitiesDoc_1_1_0: Document;
     let capabilitiesDoc_1_1_1: Document;
     let capabilitiesDoc_1_3_0: Document;
+    let capabilitiesDoc_1_0_0: Document;
     let xmlParser: DOMParser;
 
     beforeEach(() => {
@@ -70,6 +88,10 @@ describe("BaseWmsVersionAdapter class", () => {
       );
       capabilitiesDoc_1_3_0 = xmlParser.parseFromString(
         capabilitiesXml_1_3_0,
+        "text/xml"
+      );
+      capabilitiesDoc_1_0_0 = xmlParser.parseFromString(
+        capabilitiesXml_1_0_0,
         "text/xml"
       );
     });
@@ -97,6 +119,15 @@ describe("BaseWmsVersionAdapter class", () => {
         capabilitiesDoc_1_3_0
       );
       expect(capabilities.version).toBe("1.3.0");
+      expect(capabilities.service).toBeDefined();
+      expect(capabilities.capability).toBeDefined();
+    });
+
+    it("should extract UnifiedCapabilitiesResponse from GetCapabilitiesResponse v1.0.0", () => {
+      const capabilities = adapter_1_0.extractCapabilitiesResponseData(
+        capabilitiesDoc_1_0_0
+      );
+      expect(capabilities.version).toBe("1.0.0");
       expect(capabilities.service).toBeDefined();
       expect(capabilities.capability).toBeDefined();
     });
@@ -152,6 +183,25 @@ describe("BaseWmsVersionAdapter class", () => {
         height: 100,
         format: "image/png",
         exceptions: "XML",
+        transparent: "TRUE",
+        bgcolor: "0xffffff",
+        customKey: "customValue",
+      });
+    });
+
+    it("should transform MapRequestParams into object, compatible with GetMap request params v1.0.x", () => {
+      expect(adapter_1_0.transformMapRequestParams(params)).toEqual({
+        service: "WMS",
+        request: "map",
+        wmtver: "1.0.0",
+        layers: "layer1,layer2,layer3",
+        styles: "style1,,style3",
+        srs: "CRS:84",
+        bbox: "-180,-90,180,90",
+        width: 200,
+        height: 100,
+        format: "image/png",
+        exceptions: "WMS_XML",
         transparent: "TRUE",
         bgcolor: "0xffffff",
         customKey: "customValue",
@@ -226,6 +276,29 @@ describe("BaseWmsVersionAdapter class", () => {
         customKey: "customValue",
       });
     });
+
+    it("should transform FeatureInfoRequestParamsWithCustom into object, compatible with GetMap request params v1.0.x", () => {
+      expect(adapter_1_0.transformFeatureInfoRequestParams(params)).toEqual({
+        service: "WMS",
+        request: "feature_info",
+        wmtver: "1.0.0",
+        layers: "layer1,layer2,layer3",
+        styles: "style1,,style3",
+        srs: "CRS:84",
+        bbox: "-180,-90,180,90",
+        width: 200,
+        height: 100,
+        format: "image/png",
+        exceptions: "WMS_XML",
+        transparent: "TRUE",
+        bgcolor: "0xffffff",
+        query_layers: "layer1,layer2",
+        info_format: "text/plain",
+        x: "1",
+        y: "2",
+        customKey: "customValue",
+      });
+    });
   });
 
   describe("isCompatible() method", () => {
@@ -241,6 +314,13 @@ describe("BaseWmsVersionAdapter class", () => {
       expect(adapter_1_3.isCompatible("1.3.99")).toBe(true);
       expect(adapter_1_3.isCompatible("1.4")).toBe(false);
       expect(adapter_1_3.isCompatible("1.1.0")).toBe(false);
+    });
+
+    it("should return true for versions [1.0, 1.1), when adapter is for version 1.0.0", () => {
+      expect(adapter_1_0.isCompatible("1.0.0")).toBe(true);
+      expect(adapter_1_0.isCompatible("1.0.99")).toBe(true);
+      expect(adapter_1_0.isCompatible("1.1")).toBe(false);
+      expect(adapter_1_0.isCompatible("1.3.0")).toBe(false);
     });
   });
 });

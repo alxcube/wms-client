@@ -20,6 +20,7 @@ describe("BaseWmsClient class", () => {
   const wmsUrl = "http://wms-example.com/";
   let client_1_1: BaseWmsClient;
   let client_1_3: BaseWmsClient;
+  let client_1_0: BaseWmsClient;
   let httpClient: AxiosInstance;
   let axiosMock: MockAdapter;
   const customQuery = { customString: "str", customNumber: 1 };
@@ -57,8 +58,15 @@ describe("BaseWmsClient class", () => {
     ]);
     httpClient = axios.create();
     axiosMock = new MockAdapter(httpClient);
-    client_1_1 = factory.create(wmsUrl, "1.1.1");
+    client_1_1 = factory.create(wmsUrl, "1.1.1", {
+      httpClient,
+      query: customQuery,
+    });
     client_1_3 = factory.create(wmsUrl, "1.3.0", {
+      httpClient,
+      query: customQuery,
+    });
+    client_1_0 = factory.create(wmsUrl, "1.0.0", {
       httpClient,
       query: customQuery,
     });
@@ -71,6 +79,8 @@ describe("BaseWmsClient class", () => {
   describe("getVersion() method", () => {
     it("should return WMS version", () => {
       expect(client_1_3.getVersion()).toBe("1.3.0");
+      expect(client_1_0.getVersion()).toBe("1.0.0");
+      expect(client_1_1.getVersion()).toBe("1.1.1");
     });
   });
 
@@ -188,13 +198,19 @@ describe("BaseWmsClient class", () => {
   describe("getMapUrl() method", () => {
     it("should return map request url v1.1.1", () => {
       expect(client_1_1.getMapUrl(mapRequestParams)).toBe(
-        "http://wms-example.com/?layers=layer1%2Clayer2%2Clayer3&styles=style1%2C%2Cstyle3&srs=CRS%3A84&bbox=-180%2C-90%2C180%2C90&width=200&height=100&format=image%2Fpng&transparent=TRUE&bgcolor=0xffffff&exceptions=application%2Fvnd.ogc.se_xml&customKey=customValue&version=1.1.1&service=WMS&request=GetMap"
+        "http://wms-example.com/?customString=str&customNumber=1&layers=layer1%2Clayer2%2Clayer3&styles=style1%2C%2Cstyle3&srs=CRS%3A84&bbox=-180%2C-90%2C180%2C90&width=200&height=100&format=image%2Fpng&transparent=TRUE&bgcolor=0xffffff&exceptions=application%2Fvnd.ogc.se_xml&customKey=customValue&version=1.1.1&service=WMS&request=GetMap"
       );
     });
 
     it("should return map request url v1.3.0", () => {
       expect(client_1_3.getMapUrl(mapRequestParams)).toBe(
         "http://wms-example.com/?customString=str&customNumber=1&layers=layer1%2Clayer2%2Clayer3&styles=style1%2C%2Cstyle3&crs=CRS%3A84&bbox=-180%2C-90%2C180%2C90&width=200&height=100&format=image%2Fpng&transparent=TRUE&bgcolor=0xffffff&exceptions=XML&customKey=customValue&version=1.3.0&service=WMS&request=GetMap"
+      );
+    });
+
+    it("should return map request url v1.0.0", () => {
+      expect(client_1_0.getMapUrl(mapRequestParams)).toBe(
+        "http://wms-example.com/?customString=str&customNumber=1&layers=layer1%2Clayer2%2Clayer3&styles=style1%2C%2Cstyle3&srs=CRS%3A84&bbox=-180%2C-90%2C180%2C90&width=200&height=100&format=image%2Fpng&transparent=TRUE&bgcolor=0xffffff&exceptions=WMS_XML&customKey=customValue&wmtver=1.0.0&service=WMS&request=map"
       );
     });
   });

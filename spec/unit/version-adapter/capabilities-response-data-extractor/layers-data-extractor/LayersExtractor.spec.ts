@@ -262,12 +262,97 @@ describe("LayersExtractor class", () => {
   </Layer>
 </Root>`;
 
+  const xml_1_0 = `
+<Root>
+  <Layer>
+      <Title>Acme Corp. Map Server</Title>
+      <SRS>EPSG:4326</SRS> <!-- all layers are available in at least this SRS -->
+      <Layer queryable="0">
+        <Name>wmt_graticule</Name> 
+        <Title>Alignment test grid</Title>
+        <Abstract>The WMT Graticule is a 10-degree grid suitable for testing alignment among Map Servers.</Abstract>
+        <Keywords>graticule test</Keywords>
+        <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+        <Style>
+          <Name>on</Name>
+          <Title>Show test grid</Title>
+          <Abstract>The "on" style for the WMT Graticule causes that layer to be displayed.</Abstract>
+        </Style>
+        <Style>
+          <Name>off</Name>
+          <Title>Hide test grid</Title>
+          <Abstract>The "off" style for the WMT Graticule causes that layer to be hidden even though it was requested from the Map Server.  Style=off is the same as not requesting the graticule at all.</Abstract>
+        </Style>
+      </Layer>
+      <Layer>
+        <!-- This parent layer has a Name and can therefore be requested from a Map Server, yielding a map of all subsidiary layers. -->
+        <Name>ROADS_RIVERS</Name> 
+        <Title>Roads and Rivers</Title>
+        <!-- The following characteristics are inherited by subsidiary layers. -->
+        <SRS>EPSG:26986</SRS> <!-- An additional SRS for this layer --> 
+        <LatLonBoundingBox minx="-71.634696" miny="41.754149" maxx="-70.789798" maxy="42.908459"/>
+        <BoundingBox SRS="EPSG:26986" minx="189000" miny="834000" maxx="285000" maxy="962000"/>
+        <Style>
+          <Name>USGS Topo</Name>
+          <Title>Topo map style</Title>
+          <Abstract>Features are shown in a style like that used in USGS topographic maps.</Abstract>
+          <StyleURL></StyleURL>
+        </Style>
+        <ScaleHint min="4000" max="35000"></ScaleHint>
+        <Layer queryable="1">
+            <Name>ROADS_1M</Name> 
+            <Title>Roads at 1:1M scale</Title>
+            <Abstract>Roads at a scale of 1 to 1 million.</Abstract>
+            <Keywords>road transportation atlas</Keywords>
+            <DataURL>http://www.opengis.org?roads.xml</DataURL>
+            <!-- In addition to the Style specified in the parent Layer, this Layer is available in this style. -->
+            <Style>
+                <Name>Rand McNally</Name>
+                <Title>Road atlas style</Title>
+                <Abstract>Roads are shown in a style like that used in a Rand McNally road atlas.</Abstract>
+            </Style>
+        </Layer>
+        <Layer queryable="1">
+            <Name>RIVERS_1M</Name>
+            <Title>Rivers at 1:1M scale</Title>
+            <Abstract>Rivers at a scale of 1 to 1 million.</Abstract>
+            <Keywords>river canal water</Keywords>
+            <DataURL>http://www.opengis.org?rivers.xml</DataURL>
+        </Layer>
+      </Layer>
+      <Layer queryable="1">
+        <Title>Weather Data</Title>
+        <SRS>EPSG:4326</SRS> <!-- harmless repetition of common SRS -->
+        <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+        <Style>
+          <Name>default</Name>
+          <Title>Default style</Title>
+          <Abstract>Weather Data are only available in a single default style.</Abstract>
+        </Style>
+        <Layer>
+            <Name>Clouds</Name> 
+            <Title>Forecast cloud cover</Title>
+        </Layer>
+        <Layer>
+            <Name>Temperature</Name> 
+            <Title>Forecast temperature</Title>
+        </Layer>
+        <Layer>
+            <Name>Pressure</Name> 
+            <Title>Forecast barometric pressure</Title>
+        </Layer>
+      </Layer>
+    </Layer>
+</Root>`;
+
   let factory_1_1: LayersExtractor;
   let factory_1_3: LayersExtractor;
+  let factory_1_0: LayersExtractor;
   let xmlParser: DOMParser;
   let select: XPathSelect;
   let contextNode_1_1: Element;
   let contextNode_1_3: Element;
+  let contextNode_1_0: Element;
 
   beforeEach(() => {
     factory_1_1 = testContainer.instantiate(LayersExtractor, [
@@ -300,6 +385,21 @@ describe("LayersExtractor class", () => {
       { service: "XmlDataExtractor<Layer[styles]>", name: "1.3.0" },
       constant("wms"),
     ]);
+    factory_1_0 = testContainer.instantiate(LayersExtractor, [
+      { service: "XmlDataExtractor<Keyword[]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[crs]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[dimensions]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[attribution]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[featureListUrls]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[styles]>", name: "1.0.0" },
+      constant(""),
+    ]);
 
     xmlParser = testContainer.resolve("DOMParser");
     select = xpath.useNamespaces({
@@ -316,6 +416,12 @@ describe("LayersExtractor class", () => {
     contextNode_1_3 = select(
       "/wms:Root",
       xmlParser.parseFromString(xml_1_3, "text/xml"),
+      true
+    ) as Element;
+
+    contextNode_1_0 = select(
+      "/Root",
+      xmlParser.parseFromString(xml_1_0, "text/xml"),
       true
     ) as Element;
   });
@@ -782,5 +888,149 @@ describe("LayersExtractor class", () => {
         },
       ]);
     });
+  });
+
+  it("should create SingleNodeDataExtractorFn, which returns Layer objects array from context node v1.0.0", () => {
+    const extract = factory_1_0.createNodeDataExtractor();
+    expect(extract(contextNode_1_0, select)).toEqual([
+      {
+        title: "Acme Corp. Map Server",
+        crs: ["EPSG:4326"],
+        layers: [
+          {
+            queryable: false,
+            name: "wmt_graticule",
+            title: "Alignment test grid",
+            description:
+              "The WMT Graticule is a 10-degree grid suitable for testing alignment among Map Servers.",
+            keywords: [{ value: "graticule" }, { value: "test" }],
+            geographicBounds: {
+              east: 180,
+              north: 90,
+              south: -90,
+              west: -180,
+            },
+            styles: [
+              {
+                name: "on",
+                title: "Show test grid",
+                description:
+                  'The "on" style for the WMT Graticule causes that layer to be displayed.',
+              },
+              {
+                name: "off",
+                title: "Hide test grid",
+                description:
+                  'The "off" style for the WMT Graticule causes that layer to be hidden even though it was requested from the Map Server.  Style=off is the same as not requesting the graticule at all.',
+              },
+            ],
+          },
+          {
+            name: "ROADS_RIVERS",
+            title: "Roads and Rivers",
+            crs: ["EPSG:26986"],
+            geographicBounds: {
+              west: -71.634696,
+              south: 41.754149,
+              east: -70.789798,
+              north: 42.908459,
+            },
+            boundingBoxes: [
+              {
+                crs: "EPSG:26986",
+                minX: 189000,
+                minY: 834000,
+                maxX: 285000,
+                maxY: 962000,
+              },
+            ],
+            styles: [
+              {
+                name: "USGS Topo",
+                title: "Topo map style",
+                description:
+                  "Features are shown in a style like that used in USGS topographic maps.",
+                styleUrl: { format: "", url: "" },
+              },
+            ],
+            scaleHint: { min: 4000, max: 35000 },
+            layers: [
+              {
+                queryable: true,
+                name: "ROADS_1M",
+                title: "Roads at 1:1M scale",
+                description: "Roads at a scale of 1 to 1 million.",
+                keywords: [
+                  { value: "road" },
+                  { value: "transportation" },
+                  { value: "atlas" },
+                ],
+                dataUrls: [
+                  { format: "", url: "http://www.opengis.org?roads.xml" },
+                ],
+                styles: [
+                  {
+                    name: "Rand McNally",
+                    title: "Road atlas style",
+                    description:
+                      "Roads are shown in a style like that used in a Rand McNally road atlas.",
+                  },
+                ],
+              },
+              {
+                queryable: true,
+                name: "RIVERS_1M",
+                title: "Rivers at 1:1M scale",
+                description: "Rivers at a scale of 1 to 1 million.",
+                keywords: [
+                  { value: "river" },
+                  { value: "canal" },
+                  { value: "water" },
+                ],
+                dataUrls: [
+                  {
+                    format: "",
+                    url: "http://www.opengis.org?rivers.xml",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            queryable: true,
+            title: "Weather Data",
+            crs: ["EPSG:4326"],
+            geographicBounds: {
+              west: -180,
+              east: 180,
+              south: -90,
+              north: 90,
+            },
+            styles: [
+              {
+                name: "default",
+                title: "Default style",
+                description:
+                  "Weather Data are only available in a single default style.",
+              },
+            ],
+            layers: [
+              {
+                name: "Clouds",
+                title: "Forecast cloud cover",
+              },
+              {
+                name: "Temperature",
+                title: "Forecast temperature",
+              },
+              {
+                name: "Pressure",
+                title: "Forecast barometric pressure",
+              },
+            ],
+          },
+        ],
+      },
+    ]);
   });
 });

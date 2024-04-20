@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, test } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { BaseWmsClient } from "../../../src/client/BaseWmsClient";
 import { BaseWmsClientFactory } from "../../../src/client/BaseWmsClientFactory";
 import { testContainer } from "../../testContainer";
@@ -14,10 +14,6 @@ describe("BaseWmsClientFactory class", () => {
       "RequestErrorHandler",
       "TextDecoder",
     ]);
-  });
-
-  test("correct resolution from service container", () => {
-    expect(factory).toBeInstanceOf(BaseWmsClientFactory);
   });
 
   describe("create() method", () => {

@@ -1,4 +1,3 @@
-import { map } from "@alxcube/xml-mapper";
 import { constant } from "../../../service-container/constant";
 import type {
   ServiceContainer,
@@ -6,8 +5,10 @@ import type {
 } from "../../../service-container/ServiceContainer";
 import type { TypesMap } from "../../../TypesMap";
 import { undefinedExtractor } from "../undefinedExtractor";
+import { dataUrlsExtractor_1_0 } from "./dataUrlsExtractor_1_0";
 import { LayersExtractor } from "./LayersExtractor";
 import { StylesExtractor } from "./StylesExtractor";
+import { styleUrlExtractor_1_0 } from "./styleUrlExtractor_1_0";
 
 export const containerModule_1_0: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
@@ -44,13 +45,7 @@ export const containerModule_1_0: ServiceModule<TypesMap> = {
     // Layer["dataUrls"] extractor
     container.registerConstant(
       "XmlDataExtractor<Layer[dataUrls]>",
-      map()
-        .toNodesArray("DataURL")
-        .asArray()
-        .ofObjects({
-          format: () => "", // No Format node, just return empty string
-          url: map().toNode(".").mandatory().asString(),
-        }),
+      dataUrlsExtractor_1_0,
       { name }
     );
 
@@ -68,12 +63,7 @@ export const containerModule_1_0: ServiceModule<TypesMap> = {
     // Layer["styles"][number]["styleUrl"] extractor
     container.registerConstant(
       "XmlDataExtractor<Layer[styles][styleUrl]>",
-      map()
-        .toNode("StyleURL")
-        .asObject({
-          format: () => "",
-          url: map().toNode(".").mandatory().asString(),
-        }),
+      styleUrlExtractor_1_0,
       { name }
     );
 
