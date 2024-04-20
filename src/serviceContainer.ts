@@ -15,6 +15,7 @@ import { BaseVersionComparator } from "./version-comparator/BaseVersionComparato
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import { containerModule_1_1_1 as exceptionModule_1_1_1 } from "./error/containerModule_1_1_1";
 import { containerModule_1_3_0 as exceptionModule_1_3_0 } from "./error/containerModule_1_3_0";
+import { containerModule_1_0_0 as exceptionModule_1_0_0 } from "./error/containerModule_1_0_0";
 
 export const serviceContainer = new Container<TypesMap>();
 
@@ -77,6 +78,7 @@ serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
 serviceContainer.registerModule(versionAdapterModule_1_0_0);
 serviceContainer.registerModule(versionAdapterModule_1_1_1);
 serviceContainer.registerModule(versionAdapterModule_1_3_0);
+serviceContainer.registerModule(exceptionModule_1_0_0);
 serviceContainer.registerModule(exceptionModule_1_1_1);
 serviceContainer.registerModule(exceptionModule_1_3_0);
 
