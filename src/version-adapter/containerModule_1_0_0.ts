@@ -7,6 +7,7 @@ import { containerModule_1_0 as capabilitiesRequestParamsTransformerModule } fro
 import { containerModule_1_0 as capabilitiesResponseExtractorModule } from "./capabilities-response-data-extractor/containerModule_1_0";
 import { containerModule_1_0 as mapRequestParamsTransformerModule } from "./map-request-params-transformer/containerModule_1_0";
 import { containerModule_1_0 as featureInfoRequestParamsTransformerModule } from "./feature-info-request-params-transformer/containerModule_1_0";
+import { containerModule_1_0 as versionCompatibilityCheckerModule } from "./version-compatibility-checker/containerModule_1_0";
 
 export const containerModule_1_0_0: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
@@ -21,5 +22,8 @@ export const containerModule_1_0_0: ServiceModule<TypesMap> = {
 
     // FeatureInfoRequestParamsTransformer module
     container.registerModule(featureInfoRequestParamsTransformerModule);
+
+    // VersionCompatibilityChecker module
+    container.registerModule(versionCompatibilityCheckerModule);
   },
 };
