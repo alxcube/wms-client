@@ -6,13 +6,13 @@ import type {
 import type { TypesMap } from "../../TypesMap";
 import { GenericCapabilitiesRequestParamsTransformer } from "./GenericCapabilitiesRequestParamsTransformer";
 
-export const containerModule_1_3: ServiceModule<TypesMap> = {
+export const containerModule_1_0: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     container.implement(
       "CapabilitiesRequestParamsTransformer",
       GenericCapabilitiesRequestParamsTransformer,
-      ["VersionComparator", constant("1.3.0")],
-      { name: "1.3.0" }
+      ["VersionComparator", constant("1.0.0")],
+      { name: "1.0.0" }
     );
   },
 };

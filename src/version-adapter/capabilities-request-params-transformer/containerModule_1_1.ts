@@ -11,7 +11,7 @@ export const containerModule_1_1: ServiceModule<TypesMap> = {
     container.implement(
       "CapabilitiesRequestParamsTransformer",
       GenericCapabilitiesRequestParamsTransformer,
-      [constant("1.1.1")],
+      ["VersionComparator", constant("1.1.1")],
       { name: "1.1.1" }
     );
   },

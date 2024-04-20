@@ -6,15 +6,20 @@ import { testContainer } from "../../../testContainer";
 describe("GenericCapabilitiesRequestParamsTransformer class", () => {
   let transformer_1_1_1: GenericCapabilitiesRequestParamsTransformer;
   let transformer_1_3_0: GenericCapabilitiesRequestParamsTransformer;
+  let transformer_1_0_0: GenericCapabilitiesRequestParamsTransformer;
 
   beforeEach(() => {
     transformer_1_1_1 = testContainer.instantiate(
       GenericCapabilitiesRequestParamsTransformer,
-      [constant("1.1.1")]
+      ["VersionComparator", constant("1.1.1")]
     );
     transformer_1_3_0 = testContainer.instantiate(
       GenericCapabilitiesRequestParamsTransformer,
-      [constant("1.3.0")]
+      ["VersionComparator", constant("1.3.0")]
+    );
+    transformer_1_0_0 = testContainer.instantiate(
+      GenericCapabilitiesRequestParamsTransformer,
+      ["VersionComparator", constant("1.0.0")]
     );
   });
 
@@ -27,11 +32,19 @@ describe("GenericCapabilitiesRequestParamsTransformer class", () => {
       });
     });
 
-    it("should return known default values for request v1.1.1", () => {
+    it("should return known default values for request v1.3.0", () => {
       expect(transformer_1_3_0.transform({})).toEqual({
         version: "1.3.0",
         service: "WMS",
         request: "GetCapabilities",
+      });
+    });
+
+    it("should return known default values for request v1.0.0", () => {
+      expect(transformer_1_0_0.transform({})).toEqual({
+        wmtver: "1.0.0",
+        service: "WMS",
+        request: "capabilities",
       });
     });
 
