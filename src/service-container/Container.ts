@@ -11,6 +11,7 @@ import {
   type ServiceFactoryRegistrationOptions,
   type ServiceModule,
   type ServiceRegistrationOptions,
+  type ServiceResolvingKey,
 } from "./ServiceContainer";
 import {
   type ResolvedServicesTuple,
@@ -498,5 +499,27 @@ export class Container<TServicesMap extends ServicesMap>
     }
 
     return factory;
+  }
+
+  createArrayResolver<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
+    arrayKey: ServiceResolvingKey<
+      TServicesMap,
+      ResolvedByKey<TServicesMap, TServiceKey>[]
+    >,
+    options?: ServiceFactoryRegistrationOptions
+  ) {
+    this.registerFactory(
+      arrayKey,
+      (context) =>
+        context.resolveAll(key) as ResolvedByKey<
+          TServicesMap,
+          ServiceResolvingKey<
+            TServicesMap,
+            ResolvedByKey<TServicesMap, TServiceKey>[]
+          >
+        >,
+      options
+    );
   }
 }

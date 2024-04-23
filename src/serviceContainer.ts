@@ -38,8 +38,9 @@ serviceContainer.implement(
 
 serviceContainer.implement("VersionComparator", BaseVersionComparator, []);
 
-serviceContainer.registerFactory("WmsVersionAdapter[]", (context) =>
-  context.resolveAll("WmsVersionAdapter")
+serviceContainer.createArrayResolver(
+  "WmsVersionAdapter",
+  "WmsVersionAdapter[]"
 );
 
 serviceContainer.implement(
@@ -54,8 +55,9 @@ serviceContainer.implement(
   []
 );
 
-serviceContainer.registerFactory("ExceptionReportExtractor[]", (context) =>
-  context.resolveAll("ExceptionReportExtractor")
+serviceContainer.createArrayResolver(
+  "ExceptionReportExtractor",
+  "ExceptionReportExtractor[]"
 );
 
 serviceContainer.implement("XMLSerializer", XMLSerializer, []);

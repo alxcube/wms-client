@@ -49,6 +49,7 @@ describe("Container class", () => {
     CircularA: CircularA;
     CircularB: CircularB;
     CircularC: CircularC;
+    "DummyService[]": DummyService[];
   }
 
   let container: Container<TestServicesMap>;
@@ -991,6 +992,24 @@ describe("Container class", () => {
       expect(
         container.instantiate(DummyDependent, ["DummyService", "DummyService"])
       ).toBeInstanceOf(DummyDependent);
+    });
+  });
+
+  describe("createArrayResolver() method", () => {
+    it("should create and register resolver for service array", () => {
+      container.implement("DummyService", DummyService, []);
+      container.createArrayResolver("DummyService", "DummyService[]");
+      expect(container.resolve("DummyService[]")).toEqual([
+        expect.any(DummyService),
+      ]);
+    });
+
+    it("should create and register resolver for service array, using constructor as key", () => {
+      container.registerClassConfig(DummyService, []);
+      container.createArrayResolver(DummyService, "DummyService[]");
+      expect(container.resolve("DummyService[]")).toEqual([
+        expect.any(DummyService),
+      ]);
     });
   });
 });

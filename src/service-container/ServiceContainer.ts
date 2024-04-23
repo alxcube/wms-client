@@ -232,4 +232,13 @@ export interface ServiceContainer<TServicesMap extends ServicesMap>
     constructor: ConstructorType,
     deps: DepsTuple
   ): InstanceType<ConstructorType>;
+
+  createArrayResolver<TServiceKey extends ServiceKey<TServicesMap>>(
+    key: TServiceKey,
+    arrayKey: ServiceResolvingKey<
+      TServicesMap,
+      ResolvedByKey<TServicesMap, TServiceKey>[]
+    >,
+    options?: ServiceFactoryRegistrationOptions
+  ): void;
 }
