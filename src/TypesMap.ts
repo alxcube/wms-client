@@ -22,29 +22,35 @@ import type { WmsXmlParser } from "./wms-xml-parser/WmsXmlParser";
 import type { XmlResponseVersionExtractor } from "./xml-response-version-extractor/XmlResponseVersionExtractor";
 
 export interface TypesMap extends ServicesMap {
+  RequestErrorHandler: RequestErrorHandler;
   WmsClientFactory: WmsClientFactory;
+
+  ExceptionXmlChecker: ExceptionXmlChecker;
+  ExceptionReportExtractor: ExceptionReportExtractor;
+  "ExceptionReportExtractor[]": ExceptionReportExtractor[];
+
+  WmsNegotiator: WmsNegotiator;
+
   QueryParamsSerializer: QueryParamsSerializer;
+
   WmsVersionAdapter: WmsVersionAdapter;
   "WmsVersionAdapter[]": WmsVersionAdapter[];
+  WmsVersionAdapterResolver: WmsVersionAdapterResolver;
   CapabilitiesRequestParamsTransformer: CapabilitiesRequestParamsTransformer;
   CapabilitiesResponseDataExtractor: CapabilitiesResponseDataExtractor;
   MapRequestParamsTransformer: MapRequestParamsTransformer;
-  WmsVersionAdapterResolver: WmsVersionAdapterResolver;
+  FeatureInfoRequestParamsTransformer: FeatureInfoRequestParamsTransformer;
+  VersionCompatibilityChecker: VersionCompatibilityChecker;
 
-  //
+  // XML data extractors
   "XmlDataExtractor<UnifiedCapabilitiesResponse[service]>": XmlDataExtractor<
     UnifiedCapabilitiesResponse["service"]
   >;
   "XmlDataExtractor<UnifiedCapabilitiesResponse[capability]>": XmlDataExtractor<
     UnifiedCapabilitiesResponse["capability"]
   >;
-
-  //
   "XmlDataExtractor<Keyword[]>": XmlDataExtractor<Keyword[] | undefined>;
-
-  //
   "XmlDataExtractor<Layer[]>": XmlDataExtractor<Layer[]>;
-
   "XmlDataExtractor<Layer[crs]>": XmlDataExtractor<Layer["crs"]>;
   "XmlDataExtractor<Layer[dimensions]>": XmlDataExtractor<Layer["dimensions"]>;
   "XmlDataExtractor<Layer[geographicBounds]>": XmlDataExtractor<
@@ -76,16 +82,13 @@ export interface TypesMap extends ServicesMap {
   >;
 
   VersionComparator: VersionComparator;
-  ExceptionXmlChecker: ExceptionXmlChecker;
-  ExceptionReportExtractor: ExceptionReportExtractor;
-  "ExceptionReportExtractor[]": ExceptionReportExtractor[];
+
+  WmsXmlParser: WmsXmlParser;
+
   XmlResponseVersionExtractor: XmlResponseVersionExtractor;
-  WmsNegotiator: WmsNegotiator;
+
+  // Other interfaces
   DOMParser: DOMParser;
   XMLSerializer: XMLSerializer;
-  VersionCompatibilityChecker: VersionCompatibilityChecker;
-  WmsXmlParser: WmsXmlParser;
   TextDecoder: TextDecoder;
-  RequestErrorHandler: RequestErrorHandler;
-  FeatureInfoRequestParamsTransformer: FeatureInfoRequestParamsTransformer;
 }
