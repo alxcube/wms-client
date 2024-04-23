@@ -387,10 +387,10 @@ describe("LayersExtractor class", () => {
     ]);
     factory_1_0 = testContainer.instantiate(LayersExtractor, [
       { service: "XmlDataExtractor<Keyword[]>", name: "1.0.0" },
-      { service: "XmlDataExtractor<Layer[crs]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[crs]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[dimensions]>", name: "1.0.0" },
-      { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.1.1" },
-      { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.1.1" },
+      { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.0.0" },
+      { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[attribution]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.0.0" },
