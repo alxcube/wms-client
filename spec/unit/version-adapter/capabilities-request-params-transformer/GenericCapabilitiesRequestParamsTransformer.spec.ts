@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { constant } from "../../../../src/service-container/constant";
-import { GenericCapabilitiesRequestParamsTransformer } from "../../../../src/version-adapter/capabilities-request-params-transformer/GenericCapabilitiesRequestParamsTransformer";
+import {
+  constant,
+  GenericCapabilitiesRequestParamsTransformer,
+} from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("GenericCapabilitiesRequestParamsTransformer class", () => {

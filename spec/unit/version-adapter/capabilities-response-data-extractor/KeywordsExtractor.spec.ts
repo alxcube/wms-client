@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
-import { constant } from "../../../../src/service-container/constant";
-import { KeywordsExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/KeywordsExtractor";
-import { xlinkXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
-import { wmsXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
+import {
+  constant,
+  KeywordsExtractor,
+  xlinkXmlNamespace,
+  wmsXmlNamespace,
+} from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("KeywordsExtractor class", () => {

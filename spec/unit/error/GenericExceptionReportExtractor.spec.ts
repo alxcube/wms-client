@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { GenericExceptionReportExtractor } from "../../../src/error/GenericExceptionReportExtractor";
-import { constant } from "../../../src/service-container/constant";
+import { GenericExceptionReportExtractor, constant } from "../../../src";
 import { testContainer } from "../../testContainer";
 
 // eslint-disable-next-line import/no-unresolved

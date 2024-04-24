@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath from "xpath";
-import { geographicBoundsExtractor_1_1 } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/geographicBoundsExtractor_1_1";
+import { geographicBoundsExtractor_1_1 } from "../../../../../src";
 import { testContainer } from "../../../../testContainer";
 
 describe("geographicBoundsExtractor_1_1 data extractor function", () => {

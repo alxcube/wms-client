@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import { beforeEach, describe, expect, it, test } from "vitest";
-import { BaseWmsNegotiator } from "../../../src/negotiator/BaseWmsNegotiator";
+import { BaseWmsNegotiator } from "../../../src";
 import { testContainer } from "../../testContainer";
 import MockAdapter from "axios-mock-adapter";
 // eslint-disable-next-line import/no-unresolved

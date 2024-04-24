@@ -1,10 +1,12 @@
 import type { DOMParser } from "@xmldom/xmldom";
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
-import { constant } from "../../../../../src/service-container/constant";
-import { MetadataUrlsExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/MetadataUrlsExtractor";
-import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
-import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
+import {
+  constant,
+  MetadataUrlsExtractor,
+  xlinkXmlNamespace,
+  wmsXmlNamespace,
+} from "../../../../../src";
 import { testContainer } from "../../../../testContainer";
 
 describe("MetadataUrlsExtractor class", () => {

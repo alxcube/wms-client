@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath from "xpath";
-import { styleUrlExtractor_1_0 } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/styleUrlExtractor_1_0";
+import { styleUrlExtractor_1_0 } from "../../../../../src";
 import { testContainer } from "../../../../testContainer";
 
 describe("styleUrlExtractor_1_0() function", () => {

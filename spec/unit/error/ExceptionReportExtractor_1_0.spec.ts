@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { ExceptionReportExtractor_1_0 } from "../../../src/error/ExceptionReportExtractor_1_0";
+import { ExceptionReportExtractor_1_0 } from "../../../src";
 import { testContainer } from "../../testContainer";
 // eslint-disable-next-line import/no-unresolved
 import exceptionXml_1_1 from "../../fixtures/exception_1_1_1.xml?raw";

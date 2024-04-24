@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { inheritLayerData } from "../../../src/utils/inheritLayerData";
+import { inheritLayerData } from "../../../src";
 
-import type { Layer } from "../../../src/version-adapter/capabilities-response-data-extractor/data-types/Layer";
+import type { Layer } from "../../../src";
 
 describe("inheritLayerData() function", () => {
   it("should copy layer styles from parent layer, when child layer has no own styles", () => {

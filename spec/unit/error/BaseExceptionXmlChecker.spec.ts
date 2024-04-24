@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { BaseExceptionXmlChecker } from "../../../src/error/BaseExceptionXmlChecker";
-import { WmsException } from "../../../src/error/WmsException";
-import { WmsExceptionCode } from "../../../src/error/WmsExceptionCode";
-import { WmsExceptionReport } from "../../../src/error/WmsExceptionReport";
+import {
+  BaseExceptionXmlChecker,
+  WmsException,
+  WmsExceptionCode,
+  WmsExceptionReport,
+} from "../../../src";
 import { testContainer } from "../../testContainer";
 // eslint-disable-next-line import/no-unresolved
 import exceptionXml_1_1_0 from "../../fixtures/exception_1_1_0.xml?raw";

@@ -1,8 +1,10 @@
 import axios, { type AxiosError, isAxiosError } from "axios";
 import { beforeEach, describe, expect, it } from "vitest";
-import { BaseRequestErrorHandler } from "../../../src/client/BaseRequestErrorHandler";
-import { WmsException } from "../../../src/error/WmsException";
-import { WmsExceptionReport } from "../../../src/error/WmsExceptionReport";
+import {
+  BaseRequestErrorHandler,
+  WmsException,
+  WmsExceptionReport,
+} from "../../../src";
 import { testContainer } from "../../testContainer";
 import MockAdapter from "axios-mock-adapter";
 // eslint-disable-next-line import/no-unresolved

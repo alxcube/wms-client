@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { BaseXmlResponseVersionExtractor } from "../../../../src/version-adapter";
+import { BaseXmlResponseVersionExtractor } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("BaseXmlResponseVersionExtractor class", () => {

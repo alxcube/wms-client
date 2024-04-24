@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath from "xpath";
-import { keywordsExtractor_1_0 } from "../../../../src/version-adapter/capabilities-response-data-extractor/keywordsExtractor_1_0";
+import { keywordsExtractor_1_0 } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("keywordsExtractor_1_0() function", () => {

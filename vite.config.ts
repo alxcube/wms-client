@@ -24,17 +24,14 @@ export default defineConfig({
       fileName: "wms-client",
     },
     rollupOptions: {
-      external: [
-        "axios",
-        "@xmldom/xmldom",
-        "xpath"
-      ],
+      external: ["axios", "@xmldom/xmldom", "xpath", "@alxcube/xml-mapper"],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           axios: "axios",
-          xpath: "xpath"
+          xpath: "xpath",
+          "@alxcube/xml-mapper": "alxcube.xmlMapper",
         },
       },
     },

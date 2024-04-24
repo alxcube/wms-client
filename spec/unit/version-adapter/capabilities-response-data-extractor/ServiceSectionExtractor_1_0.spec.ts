@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath from "xpath";
-import { ServiceSectionExtractor_1_0 } from "../../../../src/version-adapter/capabilities-response-data-extractor/ServiceSectionExtractor_1_0";
+import { ServiceSectionExtractor_1_0 } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 // eslint-disable-next-line import/no-unresolved
 import xml from "../../../fixtures/capabilities_1_0_0.xml?raw";

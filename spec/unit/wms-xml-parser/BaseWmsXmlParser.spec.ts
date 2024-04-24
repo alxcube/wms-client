@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { isDocumentNode } from "xpath";
-import { WmsException } from "../../../src/error/WmsException";
-import { WmsExceptionReport } from "../../../src/error/WmsExceptionReport";
-import { BaseWmsXmlParser } from "../../../src/wms-xml-parser/BaseWmsXmlParser";
+import {
+  WmsException,
+  WmsExceptionReport,
+  BaseWmsXmlParser,
+} from "../../../src";
 import { testContainer } from "../../testContainer";
 // eslint-disable-next-line import/no-unresolved
 import capabilitiesXml_1_1_0 from "../../fixtures/capabilities_1_1_0.xml?raw";

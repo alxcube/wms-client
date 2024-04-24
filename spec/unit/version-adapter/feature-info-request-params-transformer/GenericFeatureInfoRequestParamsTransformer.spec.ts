@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { FeatureInfoRequestParamsWithCustom } from "../../../../src/client/WmsClient";
-import { constant } from "../../../../src/service-container/constant";
-import { GenericFeatureInfoRequestParamsTransformer } from "../../../../src/version-adapter/feature-info-request-params-transformer/GenericFeatureInfoRequestParamsTransformer";
+import type { FeatureInfoRequestParamsWithCustom } from "../../../../src";
+import {
+  constant,
+  GenericFeatureInfoRequestParamsTransformer,
+} from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("GenericFeatureInfoRequestParamsTransformer class", () => {

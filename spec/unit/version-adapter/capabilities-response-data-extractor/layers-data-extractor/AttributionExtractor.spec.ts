@@ -1,10 +1,12 @@
 import type { DOMParser } from "@xmldom/xmldom";
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
-import { constant } from "../../../../../src/service-container/constant";
-import { AttributionExtractor } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/AttributionExtractor";
-import { xlinkXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
-import { wmsXmlNamespace } from "../../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
+import {
+  constant,
+  AttributionExtractor,
+  xlinkXmlNamespace,
+  wmsXmlNamespace,
+} from "../../../../../src";
 import { testContainer } from "../../../../testContainer";
 
 describe("AttributionExtractor class", () => {

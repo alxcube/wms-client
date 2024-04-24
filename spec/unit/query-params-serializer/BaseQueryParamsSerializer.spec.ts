@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { BaseQueryParamsSerializer } from "../../../src/query-params-serializer/BaseQueryParamsSerializer";
+import { BaseQueryParamsSerializer } from "../../../src";
 
 describe("BaseQueryParamsSerializer class", () => {
   let serializer: BaseQueryParamsSerializer;

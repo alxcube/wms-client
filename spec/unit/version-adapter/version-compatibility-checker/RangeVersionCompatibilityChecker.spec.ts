@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { constant } from "../../../../src/service-container/constant";
-import { RangeVersionCompatibilityChecker } from "../../../../src/version-adapter/version-compatibility-checker/RangeVersionCompatibilityChecker";
+import { constant, RangeVersionCompatibilityChecker } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("RangeVersionCompatibilityChecker class", () => {

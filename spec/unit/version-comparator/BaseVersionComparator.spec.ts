@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { BaseVersionComparator } from "../../../src/version-comparator/BaseVersionComparator";
+import { BaseVersionComparator } from "../../../src";
 
 describe("BaseVersionComparator class", () => {
   let comparator: BaseVersionComparator;

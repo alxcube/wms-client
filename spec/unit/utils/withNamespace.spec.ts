@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { withNamespace } from "../../../src/utils/withNamespace";
+import { withNamespace } from "../../../src";
 
 describe("withNamespace() function", () => {
   it("should return node name with namespace, when namespace is defined and is not empty string", () => {

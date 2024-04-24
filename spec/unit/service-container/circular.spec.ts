@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { circular } from "../../../src/service-container/circular";
+import { circular } from "../../../src";
 
 describe("circular() function", () => {
   class TestClass {

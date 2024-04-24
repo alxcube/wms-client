@@ -1,13 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { circular } from "../../../src/service-container/circular";
-import { Container } from "../../../src/service-container/Container";
+import { circular, Container, ServiceResolutionError } from "../../../src";
 import type {
   ServiceContainer,
   ServiceModule,
-} from "../../../src/service-container/ServiceContainer";
-import { ServiceResolutionError } from "../../../src/service-container/ServiceResolutionError";
-
-import type { ServicesMap } from "../../../src/service-container/ServiceResolver";
+  ServicesMap,
+} from "../../../src";
 
 describe("Container class", () => {
   class DummyService {

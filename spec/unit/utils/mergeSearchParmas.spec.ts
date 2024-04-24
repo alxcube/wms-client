@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mergeSearchParams } from "../../../src/utils/mergeSearchParams";
+import { mergeSearchParams } from "../../../src";
 
 describe("mergeSearchParams() function", () => {
   it("should merge search params of url with given params string", () => {

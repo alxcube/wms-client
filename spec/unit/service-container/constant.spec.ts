@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { constant } from "../../../src/service-container/constant";
+import { constant } from "../../../src";
 
 describe("constant() function", () => {
   it("should return object with `constant` property, equal to given value", () => {

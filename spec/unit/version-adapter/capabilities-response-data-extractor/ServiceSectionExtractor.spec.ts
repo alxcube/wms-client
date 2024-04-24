@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
-import { constant } from "../../../../src/service-container/constant";
-import { ServiceSectionExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/ServiceSectionExtractor";
-import { xlinkXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/xlinkXmlNamespace";
-import { wmsXmlNamespace } from "../../../../src/version-adapter/capabilities-response-data-extractor/wmsXmlNamespace";
+import {
+  constant,
+  ServiceSectionExtractor,
+  xlinkXmlNamespace,
+  wmsXmlNamespace,
+} from "../../../../src";
 import { testContainer } from "../../../testContainer";
 // eslint-disable-next-line import/no-unresolved
 import xml_1_1 from "../../../fixtures/capabilities_1_1_1.xml?raw";

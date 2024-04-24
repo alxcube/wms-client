@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { serviceContainer } from "../../../../src/serviceContainer";
-import { BaseWmsVersionAdapterResolver } from "../../../../src/version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
+import {
+  serviceContainer,
+  BaseWmsVersionAdapterResolver,
+} from "../../../../src";
 
 describe("BaseWmsVersionAdapterResolver class", () => {
   let resolver: BaseWmsVersionAdapterResolver;

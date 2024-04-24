@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { stringifyServiceKey } from "../../../src/service-container/stringifyServiceKey";
+import { stringifyServiceKey } from "../../../src";
 
 describe("stringifyServiceKey() function", () => {
   it("should return given string, when string is given", () => {

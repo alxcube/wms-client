@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { inheritLayersData } from "../../../src/utils/inheritLayersData";
-import type { Layer } from "../../../src/version-adapter/capabilities-response-data-extractor/data-types/Layer";
+import { inheritLayersData } from "../../../src";
+import type { Layer } from "../../../src";
 
 describe("inheritLayersData() function", () => {
   it("should copy layers data from parent to child layers for each layer in layers array", () => {

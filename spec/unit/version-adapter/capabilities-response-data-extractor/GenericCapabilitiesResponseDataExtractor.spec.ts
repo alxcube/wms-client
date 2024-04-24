@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { constant } from "../../../../src/service-container/constant";
-import { serviceContainer } from "../../../../src/serviceContainer";
-import type { UnifiedCapabilitiesResponse } from "../../../../src/version-adapter/capabilities-response-data-extractor/data-types/UnifiedCapabilitiesResponse";
-import { GenericCapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
+import {
+  constant,
+  serviceContainer,
+  GenericCapabilitiesResponseDataExtractor,
+} from "../../../../src";
+import type { UnifiedCapabilitiesResponse } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 import { DOMParser } from "@xmldom/xmldom";
 // eslint-disable-next-line import/no-unresolved

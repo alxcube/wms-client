@@ -1,7 +1,6 @@
 import axios from "axios";
 import { describe, expect, it } from "vitest";
-import { BaseWmsClient } from "../../src/client/BaseWmsClient";
-import { createClient } from "../../src/createClient";
+import { BaseWmsClient, createClient } from "../../src";
 
 describe("createClient() function", () => {
   it("should create BaseWmsClient instance", () => {

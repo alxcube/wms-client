@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
-import { DimensionsExtractor_1_1 } from "../../../../../src/version-adapter/capabilities-response-data-extractor/layers-data-extractor/DimensionsExtractor_1_1";
+import { DimensionsExtractor_1_1 } from "../../../../../src";
 import { testContainer } from "../../../../testContainer";
 
 describe("DimensionsExtractor_1_1 class", () => {
