@@ -3,8 +3,8 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import { withNamespace } from "../../../utils/withNamespace";
-import type { ResourceUrl } from "../../../wms-data-types/get-capabilities-response/ResourceUrl";
+import { withNamespace } from "../../../utils";
+import type { ResourceUrl } from "../data-types";
 
 export class ResourceUrlsExtractor
   implements SingleNodeDataExtractorFnFactory<ResourceUrl[] | undefined>

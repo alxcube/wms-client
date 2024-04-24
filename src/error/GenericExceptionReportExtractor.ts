@@ -1,9 +1,8 @@
 import { map, type SingleNodeDataExtractorFn } from "@alxcube/xml-mapper";
 import xpath from "xpath";
-import { trim } from "../utils/trim";
-import { withNamespace } from "../utils/withNamespace";
-import type { VersionComparator } from "../version-comparator/VersionComparator";
-import type { XmlResponseVersionExtractor } from "../xml-response-version-extractor/XmlResponseVersionExtractor";
+import { trim, withNamespace } from "../utils";
+import type { VersionComparator } from "../version-comparator";
+import type { XmlResponseVersionExtractor } from "../version-adapter";
 import type {
   ExceptionReportEntry,
   ExceptionReportExtractor,

@@ -1,4 +1,4 @@
-import type { CapabilitiesRequestParams } from "../../client/WmsClient";
+import type { CapabilitiesRequestParams } from "../../client";
 
 export interface CapabilitiesRequestParamsTransformer {
   transform(params: CapabilitiesRequestParams): object;

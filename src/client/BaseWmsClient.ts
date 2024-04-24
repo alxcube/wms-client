@@ -1,10 +1,11 @@
 import { type AxiosInstance, type AxiosResponse } from "axios";
-import type { QueryParamsSerializer } from "../query-params-serializer/QueryParamsSerializer";
-import { mergeSearchParams } from "../utils/mergeSearchParams";
-import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
-import { inheritLayersData } from "../utils/inheritLayersData";
-import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
-import type { WmsXmlParser } from "../wms-xml-parser/WmsXmlParser";
+import type { QueryParamsSerializer } from "../query-params-serializer";
+import { mergeSearchParams, inheritLayersData } from "../utils";
+import type {
+  UnifiedCapabilitiesResponse,
+  WmsVersionAdapter,
+} from "../version-adapter";
+import type { WmsXmlParser } from "../wms-xml-parser";
 import type { RequestErrorHandler } from "./RequestErrorHandler";
 import type {
   CapabilitiesRequestParams,

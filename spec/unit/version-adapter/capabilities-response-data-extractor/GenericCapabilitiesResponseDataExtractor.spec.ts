@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { constant } from "../../../../src/service-container/constant";
 import { serviceContainer } from "../../../../src/serviceContainer";
-import type { UnifiedCapabilitiesResponse } from "../../../../src/wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
+import type { UnifiedCapabilitiesResponse } from "../../../../src/version-adapter/capabilities-response-data-extractor/data-types/UnifiedCapabilitiesResponse";
 import { GenericCapabilitiesResponseDataExtractor } from "../../../../src/version-adapter/capabilities-response-data-extractor/GenericCapabilitiesResponseDataExtractor";
 import { testContainer } from "../../../testContainer";
 import { DOMParser } from "@xmldom/xmldom";

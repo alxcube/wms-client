@@ -1,7 +1,6 @@
 import { serviceContainer } from "./serviceContainer";
 
-import type { WmsClient } from "./client/WmsClient";
-import type { WmsClientFactoryOptions } from "./client/WmsClientFactory";
+import type { WmsClient, WmsClientFactoryOptions } from "./client";
 
 export function createClient(
   wmsUrl: string,

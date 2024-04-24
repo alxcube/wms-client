@@ -1,5 +1,5 @@
-import type { CapabilitiesRequestParams } from "../../client/WmsClient";
-import type { VersionComparator } from "../../version-comparator/VersionComparator";
+import type { CapabilitiesRequestParams } from "../../client";
+import type { VersionComparator } from "../../version-comparator";
 
 import type { CapabilitiesRequestParamsTransformer } from "./CapabilitiesRequestParamsTransformer";
 

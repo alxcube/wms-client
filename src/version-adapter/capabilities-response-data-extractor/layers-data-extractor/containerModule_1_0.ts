@@ -1,8 +1,8 @@
-import { constant } from "../../../service-container/constant";
+import { constant } from "../../../service-container";
 import type {
   ServiceContainer,
   ServiceModule,
-} from "../../../service-container/ServiceContainer";
+} from "../../../service-container";
 import type { TypesMap } from "../../../TypesMap";
 import { undefinedExtractor } from "../undefinedExtractor";
 import { BoundingBoxesExtractor } from "./BoundingBoxesExtractor";

@@ -1,8 +1,5 @@
-import { constant } from "../../service-container/constant";
-import type {
-  ServiceContainer,
-  ServiceModule,
-} from "../../service-container/ServiceContainer";
+import { constant } from "../../service-container";
+import type { ServiceContainer, ServiceModule } from "../../service-container";
 import type { TypesMap } from "../../TypesMap";
 import { CapabilitiesSectionExtractor } from "./CapabilitiesSectionExtractor";
 import { exceptionFormatExtractor_1_3 } from "./exceptionFormatExtractor_1_3";

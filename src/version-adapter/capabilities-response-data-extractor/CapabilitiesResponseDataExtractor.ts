@@ -1,4 +1,4 @@
-import type { UnifiedCapabilitiesResponse } from "../../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
+import type { UnifiedCapabilitiesResponse } from "./data-types";
 
 export interface CapabilitiesResponseDataExtractor {
   extract(response: Document): UnifiedCapabilitiesResponse;

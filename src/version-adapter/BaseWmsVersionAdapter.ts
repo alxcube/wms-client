@@ -2,13 +2,15 @@ import type {
   CapabilitiesRequestParams,
   FeatureInfoRequestParamsWithCustom,
   MapRequestParamsWithCustom,
-} from "../client/WmsClient";
-import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
-import type { CapabilitiesRequestParamsTransformer } from "./capabilities-request-params-transformer/CapabilitiesRequestParamsTransformer";
-import type { CapabilitiesResponseDataExtractor } from "./capabilities-response-data-extractor/CapabilitiesResponseDataExtractor";
-import type { FeatureInfoRequestParamsTransformer } from "./feature-info-request-params-transformer/FeatureInfoRequestParamsTransformer";
-import type { MapRequestParamsTransformer } from "./map-request-params-transformer/MapRequestParamsTransformer";
-import type { VersionCompatibilityChecker } from "./version-compatibility-checker/VersionCompatibilityChecker";
+} from "../client";
+import type {
+  UnifiedCapabilitiesResponse,
+  CapabilitiesResponseDataExtractor,
+} from "./capabilities-response-data-extractor";
+import type { CapabilitiesRequestParamsTransformer } from "./capabilities-request-params-transformer";
+import type { FeatureInfoRequestParamsTransformer } from "./feature-info-request-params-transformer";
+import type { MapRequestParamsTransformer } from "./map-request-params-transformer";
+import type { VersionCompatibilityChecker } from "./version-compatibility-checker";
 import type { WmsVersionAdapter } from "./WmsVersionAdapter";
 
 export class BaseWmsVersionAdapter implements WmsVersionAdapter {

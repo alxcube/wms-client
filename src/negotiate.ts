@@ -1,6 +1,6 @@
 import { serviceContainer } from "./serviceContainer";
-import type { WmsClient } from "./client/WmsClient";
-import type { WmsNegotiatorOptions } from "./negotiator/WmsNegotiator";
+import type { WmsClient } from "./client";
+import type { WmsNegotiatorOptions } from "./negotiator";
 
 export async function negotiate(
   wmsUrl: string,

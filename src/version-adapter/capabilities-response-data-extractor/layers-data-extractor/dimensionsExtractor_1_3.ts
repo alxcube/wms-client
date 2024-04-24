@@ -1,5 +1,5 @@
 import { map, type SingleNodeDataExtractorFn } from "@alxcube/xml-mapper";
-import type { Layer } from "../../../wms-data-types/get-capabilities-response/Layer";
+import type { Layer } from "../data-types";
 
 export const dimensionsExtractor_1_3: SingleNodeDataExtractorFn<
   Layer["dimensions"]

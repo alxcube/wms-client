@@ -1,5 +1,5 @@
 import { map, type SingleNodeDataExtractorFn } from "@alxcube/xml-mapper";
-import type { ResourceUrl } from "../../../wms-data-types/get-capabilities-response/ResourceUrl";
+import type { ResourceUrl } from "../data-types";
 
 export const styleUrlExtractor_1_0: SingleNodeDataExtractorFn<
   ResourceUrl | undefined

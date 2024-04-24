@@ -1,4 +1,4 @@
-import type { VersionComparator } from "../../version-comparator/VersionComparator";
+import type { VersionComparator } from "../../version-comparator";
 import type { WmsVersionAdapter } from "../WmsVersionAdapter";
 import type { WmsVersionAdapterResolver } from "./WmsVersionAdapterResolver";
 

@@ -3,7 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import type { Attribution } from "../../../wms-data-types/get-capabilities-response/Attribution";
+import type { Attribution } from "../data-types";
 
 export class AttributionExtractor
   implements SingleNodeDataExtractorFnFactory<Attribution | undefined>

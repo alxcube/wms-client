@@ -3,8 +3,8 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import { withNamespace } from "../../../utils/withNamespace";
-import type { BoundingBox } from "../../../wms-data-types/get-capabilities-response/BoundingBox";
+import { withNamespace } from "../../../utils";
+import type { BoundingBox } from "../data-types";
 
 export class BoundingBoxesExtractor
   implements SingleNodeDataExtractorFnFactory<BoundingBox[] | undefined>

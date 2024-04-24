@@ -1,17 +1,18 @@
-import { BaseRequestErrorHandler } from "./client/BaseRequestErrorHandler";
-import { BaseWmsClientFactory } from "./client/BaseWmsClientFactory";
-import { BaseWmsNegotiator } from "./negotiator/BaseWmsNegotiator";
-import { BaseWmsXmlParser } from "./wms-xml-parser/BaseWmsXmlParser";
-import { BaseXmlResponseVersionExtractor } from "./xml-response-version-extractor/BaseXmlResponseVersionExtractor";
-import { BaseExceptionXmlChecker } from "./error/BaseExceptionXmlChecker";
-import { BaseQueryParamsSerializer } from "./query-params-serializer/BaseQueryParamsSerializer";
-import { Container } from "./service-container/Container";
+import { BaseRequestErrorHandler, BaseWmsClientFactory } from "./client";
+import { BaseWmsNegotiator } from "./negotiator";
+import { BaseWmsXmlParser } from "./wms-xml-parser";
+import {
+  BaseXmlResponseVersionExtractor,
+  BaseWmsVersionAdapterResolver,
+} from "./version-adapter";
+import { BaseExceptionXmlChecker } from "./error";
+import { BaseQueryParamsSerializer } from "./query-params-serializer";
+import { Container } from "./service-container";
 import type { TypesMap } from "./TypesMap";
-import { BaseWmsVersionAdapterResolver } from "./version-adapter/version-adapter-resolver/BaseWmsVersionAdapterResolver";
 import { containerModule_1_0_0 as versionAdapterModule_1_0_0 } from "./version-adapter/containerModule_1_0_0";
 import { containerModule_1_1_1 as versionAdapterModule_1_1_1 } from "./version-adapter/containerModule_1_1_1";
 import { containerModule_1_3_0 as versionAdapterModule_1_3_0 } from "./version-adapter/containerModule_1_3_0";
-import { BaseVersionComparator } from "./version-comparator/BaseVersionComparator";
+import { BaseVersionComparator } from "./version-comparator";
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
 import { containerModule_1_1_1 as exceptionModule_1_1_1 } from "./error/containerModule_1_1_1";
 import { containerModule_1_3_0 as exceptionModule_1_3_0 } from "./error/containerModule_1_3_0";

@@ -3,8 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
-import type { Keyword } from "../../wms-data-types/get-capabilities-response/Keyword";
-import type { UnifiedCapabilitiesResponse } from "../../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
+import type { Keyword, UnifiedCapabilitiesResponse } from "./data-types";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
 export class ServiceSectionExtractor_1_0

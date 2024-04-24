@@ -1,5 +1,5 @@
 import { type AxiosResponse, isAxiosError } from "axios";
-import type { WmsXmlParser } from "../wms-xml-parser/WmsXmlParser";
+import type { WmsXmlParser } from "../wms-xml-parser";
 import type { RequestErrorHandler } from "./RequestErrorHandler";
 
 export class BaseRequestErrorHandler implements RequestErrorHandler {

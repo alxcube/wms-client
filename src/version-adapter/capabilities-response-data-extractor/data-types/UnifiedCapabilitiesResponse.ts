@@ -1,4 +1,4 @@
-import type { ExceptionFormat } from "../ExceptionFormat";
+import type { ExceptionFormat } from "../../../error";
 import type { ContactInformation } from "./ContactInformation";
 import type { Keyword } from "./Keyword";
 import type { Layer } from "./Layer";

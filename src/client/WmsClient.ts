@@ -1,7 +1,9 @@
 import type { AxiosInstance } from "axios";
-import type { ExceptionFormat } from "../wms-data-types/ExceptionFormat";
-import type { RequestBoundingBox } from "../wms-data-types/get-capabilities-response/RequestBoundingBox";
-import type { UnifiedCapabilitiesResponse } from "../wms-data-types/get-capabilities-response/UnifiedCapabilitiesResponse";
+import type { ExceptionFormat } from "../error";
+import type {
+  RequestBoundingBox,
+  UnifiedCapabilitiesResponse,
+} from "../version-adapter";
 
 export interface WmsClientOptions {
   query?: { [key: string]: unknown };

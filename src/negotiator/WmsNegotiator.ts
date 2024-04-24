@@ -1,5 +1,4 @@
-import type { WmsClient } from "../client/WmsClient";
-import type { WmsClientFactoryOptions } from "../client/WmsClientFactory";
+import type { WmsClient, WmsClientFactoryOptions } from "../client";
 
 export interface WmsNegotiatorOptions extends WmsClientFactoryOptions {}
 export interface WmsNegotiator {

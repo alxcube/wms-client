@@ -1,6 +1,6 @@
-import type { FeatureInfoRequestParamsWithCustom } from "../../client/WmsClient";
-import type { VersionComparator } from "../../version-comparator/VersionComparator";
-import type { MapRequestParamsTransformer } from "../map-request-params-transformer/MapRequestParamsTransformer";
+import type { FeatureInfoRequestParamsWithCustom } from "../../client";
+import type { VersionComparator } from "../../version-comparator";
+import type { MapRequestParamsTransformer } from "../map-request-params-transformer";
 import type { FeatureInfoRequestParamsTransformer } from "./FeatureInfoRequestParamsTransformer";
 
 export class GenericFeatureInfoRequestParamsTransformer

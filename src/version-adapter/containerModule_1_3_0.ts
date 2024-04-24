@@ -1,8 +1,5 @@
-import { constant } from "../service-container/constant";
-import type {
-  ServiceContainer,
-  ServiceModule,
-} from "../service-container/ServiceContainer";
+import { constant } from "../service-container";
+import type { ServiceContainer, ServiceModule } from "../service-container";
 import type { TypesMap } from "../TypesMap";
 import { containerModule_1_3 as capabilitiesResponseExtractorModule } from "./capabilities-response-data-extractor/containerModule_1_3";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";

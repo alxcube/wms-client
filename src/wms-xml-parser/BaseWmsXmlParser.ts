@@ -1,4 +1,4 @@
-import type { ExceptionXmlChecker } from "../error/ExceptionXmlChecker";
+import type { ExceptionXmlChecker } from "../error";
 import type { WmsXmlParser } from "./WmsXmlParser";
 
 export class BaseWmsXmlParser implements WmsXmlParser {

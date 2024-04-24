@@ -1,4 +1,4 @@
-import type { Layer } from "../wms-data-types/get-capabilities-response/Layer";
+import type { Layer } from "../version-adapter";
 import { inheritLayerData } from "./inheritLayerData";
 
 export function inheritLayersData(layers: Layer[]): Layer[] {

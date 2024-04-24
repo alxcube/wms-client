@@ -1,8 +1,8 @@
 import axios from "axios";
-import type { WmsXmlParser } from "../wms-xml-parser/WmsXmlParser";
+import type { WmsXmlParser } from "../wms-xml-parser";
 import { BaseWmsClient } from "./BaseWmsClient";
-import type { QueryParamsSerializer } from "../query-params-serializer/QueryParamsSerializer";
-import type { WmsVersionAdapterResolver } from "../version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
+import type { QueryParamsSerializer } from "../query-params-serializer";
+import type { WmsVersionAdapterResolver } from "../version-adapter";
 import type { RequestErrorHandler } from "./RequestErrorHandler";
 import type {
   WmsClientFactory,

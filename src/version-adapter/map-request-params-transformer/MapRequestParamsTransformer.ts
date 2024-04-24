@@ -1,4 +1,4 @@
-import type { MapRequestParamsWithCustom } from "../../client/WmsClient";
+import type { MapRequestParamsWithCustom } from "../../client";
 
 export interface MapRequestParamsTransformer {
   transform(params: MapRequestParamsWithCustom): object;

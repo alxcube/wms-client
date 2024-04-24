@@ -1,7 +1,4 @@
-import type {
-  ServiceContainer,
-  ServiceModule,
-} from "../service-container/ServiceContainer";
+import type { ServiceContainer, ServiceModule } from "../service-container";
 import type { TypesMap } from "../TypesMap";
 import { ExceptionReportExtractor_1_0 } from "./ExceptionReportExtractor_1_0";
 

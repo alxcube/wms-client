@@ -1,17 +1,20 @@
 import axios, { type AxiosInstance, type AxiosResponse } from "axios";
-import type { RequestErrorHandler } from "../client/RequestErrorHandler";
-import { WmsException } from "../error/WmsException";
-import { WmsExceptionReport } from "../error/WmsExceptionReport";
-import type { QueryParamsSerializer } from "../query-params-serializer/QueryParamsSerializer";
-import { mergeSearchParams } from "../utils/mergeSearchParams";
-import type { WmsVersionAdapterResolver } from "../version-adapter/version-adapter-resolver/WmsVersionAdapterResolver";
-import type { WmsClient } from "../client/WmsClient";
-import type { WmsClientFactory } from "../client/WmsClientFactory";
-import type { WmsVersionAdapter } from "../version-adapter/WmsVersionAdapter";
-import type { VersionComparator } from "../version-comparator/VersionComparator";
-import type { WmsXmlParser } from "../wms-xml-parser/WmsXmlParser";
+import type {
+  RequestErrorHandler,
+  WmsClient,
+  WmsClientFactory,
+} from "../client";
+import { WmsException, WmsExceptionReport } from "../error";
+import type { QueryParamsSerializer } from "../query-params-serializer";
+import { mergeSearchParams } from "../utils";
+import type {
+  WmsVersionAdapterResolver,
+  WmsVersionAdapter,
+  XmlResponseVersionExtractor,
+} from "../version-adapter";
+import type { VersionComparator } from "../version-comparator";
+import type { WmsXmlParser } from "../wms-xml-parser";
 import type { WmsNegotiator, WmsNegotiatorOptions } from "./WmsNegotiator";
-import type { XmlResponseVersionExtractor } from "../xml-response-version-extractor/XmlResponseVersionExtractor";
 
 interface NegotiationOutcome {
   adapter: WmsVersionAdapter;
