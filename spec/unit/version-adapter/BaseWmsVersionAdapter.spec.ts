@@ -1,9 +1,10 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
 import type {
   FeatureInfoRequestParamsWithCustom,
   MapRequestParamsWithCustom,
 } from "../../../src";
-import { constant, BaseWmsVersionAdapter } from "../../../src";
+import { BaseWmsVersionAdapter } from "../../../src";
 import { testContainer } from "../../testContainer";
 // eslint-disable-next-line import/no-unresolved
 import capabilitiesXml_1_1_0 from "../../fixtures/capabilities_1_1_0.xml?raw";

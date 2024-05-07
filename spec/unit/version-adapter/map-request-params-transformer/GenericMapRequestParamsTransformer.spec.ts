@@ -1,7 +1,8 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import type { MapRequestParamsWithCustom } from "../../../../src";
-import { constant, GenericMapRequestParamsTransformer } from "../../../../src";
+import { GenericMapRequestParamsTransformer } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("GenericMapRequestParamsTransformer class", () => {

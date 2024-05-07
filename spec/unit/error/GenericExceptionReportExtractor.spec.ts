@@ -1,5 +1,6 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
-import { GenericExceptionReportExtractor, constant } from "../../../src";
+import { GenericExceptionReportExtractor } from "../../../src";
 import { testContainer } from "../../testContainer";
 
 // eslint-disable-next-line import/no-unresolved

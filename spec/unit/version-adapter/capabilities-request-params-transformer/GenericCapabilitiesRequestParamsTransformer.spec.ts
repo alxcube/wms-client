@@ -1,8 +1,6 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
-import {
-  constant,
-  GenericCapabilitiesRequestParamsTransformer,
-} from "../../../../src";
+import { GenericCapabilitiesRequestParamsTransformer } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("GenericCapabilitiesRequestParamsTransformer class", () => {

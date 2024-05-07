@@ -1,5 +1,5 @@
-import { constant } from "../service-container";
-import type { ServiceContainer, ServiceModule } from "../service-container";
+import { constant } from "@alxcube/di-container";
+import type { ServiceContainer, ServiceModule } from "@alxcube/di-container";
 import type { TypesMap } from "../TypesMap";
 import { containerModule_1_3 as capabilitiesResponseExtractorModule } from "./capabilities-response-data-extractor/containerModule_1_3";
 import { BaseWmsVersionAdapter } from "./BaseWmsVersionAdapter";
@@ -27,18 +27,18 @@ export const containerModule_1_3_0: ServiceModule<TypesMap> = {
     );
 
     // CapabilitiesRequestParamsTransformer module
-    container.registerModule(capabilitiesRequestParamsTransformerModule);
+    container.loadModule(capabilitiesRequestParamsTransformerModule);
 
     // CapabilitiesResponseDataExtractor module
-    container.registerModule(capabilitiesResponseExtractorModule);
+    container.loadModule(capabilitiesResponseExtractorModule);
 
     // MapRequestParamsTransformer module
-    container.registerModule(mapRequestParamsTransformerModule);
+    container.loadModule(mapRequestParamsTransformerModule);
 
     // FeatureInfoRequestParamsTransformer module
-    container.registerModule(featureInfoRequestParamsTransformerModule);
+    container.loadModule(featureInfoRequestParamsTransformerModule);
 
     // VersionCompatibilityChecker module
-    container.registerModule(versionCompatibilityCheckerModule);
+    container.loadModule(versionCompatibilityCheckerModule);
   },
 };

@@ -1,4 +1,4 @@
-import type { ServiceContainer, ServiceModule } from "../service-container";
+import type { ServiceContainer, ServiceModule } from "@alxcube/di-container";
 import type { TypesMap } from "../TypesMap";
 import { ExceptionReportExtractor_1_0 } from "./ExceptionReportExtractor_1_0";
 

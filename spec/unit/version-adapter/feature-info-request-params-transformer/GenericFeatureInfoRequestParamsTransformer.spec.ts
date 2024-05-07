@@ -1,9 +1,7 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { FeatureInfoRequestParamsWithCustom } from "../../../../src";
-import {
-  constant,
-  GenericFeatureInfoRequestParamsTransformer,
-} from "../../../../src";
+import { GenericFeatureInfoRequestParamsTransformer } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("GenericFeatureInfoRequestParamsTransformer class", () => {

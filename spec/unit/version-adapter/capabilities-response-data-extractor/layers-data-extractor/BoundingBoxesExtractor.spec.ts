@@ -1,7 +1,7 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import {
-  constant,
   BoundingBoxesExtractor,
   xlinkXmlNamespace,
   wmsXmlNamespace,

@@ -1,6 +1,6 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
-  constant,
   serviceContainer,
   GenericCapabilitiesResponseDataExtractor,
 } from "../../../../src";

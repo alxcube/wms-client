@@ -36,6 +36,7 @@
     "webdriverio": "^8.31.1"
   },
   "dependencies": {
+    "@alxcube/di-container": "^1.0.0",
     "@alxcube/xml-mapper": "^1.0.0",
     "@xmldom/xmldom": "^0.8.10",
     "axios": "^1.6.7",

@@ -1,5 +1,5 @@
-import { constant } from "../../service-container";
-import type { ServiceContainer, ServiceModule } from "../../service-container";
+import { constant } from "@alxcube/di-container";
+import type { ServiceContainer, ServiceModule } from "@alxcube/di-container";
 import type { TypesMap } from "../../TypesMap";
 import { CapabilitiesSectionExtractor } from "./CapabilitiesSectionExtractor";
 import { exceptionFormatExtractor_1_1 } from "./exceptionFormatExtractor_1_1";
@@ -77,7 +77,7 @@ export const containerModule_1_1: ServiceModule<TypesMap> = {
     );
 
     // Layer[] extractor module
-    container.registerModule(layersExtractorModule);
+    container.loadModule(layersExtractorModule);
 
     // ExceptionFormat[] extractor
     container.registerConstant(

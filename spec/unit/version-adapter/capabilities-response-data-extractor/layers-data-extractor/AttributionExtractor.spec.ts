@@ -1,8 +1,8 @@
+import { constant } from "@alxcube/di-container";
 import type { DOMParser } from "@xmldom/xmldom";
 import { beforeEach, describe, expect, it } from "vitest";
 import xpath, { type XPathSelect } from "xpath";
 import {
-  constant,
   AttributionExtractor,
   xlinkXmlNamespace,
   wmsXmlNamespace,

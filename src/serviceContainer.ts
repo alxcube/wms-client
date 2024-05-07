@@ -7,7 +7,7 @@ import {
 } from "./version-adapter";
 import { BaseExceptionXmlChecker } from "./error";
 import { BaseQueryParamsSerializer } from "./query-params-serializer";
-import { Container } from "./service-container";
+import { Container } from "@alxcube/di-container";
 import type { TypesMap } from "./TypesMap";
 import { containerModule_1_0_0 as versionAdapterModule_1_0_0 } from "./version-adapter/containerModule_1_0_0";
 import { containerModule_1_1_1 as versionAdapterModule_1_1_1 } from "./version-adapter/containerModule_1_1_1";
@@ -78,12 +78,12 @@ serviceContainer.implement("WmsNegotiator", BaseWmsNegotiator, [
   "QueryParamsSerializer",
 ]);
 
-serviceContainer.registerModule(versionAdapterModule_1_0_0);
-serviceContainer.registerModule(versionAdapterModule_1_1_1);
-serviceContainer.registerModule(versionAdapterModule_1_3_0);
-serviceContainer.registerModule(exceptionModule_1_0_0);
-serviceContainer.registerModule(exceptionModule_1_1_1);
-serviceContainer.registerModule(exceptionModule_1_3_0);
+serviceContainer.loadModule(versionAdapterModule_1_0_0);
+serviceContainer.loadModule(versionAdapterModule_1_1_1);
+serviceContainer.loadModule(versionAdapterModule_1_3_0);
+serviceContainer.loadModule(exceptionModule_1_0_0);
+serviceContainer.loadModule(exceptionModule_1_1_1);
+serviceContainer.loadModule(exceptionModule_1_3_0);
 
 serviceContainer.implement("WmsXmlParser", BaseWmsXmlParser, [
   "DOMParser",

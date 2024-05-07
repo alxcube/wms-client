@@ -1,5 +1,6 @@
+import { constant } from "@alxcube/di-container";
 import { beforeEach, describe, expect, it } from "vitest";
-import { constant, RangeVersionCompatibilityChecker } from "../../../../src";
+import { RangeVersionCompatibilityChecker } from "../../../../src";
 import { testContainer } from "../../../testContainer";
 
 describe("RangeVersionCompatibilityChecker class", () => {

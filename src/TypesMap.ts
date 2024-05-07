@@ -19,7 +19,7 @@ import type {
   XmlResponseVersionExtractor,
 } from "./version-adapter";
 import type { QueryParamsSerializer } from "./query-params-serializer";
-import type { ServicesMap } from "./service-container";
+import type { ServicesMap } from "@alxcube/di-container";
 import type { VersionComparator } from "./version-comparator";
 import type { WmsNegotiator } from "./negotiator";
 import type { WmsXmlParser } from "./wms-xml-parser";

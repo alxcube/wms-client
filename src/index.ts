@@ -2,7 +2,6 @@ export * from "./client";
 export * from "./error";
 export * from "./negotiator";
 export * from "./query-params-serializer";
-export * from "./service-container";
 export * from "./utils";
 export * from "./version-adapter";
 export * from "./version-comparator";
