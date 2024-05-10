@@ -16,12 +16,37 @@ import type { VersionComparator } from "../version-comparator";
 import type { WmsXmlParser } from "../wms-xml-parser";
 import type { WmsNegotiator, WmsNegotiatorOptions } from "./WmsNegotiator";
 
+/**
+ * Negotiation outcome interface.
+ * @internal
+ */
 interface NegotiationOutcome {
+  /**
+   * WMS adapter of negotiated version.
+   */
   adapter: WmsVersionAdapter;
+
+  /**
+   * Response document of GetCapabilities request of negotiated version.
+   */
   responseDoc: Document;
 }
 
+/**
+ * Base WmsNegotiator class.
+ */
 export class BaseWmsNegotiator implements WmsNegotiator {
+  /**
+   * BaseWmsNegotiator constructor.
+   *
+   * @param wmsXmlParser
+   * @param xmlResponseVersionExtractor
+   * @param wmsClientFactory
+   * @param versionAdapterResolver
+   * @param requestErrorHandler
+   * @param versionComparator
+   * @param queryParamsSerializer
+   */
   constructor(
     private readonly wmsXmlParser: WmsXmlParser,
     private readonly xmlResponseVersionExtractor: XmlResponseVersionExtractor,
@@ -31,6 +56,10 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     private readonly versionComparator: VersionComparator,
     private readonly queryParamsSerializer: QueryParamsSerializer
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   async negotiate(
     wmsUrl: string,
     options: WmsNegotiatorOptions = {}
@@ -57,6 +86,14 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     );
   }
 
+  /**
+   * Performs version negotiation and returns promise of NegotiationOutcome.
+   *
+   * @param wmsUrl
+   * @param httpClient
+   * @param customQuery
+   * @private
+   */
   private async getNegotiationOutcome(
     wmsUrl: string,
     httpClient: AxiosInstance,
@@ -106,6 +143,15 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     );
   }
 
+  /**
+   * Performs GetCapabilities request to WMS server and returns promise of response document.
+   *
+   * @param wmsUrl
+   * @param wmsAdapter
+   * @param httpClient
+   * @param customQuery
+   * @private
+   */
   private async getWmsServerCapabilities(
     wmsUrl: string,
     wmsAdapter: WmsVersionAdapter,
@@ -129,6 +175,12 @@ export class BaseWmsNegotiator implements WmsNegotiator {
     return this.wmsXmlParser.parse(response.data);
   }
 
+  /**
+   * Returns WMS version adapter, compatible with given WMS version.
+   *
+   * @param wmsVersion
+   * @private
+   */
   private getCompatibleAdapter(
     wmsVersion: string
   ): WmsVersionAdapter | undefined {
