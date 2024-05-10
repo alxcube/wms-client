@@ -1,6 +1,12 @@
 import type { QueryParamsSerializer } from "./QueryParamsSerializer";
 
+/**
+ * Base QueryParamsSerializer class.
+ */
 export class BaseQueryParamsSerializer implements QueryParamsSerializer {
+  /**
+   * @inheritdoc
+   */
   serialize(queryParams: object, prefix = ""): string {
     return Object.keys(queryParams)
       .filter((key) => typeof key !== "symbol")
@@ -22,6 +28,12 @@ export class BaseQueryParamsSerializer implements QueryParamsSerializer {
       .join("&");
   }
 
+  /**
+   * Converts value to string.
+   *
+   * @param val
+   * @private
+   */
   private stringifyValue(val: unknown): string {
     switch (typeof val) {
       case "number":
@@ -36,6 +48,12 @@ export class BaseQueryParamsSerializer implements QueryParamsSerializer {
     }
   }
 
+  /**
+   * Encodes string value for query string.
+   *
+   * @param str
+   * @private
+   */
   private encode(str: string): string {
     return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
       return "%" + c.charCodeAt(0).toString(16);
