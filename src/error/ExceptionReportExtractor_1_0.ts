@@ -4,7 +4,13 @@ import type {
   ExceptionReportExtractor,
 } from "./ExceptionReportExtractor";
 
+/**
+ * ExceptionReportExtractor for WMS v1.0
+ */
 export class ExceptionReportExtractor_1_0 implements ExceptionReportExtractor {
+  /**
+   * @inheritdoc
+   */
   extractExceptionReport(doc: Document): ExceptionReportEntry[] | undefined {
     const exceptionNode = xpath.select(
       "/WMTException",

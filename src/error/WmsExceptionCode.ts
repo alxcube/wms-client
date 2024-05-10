@@ -1,3 +1,6 @@
+/**
+ * WMS exception codes enum.
+ */
 export enum WmsExceptionCode {
   InvalidFormat = "InvalidFormat",
   InvalidCRS = "InvalidCRS",

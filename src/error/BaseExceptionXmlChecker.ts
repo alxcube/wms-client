@@ -8,11 +8,24 @@ import { WmsException } from "./WmsException";
 import { WmsExceptionReport } from "./WmsExceptionReport";
 import { XMLSerializer } from "@xmldom/xmldom";
 
+/**
+ * Base ExceptionXmlChecker class.
+ */
 export class BaseExceptionXmlChecker implements ExceptionXmlChecker {
+  /**
+   * BaseExceptionXmlChecker constructor.
+   *
+   * @param exceptionReportExtractors
+   * @param xmlSerializer
+   */
   constructor(
     private readonly exceptionReportExtractors: ExceptionReportExtractor[],
     private readonly xmlSerializer: XMLSerializer
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   check(responseDoc: Document) {
     if (!this.isException(responseDoc)) {
       return;
@@ -27,11 +40,23 @@ export class BaseExceptionXmlChecker implements ExceptionXmlChecker {
     throw new WmsExceptionReport(wmsExceptions);
   }
 
+  /**
+   * Checks if root node of document contains 'exception' in its name.
+   *
+   * @param xmlResponse
+   * @private
+   */
   private isException(xmlResponse: Document): boolean {
     const rootNode = xpath.select1("/*", xmlResponse) as Node;
     return /exception/i.test(rootNode.nodeName);
   }
 
+  /**
+   * Extracts array of ExceptionReportEntry objects from document.
+   *
+   * @param exceptionResponseDoc
+   * @private
+   */
   private getExceptionReport(
     exceptionResponseDoc: Document
   ): ExceptionReportEntry[] {

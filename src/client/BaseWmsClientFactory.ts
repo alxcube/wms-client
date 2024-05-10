@@ -9,7 +9,19 @@ import type {
   WmsClientFactoryOptions,
 } from "./WmsClientFactory";
 
+/**
+ * Base WmsClientFactory class.
+ */
 export class BaseWmsClientFactory implements WmsClientFactory {
+  /**
+   * BaseWmsClientFactory constructor.
+   *
+   * @param versionAdapterResolver
+   * @param queryParamsSerializer
+   * @param wmsXmlParser
+   * @param requestErrorHandler
+   * @param textDecoder
+   */
   constructor(
     private readonly versionAdapterResolver: WmsVersionAdapterResolver,
     private readonly queryParamsSerializer: QueryParamsSerializer,
@@ -17,6 +29,10 @@ export class BaseWmsClientFactory implements WmsClientFactory {
     private readonly requestErrorHandler: RequestErrorHandler,
     private readonly textDecoder: TextDecoder
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   create(
     wmsUrl: string,
     wmsVersion: string,

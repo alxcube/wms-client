@@ -14,9 +14,36 @@ import type {
   WmsClient,
   WmsClientOptions,
 } from "./WmsClient";
+
+/**
+ * Base WmsClient class.
+ */
 export class BaseWmsClient implements WmsClient {
+  /**
+   * Base url for GetMap WMS request.
+   *
+   * @private
+   */
   private mapRequestUrl: string;
+
+  /**
+   * Base url for GetFeatureInfo WMS request.
+   * @private
+   */
   private featureInfoRequestUrl: string;
+
+  /**
+   * BaseWmsClient constructor.
+   *
+   * @param httpClient
+   * @param queryParamsSerializer
+   * @param wmsXmlParser
+   * @param versionAdapter
+   * @param requestErrorHandler
+   * @param textDecoder
+   * @param wmsUrl
+   * @param options
+   */
   constructor(
     private readonly httpClient: AxiosInstance,
     private readonly queryParamsSerializer: QueryParamsSerializer,
@@ -31,14 +58,23 @@ export class BaseWmsClient implements WmsClient {
     this.featureInfoRequestUrl = options.featureInfoRequestUrl || wmsUrl;
   }
 
+  /**
+   * @inheritdoc
+   */
   getVersion(): string {
     return this.versionAdapter.version;
   }
 
+  /**
+   * @inheritdoc
+   */
   getWmsUrl(): string {
     return this.wmsUrl;
   }
 
+  /**
+   * @inheritdoc
+   */
   async getCapabilities(
     params: CapabilitiesRequestParams = {}
   ): Promise<UnifiedCapabilitiesResponse> {
@@ -65,6 +101,9 @@ export class BaseWmsClient implements WmsClient {
     return capabilities;
   }
 
+  /**
+   * @inheritdoc
+   */
   async getMap(params: MapRequestParamsWithCustom): Promise<ArrayBuffer> {
     const url = this.getMapUrl(params);
     let response: AxiosResponse<ArrayBuffer>;
@@ -81,14 +120,23 @@ export class BaseWmsClient implements WmsClient {
     return response.data;
   }
 
+  /**
+   * @inheritdoc
+   */
   getMapRequestUrl(): string {
     return this.mapRequestUrl;
   }
 
+  /**
+   * @inheritdoc
+   */
   setMapRequestUrl(url: string) {
     this.mapRequestUrl = url;
   }
 
+  /**
+   * @inheritdoc
+   */
   getMapUrl(params: MapRequestParamsWithCustom): string {
     const requestParams = {
       ...this.getCustomQueryParams(),
@@ -97,6 +145,9 @@ export class BaseWmsClient implements WmsClient {
     return this.prepareUrl(this.mapRequestUrl, requestParams);
   }
 
+  /**
+   * @inheritdoc
+   */
   async getFeatureInfo(
     params: FeatureInfoRequestParamsWithCustom
   ): Promise<string> {
@@ -121,23 +172,41 @@ export class BaseWmsClient implements WmsClient {
     return response.data;
   }
 
+  /**
+   * @inheritdoc
+   */
   getFeatureInfoRequestUrl(): string {
     return this.featureInfoRequestUrl;
   }
 
+  /**
+   * @inheritdoc
+   */
   setFeatureInfoRequestUrl(url: string) {
     this.featureInfoRequestUrl = url;
   }
 
+  /**
+   * @inheritdoc
+   */
   getCustomQueryParams(): { [p: string]: unknown } {
     const { query = {} } = this.options;
     return { ...query };
   }
 
+  /**
+   * @inheritdoc
+   */
   getHttpClient(): AxiosInstance {
     return this.httpClient;
   }
 
+  /**
+   * Checks response of GetMap request for WMS exception XML.
+   *
+   * @param response
+   * @private
+   */
   private checkForErrorGetMapResponse(response: AxiosResponse) {
     if (!this.isXmlResponse(response)) {
       return;
@@ -147,6 +216,12 @@ export class BaseWmsClient implements WmsClient {
     this.wmsXmlParser.parse(responseString);
   }
 
+  /**
+   * Returns http response body as string if response body is either string or ArrayBuffer.
+   *
+   * @param response
+   * @private
+   */
   private getResponseString(response: AxiosResponse): string {
     if (typeof response.data === "string") {
       return response.data;
@@ -157,10 +232,23 @@ export class BaseWmsClient implements WmsClient {
     throw new TypeError(`Unexpected response type`);
   }
 
+  /**
+   * Detects if response is xml, based on Content-Type header.
+   *
+   * @param response
+   * @private
+   */
   private isXmlResponse(response: AxiosResponse): boolean {
     return /(?:\b|_)xml(?:\b|_)/.test(response.headers["content-type"]);
   }
 
+  /**
+   * Prepares url for request, using base url and query string params.
+   *
+   * @param baseUrl
+   * @param query
+   * @private
+   */
   private prepareUrl(baseUrl: string, query: object): string {
     const serializedParams = this.queryParamsSerializer.serialize(query);
     return mergeSearchParams(baseUrl, serializedParams);

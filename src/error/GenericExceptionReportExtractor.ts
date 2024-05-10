@@ -9,9 +9,21 @@ import type {
 } from "./ExceptionReportExtractor";
 import { WmsExceptionCode } from "./WmsExceptionCode";
 
+/**
+ * Generic ExceptionReportExtractor, compatible with WMS v1.1.1, v1.3.0
+ */
 export class GenericExceptionReportExtractor
   implements ExceptionReportExtractor
 {
+  /**
+   * GenericExceptionReportExtractor constructor.
+   *
+   * @param versionExtractor
+   * @param versionComparator
+   * @param fromVersion
+   * @param toVersion
+   * @param ns
+   */
   constructor(
     private readonly versionExtractor: XmlResponseVersionExtractor,
     private readonly versionComparator: VersionComparator,
@@ -19,6 +31,10 @@ export class GenericExceptionReportExtractor
     private readonly toVersion: string,
     private readonly ns: string
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   extractExceptionReport(doc: Document): ExceptionReportEntry[] | undefined {
     let version;
     try {
@@ -36,6 +52,10 @@ export class GenericExceptionReportExtractor
     }
   }
 
+  /**
+   * Creates XML data extractor for ExceptionReportEntry objects array.
+   * @private
+   */
   private getDataExtractor(): SingleNodeDataExtractorFn<
     ExceptionReportEntry[] | undefined
   > {
