@@ -1,5 +1,11 @@
 import type { Layer } from "../version-adapter";
 
+/**
+ * Inherit single layer data, according to WMS specification.
+ *
+ * @param layer
+ * @param parentLayer
+ */
 export function inheritLayerData(layer: Layer, parentLayer: Layer): Layer {
   if (parentLayer.styles) {
     if (layer.styles) {
