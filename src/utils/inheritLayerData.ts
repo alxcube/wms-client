@@ -40,17 +40,6 @@ export function inheritLayerData(layer: Layer, parentLayer: Layer): Layer {
     layer.attribution = structuredClone(parentLayer.attribution);
   }
 
-  if (parentLayer.authorityUrls) {
-    if (layer.authorityUrls) {
-      layer.authorityUrls = [
-        ...structuredClone(parentLayer.authorityUrls),
-        ...layer.authorityUrls,
-      ];
-    } else {
-      layer.authorityUrls = structuredClone(parentLayer.authorityUrls);
-    }
-  }
-
   if (
     parentLayer.minScaleDenominator !== undefined &&
     layer.minScaleDenominator === undefined

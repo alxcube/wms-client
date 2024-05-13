@@ -364,7 +364,6 @@ describe("LayersExtractor class", () => {
       { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.1.1" },
       { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.1.1" },
       { service: "XmlDataExtractor<Layer[attribution]>", name: "1.1.1" },
-      { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.1.1" },
       { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.1.1" },
       { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.1.1" },
       { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.1.1" },
@@ -379,7 +378,6 @@ describe("LayersExtractor class", () => {
       { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.3.0" },
       { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.3.0" },
       { service: "XmlDataExtractor<Layer[attribution]>", name: "1.3.0" },
-      { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.3.0" },
       { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.3.0" },
       { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.3.0" },
       { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.3.0" },
@@ -394,7 +392,6 @@ describe("LayersExtractor class", () => {
       { service: "XmlDataExtractor<Layer[geographicBounds]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[boundingBoxes]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[attribution]>", name: "1.0.0" },
-      { service: "XmlDataExtractor<Layer[authorityUrls]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[identifiers]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[metadataUrls]>", name: "1.0.0" },
       { service: "XmlDataExtractor<Layer[dataUrls]>", name: "1.0.0" },
@@ -435,12 +432,6 @@ describe("LayersExtractor class", () => {
         {
           title: "Acme Corp. Map Server",
           crs: ["EPSG:4326"],
-          authorityUrls: [
-            {
-              name: "DIF_ID",
-              url: "http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html",
-            },
-          ],
           layers: [
             {
               name: "ROADS_RIVERS",
@@ -482,7 +473,13 @@ describe("LayersExtractor class", () => {
                   url: "http://www.university.edu/icons/logo.gif",
                 },
               },
-              identifiers: [{ authority: "DIF_ID", value: "123456" }],
+              identifiers: [
+                {
+                  authorityUrl:
+                    "http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html",
+                  value: "123456",
+                },
+              ],
               featureListUrls: [
                 {
                   format: 'application/vnd.ogc.se_xml"',
@@ -521,7 +518,13 @@ describe("LayersExtractor class", () => {
                     { value: "transportation" },
                     { value: "atlas" },
                   ],
-                  identifiers: [{ authority: "DIF_ID", value: "123456" }],
+                  identifiers: [
+                    {
+                      authorityUrl:
+                        "http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html",
+                      value: "123456",
+                    },
+                  ],
                   metadataUrls: [
                     {
                       type: "FGDC",
@@ -664,12 +667,6 @@ describe("LayersExtractor class", () => {
         {
           title: "Acme Corp. Map Server",
           crs: ["CRS:84"],
-          authorityUrls: [
-            {
-              name: "DIF_ID",
-              url: "http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html",
-            },
-          ],
           layers: [
             {
               name: "ROADS_RIVERS",
@@ -711,7 +708,13 @@ describe("LayersExtractor class", () => {
                   url: "http://www.university.edu/icons/logo.gif",
                 },
               },
-              identifiers: [{ authority: "DIF_ID", value: "123456" }],
+              identifiers: [
+                {
+                  authorityUrl:
+                    "http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html",
+                  value: "123456",
+                },
+              ],
               featureListUrls: [
                 {
                   format: 'XML"',
@@ -749,7 +752,13 @@ describe("LayersExtractor class", () => {
                     { value: "transportation" },
                     { value: "atlas" },
                   ],
-                  identifiers: [{ authority: "DIF_ID", value: "123456" }],
+                  identifiers: [
+                    {
+                      authorityUrl:
+                        "http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html",
+                      value: "123456",
+                    },
+                  ],
                   metadataUrls: [
                     {
                       type: "FGDC:1998",

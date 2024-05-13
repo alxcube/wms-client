@@ -25,9 +25,6 @@ export class LayersExtractor
     private readonly attributionExtractor: XmlDataExtractor<
       Layer["attribution"]
     >,
-    private readonly authorityUrlsExtractor: XmlDataExtractor<
-      Layer["authorityUrls"]
-    >,
     private readonly identifiersExtractor: XmlDataExtractor<
       Layer["identifiers"]
     >,
@@ -62,7 +59,6 @@ export class LayersExtractor
         boundingBoxes: this.boundingBoxesExtractor,
         dimensions: this.layerDimensionsExtractor,
         attribution: this.attributionExtractor,
-        authorityUrls: this.authorityUrlsExtractor,
         identifiers: this.identifiersExtractor,
         metadataUrls: this.metadataUrlsExtractor,
         dataUrls: this.dataUrlsExtractor,

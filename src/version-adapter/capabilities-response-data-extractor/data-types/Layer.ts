@@ -1,5 +1,4 @@
 import type { Attribution } from "./Attribution";
-import type { AuthorityUrl } from "./AuthorityUrl";
 import type { BoundingBox } from "./BoundingBox";
 import type { Dimension } from "./Dimension";
 import type { GeographicBoundingBox } from "./GeographicBoundingBox";
@@ -73,8 +72,10 @@ export interface Layer {
    */
   attribution?: Attribution;
 
-  authorityUrls?: AuthorityUrl[]; // todo merge with identifiers
-  identifiers?: Identifier[]; // todo make description
+  /**
+   * Layer identifiers.
+   */
+  identifiers?: Identifier[];
 
   /**
    * Layer metadata URLs.

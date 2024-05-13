@@ -31,7 +31,6 @@ export const containerModule_1_0: ServiceModule<TypesMap> = {
         { service: "XmlDataExtractor<Layer[geographicBounds]>", name },
         { service: "XmlDataExtractor<Layer[boundingBoxes]>", name },
         { service: "XmlDataExtractor<Layer[attribution]>", name },
-        { service: "XmlDataExtractor<Layer[authorityUrls]>", name },
         { service: "XmlDataExtractor<Layer[identifiers]>", name },
         { service: "XmlDataExtractor<Layer[metadataUrls]>", name },
         { service: "XmlDataExtractor<Layer[dataUrls]>", name },
@@ -98,11 +97,6 @@ export const containerModule_1_0: ServiceModule<TypesMap> = {
     );
     container.registerConstant(
       "XmlDataExtractor<Layer[attribution]>",
-      undefinedExtractor,
-      { name }
-    );
-    container.registerConstant(
-      "XmlDataExtractor<Layer[authorityUrls]>",
       undefinedExtractor,
       { name }
     );

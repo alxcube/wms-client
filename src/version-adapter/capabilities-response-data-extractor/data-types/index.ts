@@ -1,5 +1,4 @@
 export * from "./Attribution";
-export * from "./AuthorityUrl";
 export * from "./BoundingBox";
 export * from "./ContactAddress";
 export * from "./ContactInformation";

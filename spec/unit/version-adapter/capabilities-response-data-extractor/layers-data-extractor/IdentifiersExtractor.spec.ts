@@ -9,9 +9,13 @@ import {
 import { testContainer } from "../../../../testContainer";
 
 describe("IdentifiersExtractor class", () => {
-  const xmlContent = `<Identifier authority="DIF_ID">123456</Identifier><Identifier authority="OTHER">ID</Identifier>`;
-  const xml_1_1 = `<Root>${xmlContent}</Root>`;
-  const xml_1_3 = `<Root xmlns="${wmsXmlNamespace}">${xmlContent}</Root>`;
+  const xmlContent = `
+<AuthorityURL name="DIF_ID"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://test1"/></AuthorityURL>
+<AuthorityURL name="OTHER"><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://test2"/></AuthorityURL>
+<Identifier authority="DIF_ID">123456</Identifier>
+<Identifier authority="OTHER">ID</Identifier>`;
+  const xml_1_1 = `<Layer>${xmlContent}</Layer>`;
+  const xml_1_3 = `<Layer xmlns="${wmsXmlNamespace}">${xmlContent}</Layer>`;
   let factory_1_1: IdentifiersExtractor;
   let factory_1_3: IdentifiersExtractor;
   let xmlParser: DOMParser;
@@ -34,12 +38,12 @@ describe("IdentifiersExtractor class", () => {
     });
 
     identifiersContainer_1_1 = select(
-      "/Root",
+      "/Layer",
       xmlParser.parseFromString(xml_1_1, "text/xml"),
       true
     ) as Element;
     identifiersContainer_1_3 = select(
-      "/wms:Root",
+      "/wms:Layer",
       xmlParser.parseFromString(xml_1_3, "text/xml"),
       true
     ) as Element;
@@ -49,16 +53,16 @@ describe("IdentifiersExtractor class", () => {
     it("should return SingleNodeDataExtractorFn, which returns Identifier objects array from given parent context node v1.1.1", () => {
       const extract = factory_1_1.createNodeDataExtractor();
       expect(extract(identifiersContainer_1_1, select)).toEqual([
-        { authority: "DIF_ID", value: "123456" },
-        { authority: "OTHER", value: "ID" },
+        { authorityUrl: "http://test1", value: "123456" },
+        { authorityUrl: "http://test2", value: "ID" },
       ]);
     });
 
     it("should return SingleNodeDataExtractorFn, which returns Identifier objects array from given parent context node v1.3.0", () => {
       const extract = factory_1_3.createNodeDataExtractor();
       expect(extract(identifiersContainer_1_3, select)).toEqual([
-        { authority: "DIF_ID", value: "123456" },
-        { authority: "OTHER", value: "ID" },
+        { authorityUrl: "http://test1", value: "123456" },
+        { authorityUrl: "http://test2", value: "ID" },
       ]);
     });
   });

@@ -2,7 +2,6 @@ import { constant } from "@alxcube/di-container";
 import type { ServiceContainer, ServiceModule } from "@alxcube/di-container";
 import type { TypesMap } from "../../../TypesMap";
 import { AttributionExtractor } from "./AttributionExtractor";
-import { AuthorityUrlsExtractor } from "./AuthorityUrlsExtractor";
 import { BoundingBoxesExtractor } from "./BoundingBoxesExtractor";
 import { CrsExtractor } from "./CrsExtractor";
 import { DimensionsExtractor_1_1 } from "./DimensionsExtractor_1_1";
@@ -35,7 +34,6 @@ export const containerModule_1_1: ServiceModule<TypesMap> = {
         { service: "XmlDataExtractor<Layer[geographicBounds]>", name },
         { service: "XmlDataExtractor<Layer[boundingBoxes]>", name },
         { service: "XmlDataExtractor<Layer[attribution]>", name },
-        { service: "XmlDataExtractor<Layer[authorityUrls]>", name },
         { service: "XmlDataExtractor<Layer[identifiers]>", name },
         { service: "XmlDataExtractor<Layer[metadataUrls]>", name },
         { service: "XmlDataExtractor<Layer[dataUrls]>", name },
@@ -81,14 +79,6 @@ export const containerModule_1_1: ServiceModule<TypesMap> = {
     container.implement(
       "XmlDataExtractor<Layer[attribution]>",
       AttributionExtractor,
-      [nameSpace],
-      { name }
-    );
-
-    // Layer["authorityUrls"] extractor
-    container.implement(
-      "XmlDataExtractor<Layer[authorityUrls]>",
-      AuthorityUrlsExtractor,
       [nameSpace],
       { name }
     );

@@ -65,9 +65,6 @@ export interface TypesMap extends ServicesMap {
   "XmlDataExtractor<Layer[attribution]>": XmlDataExtractor<
     Layer["attribution"]
   >;
-  "XmlDataExtractor<Layer[authorityUrls]>": XmlDataExtractor<
-    Layer["authorityUrls"]
-  >;
   "XmlDataExtractor<Layer[identifiers]>": XmlDataExtractor<
     Layer["identifiers"]
   >;

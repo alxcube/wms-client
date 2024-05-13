@@ -1,5 +1,4 @@
 export * from "./AttributionExtractor";
-export * from "./AuthorityUrlsExtractor";
 export * from "./BoundingBoxesExtractor";
 export * from "./CrsExtractor";
 export * from "./dataUrlsExtractor_1_0";

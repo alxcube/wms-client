@@ -3,6 +3,7 @@ import {
   type SingleNodeDataExtractorFn,
   type SingleNodeDataExtractorFnFactory,
 } from "@alxcube/xml-mapper";
+import type { XPathSelect } from "xpath";
 import { withNamespace } from "../../../utils";
 import type { Identifier } from "../data-types";
 
@@ -17,9 +18,18 @@ export class IdentifiersExtractor
       .toNodesArray(withNamespace("Identifier", this.ns))
       .asArray()
       .ofObjects({
-        authority: map().toNode("@authority").mandatory().asString(),
         value: map().toNode(".").mandatory().asString(),
+        authorityUrl: (node, select) => this.getAuthorityUrl(node, select),
       })
       .createNodeDataExtractor();
+  }
+
+  private getAuthorityUrl(identifierNode: Node, select: XPathSelect): string {
+    const authority = select("string(@authority)", identifierNode) as string;
+    const lookupExpression =
+      `//${withNamespace("Layer", this.ns)}` +
+      `//${withNamespace("AuthorityURL", this.ns)}[@name="${authority.trim()}"][1]` +
+      `/${withNamespace("OnlineResource", this.ns)}/@xlink:href`;
+    return select(`string(${lookupExpression})`, identifierNode) as string;
   }
 }
