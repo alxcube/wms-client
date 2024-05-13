@@ -52,5 +52,5 @@ export interface Dimension {
   /**
    * String indicating available value(s) for dimension.
    */
-  value?: string; // TODO: rename to `extent`
+  value?: string;
 }
