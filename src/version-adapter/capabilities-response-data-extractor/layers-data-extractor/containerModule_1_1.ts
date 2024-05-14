@@ -13,6 +13,9 @@ import { ResourceUrlsExtractor } from "./ResourceUrlsExtractor";
 import { StylesExtractor } from "./StylesExtractor";
 import { StyleUrlExtractor_1_1 } from "./StyleUrlExtractor_1_1";
 
+/**
+ * Service module of container registrations, related to <Layer> node data extractors for WMS v 1.1.1.
+ */
 export const containerModule_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     // Name corresponds to version implementation. Used to distinguish between implementations of common interfaces

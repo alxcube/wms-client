@@ -6,14 +6,26 @@ import {
 import { withNamespace } from "../../../utils";
 import type { ResourceUrl } from "../data-types";
 
+/**
+ * Generic extractor for `ResourceUrl` objects.
+ */
 export class ResourceUrlsExtractor
   implements SingleNodeDataExtractorFnFactory<ResourceUrl[] | undefined>
 {
+  /**
+   * ResourceUrlExtractor constructor.
+   *
+   * @param nodeName
+   * @param ns
+   */
   constructor(
     private readonly nodeName: string,
     private readonly ns: string
   ) {}
 
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     ResourceUrl[] | undefined
   > {

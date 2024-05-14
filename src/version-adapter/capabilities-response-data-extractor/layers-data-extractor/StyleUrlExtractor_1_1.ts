@@ -6,11 +6,22 @@ import {
 import { withNamespace } from "../../../utils";
 import type { ResourceUrl } from "../data-types";
 
+/**
+ * <StyleURL/> node data extractor, compatible with WMS 1.1, 1.3.
+ */
 export class StyleUrlExtractor_1_1
   implements SingleNodeDataExtractorFnFactory<ResourceUrl | undefined>
 {
+  /**
+   * StyleUrlExtractor_1_1 constructor.
+   *
+   * @param ns
+   */
   constructor(private readonly ns: string) {}
 
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     ResourceUrl | undefined
   > {

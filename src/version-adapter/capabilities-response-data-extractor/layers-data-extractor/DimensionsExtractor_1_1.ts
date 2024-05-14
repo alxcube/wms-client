@@ -6,6 +6,10 @@ import {
 import type { XPathSelect } from "xpath";
 import type { Dimension, Layer } from "../data-types";
 
+/**
+ * Data, extracted from <Extent/> node.
+ * @internal
+ */
 interface ExtentElementData {
   default?: string;
   multipleValues?: boolean;
@@ -13,9 +17,16 @@ interface ExtentElementData {
   current?: boolean;
   value?: string;
 }
+
+/**
+ * `Dimension` objects array extractor, compatible with WMS 1.1.
+ */
 export class DimensionsExtractor_1_1
   implements SingleNodeDataExtractorFnFactory<Layer["dimensions"]>
 {
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<Layer["dimensions"]> {
     return (layerNode, select) => {
       if (!this.hasExtentOrDimensionChild(layerNode, select)) {
@@ -53,6 +64,13 @@ export class DimensionsExtractor_1_1
     };
   }
 
+  /**
+   * Checks if given <Layer/> node has <Dimension/> or <Extent/> child nodes.
+   *
+   * @param layerNode
+   * @param select
+   * @private
+   */
   private hasExtentOrDimensionChild(
     layerNode: Node,
     select: XPathSelect
@@ -63,6 +81,14 @@ export class DimensionsExtractor_1_1
     );
   }
 
+  /**
+   * Recursively collects all <Dimension/> nodes, which are children of given <Layer/> node or children of parent
+   * <Layer/> nodes.
+   *
+   * @param node
+   * @param select
+   * @private
+   */
   private getDimensionElementsRecursive(
     node: Node,
     select: XPathSelect
@@ -76,6 +102,13 @@ export class DimensionsExtractor_1_1
     return dimensionElements;
   }
 
+  /**
+   * Returns <Dimension/> nodes array, preceding to given <Layer/> node.
+   *
+   * @param layerNode
+   * @param select
+   * @private
+   */
   private getPrecedingDimensionElements(
     layerNode: Node,
     select: XPathSelect
@@ -83,6 +116,14 @@ export class DimensionsExtractor_1_1
     return select("preceding::Layer/Dimension", layerNode) as Element[];
   }
 
+  /**
+   * Returns object, whose keys are dimension names, taken from "name" attribute of <Dimension/> node, and whose values
+   * are `Dimension` objects.
+   *
+   * @param layerNode
+   * @param select
+   * @private
+   */
   private getDimensionsMap(
     layerNode: Node,
     select: XPathSelect
@@ -112,6 +153,13 @@ export class DimensionsExtractor_1_1
     return dimensionsMap;
   }
 
+  /**
+   * Extracts needed data from <Extent/> node.
+   *
+   * @param extent
+   * @param select
+   * @private
+   */
   private extractExtentElementData(
     extent: Element,
     select: XPathSelect

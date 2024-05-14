@@ -6,10 +6,22 @@ import {
 import { withNamespace } from "../../../utils";
 import type { MetadataUrl } from "../data-types";
 
+/**
+ * `MetadataUrl` objects array extractor.
+ */
 export class MetadataUrlsExtractor
   implements SingleNodeDataExtractorFnFactory<MetadataUrl[] | undefined>
 {
+  /**
+   * MetadataUrlsExtractor constructor.
+   *
+   * @param ns
+   */
   constructor(private readonly ns: string) {}
+
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     MetadataUrl[] | undefined
   > {

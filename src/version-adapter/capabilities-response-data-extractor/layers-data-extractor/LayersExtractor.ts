@@ -7,9 +7,28 @@ import { withNamespace } from "../../../utils";
 import type { Keyword, Layer } from "../data-types";
 import type { XmlDataExtractor } from "../XmlDataExtractor";
 
+/**
+ * Generic `Layer` objects array extractor.
+ */
 export class LayersExtractor
   implements SingleNodeDataExtractorFnFactory<Layer[]>
 {
+  /**
+   * LayersExtractor constructor.
+   *
+   * @param keywordsExtractor
+   * @param crsExtractor
+   * @param layerDimensionsExtractor
+   * @param geographicBoundsExtractor
+   * @param boundingBoxesExtractor
+   * @param attributionExtractor
+   * @param identifiersExtractor
+   * @param metadataUrlsExtractor
+   * @param dataUrlsExtractor
+   * @param featureListUrlsExtractor
+   * @param stylesExtractor
+   * @param ns
+   */
   constructor(
     private readonly keywordsExtractor: XmlDataExtractor<Keyword[] | undefined>,
     private readonly crsExtractor: XmlDataExtractor<Layer["crs"]>,
@@ -39,6 +58,9 @@ export class LayersExtractor
     private readonly ns: string
   ) {}
 
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<Layer[]> {
     return map()
       .toNodesArray(withNamespace("Layer", this.ns))

@@ -7,15 +7,28 @@ import { withNamespace } from "../../../utils";
 import type { LayerStyle, ResourceUrl } from "../data-types";
 import type { XmlDataExtractor } from "../XmlDataExtractor";
 
+/**
+ * Layer styles metadata array extractor.
+ */
 export class StylesExtractor
   implements SingleNodeDataExtractorFnFactory<LayerStyle[] | undefined>
 {
+  /**
+   * StylesExtractor constructor.
+   *
+   * @param styleUrlExtractor
+   * @param ns
+   */
   constructor(
     private readonly styleUrlExtractor: XmlDataExtractor<
       ResourceUrl | undefined
     >,
     private readonly ns: string
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     LayerStyle[] | undefined
   > {

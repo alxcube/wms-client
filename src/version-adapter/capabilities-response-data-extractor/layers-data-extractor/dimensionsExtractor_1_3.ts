@@ -1,6 +1,9 @@
 import { map, type SingleNodeDataExtractorFn } from "@alxcube/xml-mapper";
 import type { Layer } from "../data-types";
 
+/**
+ * `Dimension` objects array extractor, compatible with WMS 1.3.
+ */
 export const dimensionsExtractor_1_3: SingleNodeDataExtractorFn<
   Layer["dimensions"]
 > = map()
