@@ -18,6 +18,9 @@ import { containerModule_1_1_1 as exceptionModule_1_1_1 } from "./error/containe
 import { containerModule_1_3_0 as exceptionModule_1_3_0 } from "./error/containerModule_1_3_0";
 import { containerModule_1_0_0 as exceptionModule_1_0_0 } from "./error/containerModule_1_0_0";
 
+/**
+ * Dependency injection container.
+ */
 export const serviceContainer = new Container<TypesMap>();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -24,6 +24,9 @@ import type { VersionComparator } from "./version-comparator";
 import type { WmsNegotiator } from "./negotiator";
 import type { WmsXmlParser } from "./wms-xml-parser";
 
+/**
+ * WMS client package types map.
+ */
 export interface TypesMap extends ServicesMap {
   RequestErrorHandler: RequestErrorHandler;
   WmsClientFactory: WmsClientFactory;
