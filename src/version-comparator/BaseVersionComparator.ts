@@ -1,9 +1,15 @@
 import type {
-  ComparsionOperator,
+  ComparisonOperator,
   VersionComparator,
 } from "./VersionComparator";
 
+/**
+ * Base implementation of VersionComparator interface.
+ */
 export class BaseVersionComparator implements VersionComparator {
+  /**
+   * @inheritdoc
+   */
   compare(v1: string, v2: string): -1 | 0 | 1 {
     const [major1, minor1 = "0", patch1 = "0"] = v1.split(".");
     const [major2, minor2 = "0", patch2 = "0"] = v2.split(".");
@@ -18,7 +24,10 @@ export class BaseVersionComparator implements VersionComparator {
     return this.compareComponent(patch1, patch2);
   }
 
-  is(v1: string, operator: ComparsionOperator, v2: string): boolean {
+  /**
+   * @inheritdoc
+   */
+  is(v1: string, operator: ComparisonOperator, v2: string): boolean {
     const result = this.compare(v1, v2);
     switch (operator) {
       case "=":
@@ -36,6 +45,13 @@ export class BaseVersionComparator implements VersionComparator {
     }
   }
 
+  /**
+   * Compares version component.
+   *
+   * @param component1
+   * @param component2
+   * @private
+   */
   private compareComponent(component1: string, component2: string): -1 | 0 | 1 {
     if (component1 === "*" || component2 === "*") {
       return 0;
