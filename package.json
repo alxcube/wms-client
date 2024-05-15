@@ -20,6 +20,7 @@
   "author": "Alexander Alexandrov <alxcube@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@vitest/browser": "^1.2.2",
     "axios-mock-adapter": "^1.22.0",
