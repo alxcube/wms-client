@@ -8,6 +8,9 @@ import { containerModule_1_1 as mapRequestParamsTransformerModule } from "./map-
 import { containerModule_1_1 as versionCompatibilityCheckerModule } from "./version-compatibility-checker/containerModule_1_1";
 import { containerModule_1_1 as featureInfoRequestParamsTransformerModule } from "./feature-info-request-params-transformer/containerModule_1_1";
 
+/**
+ * Service module of container registrations, related to WmsVersionAdapter for WMS v1.1.1.
+ */
 export const containerModule_1_1_1: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     const name = "1.1.1";

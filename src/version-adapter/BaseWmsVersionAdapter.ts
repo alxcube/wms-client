@@ -13,7 +13,20 @@ import type { MapRequestParamsTransformer } from "./map-request-params-transform
 import type { VersionCompatibilityChecker } from "./version-compatibility-checker";
 import type { WmsVersionAdapter } from "./WmsVersionAdapter";
 
+/**
+ * Base WmsVersionAdapter implementing class.
+ */
 export class BaseWmsVersionAdapter implements WmsVersionAdapter {
+  /**
+   * BaseWmsVersionAdapter constructor.
+   *
+   * @param version
+   * @param capabilitiesRequestParamsTransformer
+   * @param capabilitiesResponseDataExtractor
+   * @param mapRequestParamsTransformer
+   * @param featureInfoRequestParamsTransformer
+   * @param versionCompatibilityChecker
+   */
   constructor(
     readonly version: string,
     private readonly capabilitiesRequestParamsTransformer: CapabilitiesRequestParamsTransformer,
@@ -23,28 +36,43 @@ export class BaseWmsVersionAdapter implements WmsVersionAdapter {
     private readonly versionCompatibilityChecker: VersionCompatibilityChecker
   ) {}
 
+  /**
+   * @inheritdoc
+   */
   extractCapabilitiesResponseData(
     response: Document
   ): UnifiedCapabilitiesResponse {
     return this.capabilitiesResponseDataExtractor.extract(response);
   }
 
+  /**
+   * @inheritdoc
+   */
   transformCapabilitiesRequestParams(
     params: CapabilitiesRequestParams
   ): object {
     return this.capabilitiesRequestParamsTransformer.transform(params);
   }
 
+  /**
+   * @inheritdoc
+   */
   transformMapRequestParams(params: MapRequestParamsWithCustom): object {
     return this.mapRequestParamsTransformer.transform(params);
   }
 
+  /**
+   * @inheritdoc
+   */
   transformFeatureInfoRequestParams(
     params: FeatureInfoRequestParamsWithCustom
   ): object {
     return this.featureInfoRequestParamsTransformer.transform(params);
   }
 
+  /**
+   * @inheritdoc
+   */
   isCompatible(wmsVersion: string): boolean {
     return this.versionCompatibilityChecker.isCompatible(wmsVersion);
   }
