@@ -1,6 +1,9 @@
 import { map, type SingleNodeDataExtractorFn } from "@alxcube/xml-mapper";
 import type { ExceptionFormat } from "../../error";
 
+/**
+ * Data extractor for ExceptionFormat. Compatible with WMS 1.1.
+ */
 export const exceptionFormatExtractor_1_1: SingleNodeDataExtractorFn<
   ExceptionFormat[]
 > = map()

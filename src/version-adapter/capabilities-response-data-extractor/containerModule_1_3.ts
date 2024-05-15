@@ -10,6 +10,9 @@ import { ServiceSectionExtractor } from "./ServiceSectionExtractor";
 import { wmsXmlNamespace } from "./wmsXmlNamespace";
 import { xlinkXmlNamespace } from "./xlinkXmlNamespace";
 
+/**
+ * Service module for container registrations, related to `UnifiedCapabilitiesResponse` data extraction for WMS v1.3.
+ */
 export const containerModule_1_3: ServiceModule<TypesMap> = {
   register(container: ServiceContainer<TypesMap>) {
     // Name corresponds to version implementation. Used to distinguish between implementations of common interfaces

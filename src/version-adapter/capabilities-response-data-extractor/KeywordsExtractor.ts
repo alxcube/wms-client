@@ -6,10 +6,22 @@ import {
 import { trim } from "../../utils";
 import type { Keyword } from "./data-types";
 
+/**
+ * `Keyword` objects array extractor, compatible with WMS 1.1, 1.3.
+ */
 export class KeywordsExtractor
   implements SingleNodeDataExtractorFnFactory<Keyword[] | undefined>
 {
+  /**
+   * KeywordsExtractor constructor.
+   *
+   * @param ns
+   */
   constructor(private readonly ns: string) {}
+
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<Keyword[] | undefined> {
     return map()
       .toNodesArray(

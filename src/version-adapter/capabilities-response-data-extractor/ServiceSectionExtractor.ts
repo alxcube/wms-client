@@ -13,10 +13,20 @@ import type {
 } from "./data-types";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
+/**
+ * Data extractor of 'service' section of `UnifiedCapabilitiesResponse`, compatible with WMS 1.1, 1.3.
+ */
 export class ServiceSectionExtractor
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["service"]>
 {
+  /**
+   * ServiceSectionExtractor constructor.
+   *
+   * @param keywordsDataExtractor
+   * @param rootNodeName
+   * @param ns
+   */
   constructor(
     private readonly keywordsDataExtractor: XmlDataExtractor<
       Keyword[] | undefined
@@ -24,6 +34,10 @@ export class ServiceSectionExtractor
     private readonly rootNodeName: string,
     private readonly ns: string
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["service"]
   > {
@@ -52,6 +66,11 @@ export class ServiceSectionExtractor
       .createNodeDataExtractor();
   }
 
+  /**
+   * Returns `ContactInformation` extractor.
+   *
+   * @private
+   */
   private buildContactInformationExtractor(): SingleNodeDataExtractorFnFactory<
     ContactInformation | undefined
   > {
@@ -75,6 +94,11 @@ export class ServiceSectionExtractor
       });
   }
 
+  /**
+   * Returns `ContactPerson` extractor.
+   *
+   * @private
+   */
   private buildContactPersonExtractor(): SingleNodeDataExtractorFnFactory<
     ContactPerson | undefined
   > {
@@ -92,6 +116,11 @@ export class ServiceSectionExtractor
       });
   }
 
+  /**
+   * Returns `ContactAddress` extractor.
+   *
+   * @private
+   */
   private buildAddressExtractor(): SingleNodeDataExtractorFnFactory<
     ContactAddress | undefined
   > {

@@ -12,16 +12,31 @@ import type {
 } from "./data-types";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
+/**
+ * Extractor of 'capability' section of `UnifiedCapabilitiesResponse`, compatible with WMS 1.1, 1.3.
+ */
 export class CapabilitiesSectionExtractor
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["capability"]>
 {
+  /**
+   * CapabilitiesSectionExtractor constructor.
+   *
+   * @param layersDataExtractor
+   * @param exceptionFormatsExtractor
+   * @param rootNodeName
+   * @param ns
+   */
   constructor(
     private layersDataExtractor: XmlDataExtractor<Layer[]>,
     private exceptionFormatsExtractor: XmlDataExtractor<ExceptionFormat[]>,
     private readonly rootNodeName: string,
     private readonly ns: string
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["capability"]
   > {

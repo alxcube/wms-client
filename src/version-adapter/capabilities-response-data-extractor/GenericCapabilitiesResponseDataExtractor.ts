@@ -9,9 +9,15 @@ import type { UnifiedCapabilitiesResponse } from "./data-types";
 import type { CapabilitiesResponseDataExtractor } from "./CapabilitiesResponseDataExtractor";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
+/**
+ * Generic CapabilitiesResponseDataExtractor implementing class.
+ */
 export class GenericCapabilitiesResponseDataExtractor
   implements CapabilitiesResponseDataExtractor
 {
+  /**
+   * GenericCapabilitiesResponseDataExtractor constructor.
+   */
   constructor(
     private readonly serviceSectionExtractorFactory: XmlDataExtractor<
       UnifiedCapabilitiesResponse["service"]
@@ -21,6 +27,10 @@ export class GenericCapabilitiesResponseDataExtractor
     >,
     private readonly namespaces: { [key: string]: string }
   ) {}
+
+  /**
+   * @inheritdoc
+   */
   extract(response: Document): UnifiedCapabilitiesResponse {
     return this.buildDataExtractor()(
       response,
@@ -28,6 +38,9 @@ export class GenericCapabilitiesResponseDataExtractor
     );
   }
 
+  /**
+   * Returns UnifiedCapabilitiesResponse extractor.
+   */
   private buildDataExtractor(): SingleNodeDataExtractorFn<UnifiedCapabilitiesResponse> {
     return createObjectMapper<UnifiedCapabilitiesResponse>({
       version: map().toNode("/*/@version").mandatory().asString(),

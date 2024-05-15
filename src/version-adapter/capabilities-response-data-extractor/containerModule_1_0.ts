@@ -7,6 +7,9 @@ import { keywordsExtractor_1_0 } from "./keywordsExtractor_1_0";
 import { containerModule_1_0 as layersExtractorModule } from "./layers-data-extractor/containerModule_1_0";
 import { ServiceSectionExtractor_1_0 } from "./ServiceSectionExtractor_1_0";
 
+/**
+ * Service module for container registrations, related to `UnifiedCapabilitiesResponse` data extraction for WMS v1.0.
+ */
 export const containerModule_1_0: ServiceModule<TypesMap> = {
   // Layer[] extractor module
   register(container: ServiceContainer<TypesMap>) {

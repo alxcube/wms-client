@@ -11,12 +11,23 @@ import type {
 } from "./data-types";
 import type { XmlDataExtractor } from "./XmlDataExtractor";
 
+/**
+ * Extractor of 'capability' section of `UnifiedCapabilitiesResponse`, compatible with WMS 1.0.
+ */
 export class CapabilitiesSectionExtractor_1_0
   implements
     SingleNodeDataExtractorFnFactory<UnifiedCapabilitiesResponse["capability"]>
 {
+  /**
+   * CapabilitiesSectionExtractor_1_0 constructor.
+   *
+   * @param layersExtractor
+   */
   constructor(private readonly layersExtractor: XmlDataExtractor<Layer[]>) {}
 
+  /**
+   * @inheritdoc
+   */
   createNodeDataExtractor(): SingleNodeDataExtractorFn<
     UnifiedCapabilitiesResponse["capability"]
   > {
@@ -48,6 +59,12 @@ export class CapabilitiesSectionExtractor_1_0
       .createNodeDataExtractor();
   }
 
+  /**
+   * Creates data extractor for `OperationType`, using given request name (which is used as XML node name).
+   *
+   * @param requestType
+   * @private
+   */
   private buildOperationTypeExtractor(
     requestType: string
   ): SingleNodeDataExtractorFnFactory<OperationType>;
