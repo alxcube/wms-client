@@ -1,6 +1,6 @@
 {
   "name": "@alxcube/wms-client",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "main": "./dist/wms-client.umd.cjs",
   "module": "./dist/wms-client.js",
@@ -18,7 +18,17 @@
     "prettier": "prettier --write 'src/**/*.ts' && prettier --write 'spec/**/*.ts'"
   },
   "author": "Alexander Alexandrov <alxcube@gmail.com>",
+  "description": "Web Map Service (WMS) client.",
+  "keywords": [
+    "web map service",
+    "wms"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alxcube/wms-client.git"
+  },
   "license": "MIT",
+  "files": ["dist/"],
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
